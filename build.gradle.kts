@@ -4,7 +4,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid) apply false
 
     // Firebase
-    id("com.google.gms.google-services") version "4.4.1" apply false
+    //id("com.google.gms.google-services") version "4.4.1" apply false
 
     // Hilt
     id("com.google.dagger.hilt.android") version "2.48" apply false

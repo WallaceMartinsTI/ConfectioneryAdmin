@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.jetbrainsKotlinAndroid)
 
     // Firebase
-    id("com.google.gms.google-services")
+    //id("com.google.gms.google-services")
 
     // Hilt
     id("com.google.dagger.hilt.android")
@@ -83,13 +83,13 @@ dependencies {
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
     // Firebase
-    implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
+    //implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     // Firebase Analytics
-    implementation("com.google.firebase:firebase-analytics-ktx")
+    //implementation("com.google.firebase:firebase-analytics-ktx")
     // Firebase Auth
-    implementation("com.google.firebase:firebase-auth-ktx")
+    //implementation("com.google.firebase:firebase-auth-ktx")
     // Firebase Firestore
-    implementation("com.google.firebase:firebase-firestore-ktx")
+    //implementation("com.google.firebase:firebase-firestore-ktx")
 
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
