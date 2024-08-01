@@ -19,9 +19,8 @@ val Pink40 = Color(0xFF7D5260)
 val StrongDarkPurple = Color(0xFF6C085C)
 val LightDarkPurple = Color(0xFFD20FB3)
 
-val White = Color(0xFFFFFFFF)
 val Primary = Color(0xFF3E0540)
-val ScreenDescription = Color(0xFF775378)
+val ScreenDescriptionColor = Color(0xFF775378)
 
 val ButtonBackground = Color(0xFFD88BD5)
 val TextFieldBackground = Color(0x33FF00C7)

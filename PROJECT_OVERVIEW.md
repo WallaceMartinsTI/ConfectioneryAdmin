@@ -31,7 +31,7 @@ In this version, the administrator (confectionery business) will have access to 
 
 ## Screens and App Description
 
-- **Home Screen**: on the home screen, the app's name and subtitle are displayed, along with a welcome message and a button with the text "START". This screen is only shown the first time the app is started;
+- **Starter Screen**: on the home screen, the app's name and subtitle are displayed, along with a welcome message and a button with the text "START". This screen is only shown the first time the app is started;
 
 - **Login Screen**: on the login screen, the app's name and subtitle are displayed, along with a message prompting the user to log in or create an account, two fields for login (email and password), and two buttons, one for logging in with the text "LOGIN" and another to redirect the user to the account creation screen, labeled "CREATE ACCOUNT";
 

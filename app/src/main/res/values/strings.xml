@@ -1,3 +1,65 @@
 <resources>
-    <string name="app_name">ConfectionaryAdmin</string>
+    <string name="app_name">Confectionary Admin</string>
+
+    <!-- Starter Screen -->
+    <string name="starter_screen_description">Painel de Administrador</string>
+    <string name="starter_screen_welcome_message">Bem-vindo ao\nConfectionary\nAdmin!</string>
+    <string name="starter_screen_message">Gerencie seus pedidos com facilidade e eficiência. O Confectionary Admin está aqui para simplificar o seu dia a dia na confeitaria, permitindo que você se concentre no que faz de melhor: criar doces e bolos incríveis.</string>
+    <string name="starter_screen_start_helper">Pressione "INICIAR" para começar sua jornada com a gente!</string>
+
+    <!-- Login Screen -->
+    <string name="login_screen_description">Realizar Acesso</string>
+    <string name="login_screen_message">Faça login ou crie sua\nconta e começe já!</string>
+
+    <!-- User Register Screen -->
+    <string name="user_register_screen_description">Criação de Conta</string>
+    <string name="user_register_screen_message">Faça seu registro para\ncomeçar a utilizar o\nsistema</string>
+
+    <!-- Create Order Screen -->
+    <string name="create_order_screen_description">Criação de Pedido</string>
+
+    <!-- Create Customer Screen -->
+    <string name="create_customer_screen_description">Cadastro de Cliente</string>
+
+    <!-- Screen Titles -->
+    <string name="screen_title_main_screen">PAINEL ADMIN</string>
+    <string name="screen_title_orders_screen">PEDIDOS</string>
+    <string name="screen_title_customers_screen">CLIENTES</string>
+    <string name="screen_title_create_order_screen">CRIAR PEDIDO</string>
+    <string name="screen_title_create_customer_screen">NOVO CLIENTE</string>
+
+    <!-- Buttons -->
+    <string name="btn_start">INICIAR</string>
+    <string name="btn_login">ENTRAR</string>
+    <string name="btn_create_account">CRIAR CONTA</string>
+    <string name="btn_register">CADASTRAR</string>
+    <string name="btn_create_order">CRIAR PEDIDO</string>
+    <string name="btn_create_client">CRIAR CLIENTE</string>
+    <string name="btn_show_orders">VER PEDIDOS</string>
+    <string name="btn_delete">DELETAR</string>
+
+    <!-- TextField Labels -->
+    <string name="textfield_label_name">NOME</string>
+    <string name="textfield_label_email">EMAIL</string>
+    <string name="textfield_label_password">SENHA</string>
+    <string name="textfield_label_confirm_password">CONFIRME SUA SENHA</string>
+    <string name="textfield_label_phone_number">TELEFONE</string>
+    <string name="textfield_label_gender">GÊNERO</string>
+    <string name="textfield_label_date_of_birth">DATA DE NASCIMENTO</string>
+    <string name="textfield_label_address">ENDEREÇO</string>
+    <string name="textfield_label_notes">OBSERVAÇÕES</string>
+    <string name="textfield_label_description">DESCRIÇÃO</string>
+    <string name="textfield_label_customer">CLIENTE</string>
+    <string name="textfield_label_price">PREÇO</string>
+    <string name="textfield_label_order_request_date">DATA DO PEDIDO</string>
+    <string name="textfield_label_order_deliver_date">DATA PARA ENTREGA</string>
+    <string name="textfield_label_status">STATUS</string>
+
+    <!-- Status -->
+    <string name="status_quotation">Orçamento</string>
+    <string name="status_confirmed">Confirmado</string>
+    <string name="status_in_production">Em Produção</string>
+    <string name="status_finished">Finalizado</string>
+    <string name="status_delivered">Entregue</string>
+    <string name="status_cancelled">Cancelado</string>
 </resources>
