@@ -17,18 +17,21 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.AppTitle
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 
-@Preview
 @Composable
-fun StarterScreen() {
+fun StarterScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -38,7 +41,7 @@ fun StarterScreen() {
         AppTitle(modifier = Modifier.padding(top = 24.dp))
 
         ScreenDescription(
-            description = "Painel de Administrador",
+            description = stringResource(id = R.string.starter_screen_description),
             modifier = Modifier.padding(top = 8.dp)
         )
         
@@ -76,12 +79,21 @@ fun StarterScreen() {
         )
 
         PrimaryButton(
-            text = stringResource(id = R.string.btn_start),
+            text = stringResource(id = R.string.btn_text_start),
             modifier = Modifier.padding(top = 8.dp, bottom = 24.dp)
         ) {
-            // Navigate to the next screen (Login Screen)
+            navController.navigate(Screen.Login.route)
         }
 
 
+    }
+}
+
+@Preview
+@Composable
+fun StarterScreenPreview() {
+    ConfectionaryAdminTheme {
+        val navController = rememberNavController()
+        StarterScreen(navController = navController)
     }
 }

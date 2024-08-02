@@ -18,6 +18,7 @@ val Pink40 = Color(0xFF7D5260)
 // Colors
 val StrongDarkPurple = Color(0xFF6C085C)
 val LightDarkPurple = Color(0xFFD20FB3)
+val LightRed = Color(0xFFDC3545)
 
 val Primary = Color(0xFF3E0540)
 val ScreenDescriptionColor = Color(0xFF775378)
@@ -31,7 +32,7 @@ val ConfirmedStatus = Color(0xFF28A745)
 val InProductionStatus = Color(0xFFFFF73A)
 val FinishedStatus = Color(0xFFFF00D7)
 val DeliveredStatus = Color(0xFF004085)
-val CancelledStatus = Color(0xFFDC3545)
+val CancelledStatus = LightRed
 
 // Linear Colors (Brush)
 val AppBackground = Brush.horizontalGradient(listOf(Color(0xFFC0B4D7), Color(0xFFF495CF)))

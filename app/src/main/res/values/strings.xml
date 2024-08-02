@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Confectionary Admin</string>
+    <string name="app_name_formatted">CONFECTIONARY\nADMIN</string>
 
     <!-- Starter Screen -->
     <string name="starter_screen_description">Painel de Administrador</string>
@@ -22,6 +23,7 @@
     <string name="create_customer_screen_description">Cadastro de Cliente</string>
 
     <!-- Screen Titles -->
+    <string name="screen_title_user_register_screen">REGISTRO</string>
     <string name="screen_title_main_screen">PAINEL ADMIN</string>
     <string name="screen_title_orders_screen">PEDIDOS</string>
     <string name="screen_title_customers_screen">CLIENTES</string>
@@ -29,20 +31,20 @@
     <string name="screen_title_create_customer_screen">NOVO CLIENTE</string>
 
     <!-- Buttons -->
-    <string name="btn_start">INICIAR</string>
-    <string name="btn_login">ENTRAR</string>
-    <string name="btn_create_account">CRIAR CONTA</string>
-    <string name="btn_register">CADASTRAR</string>
-    <string name="btn_create_order">CRIAR PEDIDO</string>
-    <string name="btn_create_client">CRIAR CLIENTE</string>
-    <string name="btn_show_orders">VER PEDIDOS</string>
-    <string name="btn_delete">DELETAR</string>
+    <string name="btn_text_start">INICIAR</string>
+    <string name="btn_text_login">ENTRAR</string>
+    <string name="btn_text_create_account">CRIAR CONTA</string>
+    <string name="btn_text_user_register">CADASTRAR</string>
+    <string name="btn_text_create_order">CRIAR PEDIDO</string>
+    <string name="btn_text_create_client">CRIAR CLIENTE</string>
+    <string name="btn_text_show_orders">VER PEDIDOS</string>
+    <string name="btn_text_delete">DELETAR</string>
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>
     <string name="textfield_label_email">EMAIL</string>
     <string name="textfield_label_password">SENHA</string>
-    <string name="textfield_label_confirm_password">CONFIRME SUA SENHA</string>
+    <string name="textfield_label_confirm_password">REPETIR SENHA</string>
     <string name="textfield_label_phone_number">TELEFONE</string>
     <string name="textfield_label_gender">GÊNERO</string>
     <string name="textfield_label_date_of_birth">DATA DE NASCIMENTO</string>
@@ -54,6 +56,12 @@
     <string name="textfield_label_order_request_date">DATA DO PEDIDO</string>
     <string name="textfield_label_order_deliver_date">DATA PARA ENTREGA</string>
     <string name="textfield_label_status">STATUS</string>
+
+    <!-- TextField Placeholders -->
+    <string name="textfield_placeholder_name">Digite seu nome</string>
+    <string name="textfield_placeholder_email">Digite seu e-mail</string>
+    <string name="textfield_placeholder_password">Digite sua senha</string>
+    <string name="textfield_placeholder_confirm_password">Repita sua senha</string>
 
     <!-- Status -->
     <string name="status_quotation">Orçamento</string>
