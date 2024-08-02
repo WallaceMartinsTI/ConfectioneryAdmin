@@ -4,4 +4,5 @@
     <style name="Theme.ConfectionaryAdmin" parent="android:Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@drawable/background_gradient</item>
     </style>
+
 </resources>

@@ -85,6 +85,9 @@ dependencies {
     // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
+    // Splashscreen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     // Firebase
     //implementation(platform("com.google.firebase:firebase-bom:33.0.0"))
     // Firebase Analytics
