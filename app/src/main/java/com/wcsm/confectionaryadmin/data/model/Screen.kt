@@ -1,6 +1,7 @@
 package com.wcsm.confectionaryadmin.data.model
 
 sealed class Screen(val route: String) {
+    object NavigationHolder : Screen("navigation_holder")
     object Starter : Screen("starter")
     object Login : Screen("login")
     object UserRegister : Screen("user_register")

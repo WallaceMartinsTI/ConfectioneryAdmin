@@ -70,4 +70,9 @@
     <string name="status_finished">Finalizado</string>
     <string name="status_delivered">Entregue</string>
     <string name="status_cancelled">Cancelado</string>
+
+    <!-- BottomNavigation -->
+    <string name="bottom_nav_home">Home</string>
+    <string name="bottom_nav_orders">Pedidos</string>
+    <string name="bottom_nav_customers">Clientes</string>
 </resources>

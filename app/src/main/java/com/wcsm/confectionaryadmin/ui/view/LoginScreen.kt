@@ -153,6 +153,7 @@ fun LoginScreen(navController: NavController) {
 
         PrimaryButton(text = stringResource(id = R.string.btn_text_login)) {
             // Login
+            navController.navigate(Screen.NavigationHolder.route)
         }
 
         Spacer(modifier = Modifier.height(16.dp))
