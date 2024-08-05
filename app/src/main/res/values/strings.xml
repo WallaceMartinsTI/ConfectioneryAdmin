@@ -36,7 +36,7 @@
     <string name="btn_text_create_account">CRIAR CONTA</string>
     <string name="btn_text_user_register">CADASTRAR</string>
     <string name="btn_text_create_order">CRIAR PEDIDO</string>
-    <string name="btn_text_create_client">CRIAR CLIENTE</string>
+    <string name="btn_text_create_customer">CRIAR CLIENTE</string>
     <string name="btn_text_show_orders">VER PEDIDOS</string>
     <string name="btn_text_delete">DELETAR</string>
 
@@ -75,4 +75,12 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_orders">Pedidos</string>
     <string name="bottom_nav_customers">Clientes</string>
+
+    <!-- Others -->
+    <string name="choose_an_option_below">Escolha uma das opções\nabaixo:</string>
+    <string name="filter_field_description">Filtrar por data ou status</string>
+    <string name="next_status_text">Próximo Status</string>
+    <string name="filter_by">Filtrar por:</string>
+    <string name="date">DATA</string>
+    <string name="choose_date">Escolher data</string>
 </resources>

@@ -2,6 +2,7 @@ package com.wcsm.confectionaryadmin.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -10,9 +11,14 @@ import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.view.CustomersScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.OrdersScreen
+import com.wcsm.confectionaryadmin.ui.viewmodel.MainScreenViewModel
 
 @Composable
-fun BottomNavGraph(navController: NavHostController) {
+fun BottomNavGraph(
+    navController: NavHostController,
+    mainScreenViewModel: MainScreenViewModel,
+    paddingValues: PaddingValues
+) {
     NavHost(
         navController = navController,
         startDestination = Screen.Main.route,
@@ -20,15 +26,18 @@ fun BottomNavGraph(navController: NavHostController) {
         exitTransition = { ExitTransition.None }
     ) {
         composable(route = Screen.Main.route) {
-            MainScreen()
+            MainScreen(
+                paddingValues = paddingValues,
+                mainScreenViewModel = mainScreenViewModel
+            )
         }
 
         composable(route = Screen.Orders.route) {
-            OrdersScreen()
+            OrdersScreen(paddingValues = paddingValues)
         }
 
         composable(route = Screen.Customers.route) {
-            CustomersScreen()
+            CustomersScreen(paddingValues = paddingValues)
         }
     }
 }
