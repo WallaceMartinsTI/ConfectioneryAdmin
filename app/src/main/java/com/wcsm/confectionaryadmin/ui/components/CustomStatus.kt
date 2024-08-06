@@ -46,7 +46,7 @@ fun CustomStatusText(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomStatusPreview() {
+private fun CustomStatusPreview() {
     ConfectionaryAdminTheme {
         Column(
             verticalArrangement = Arrangement.Center

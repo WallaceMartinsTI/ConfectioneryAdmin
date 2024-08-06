@@ -8,6 +8,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.ui.view.CreateOrderScreen
 import com.wcsm.confectionaryadmin.ui.view.CustomersScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.OrdersScreen
@@ -27,6 +28,7 @@ fun BottomNavGraph(
     ) {
         composable(route = Screen.Main.route) {
             MainScreen(
+                navController = navController,
                 paddingValues = paddingValues,
                 mainViewModel = mainViewModel
             )
@@ -39,5 +41,13 @@ fun BottomNavGraph(
         composable(route = Screen.Customers.route) {
             CustomersScreen(paddingValues = paddingValues)
         }
+
+        composable(route = Screen.CreateOrder.route) {
+            CreateOrderScreen(navController = navController)
+        }
+
+        /*composable(route = Screen.CreateCustomers.route) {
+            CustomersScreen(paddingValues = paddingValues)
+        }*/
     }
 }

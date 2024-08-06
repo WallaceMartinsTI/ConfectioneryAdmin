@@ -63,7 +63,7 @@ fun PrimaryButton(
 
 @Preview
 @Composable
-fun PrimaryButtonPreview() {
+private fun PrimaryButtonPreview() {
     ConfectionaryAdminTheme {
         Column(
             modifier = Modifier

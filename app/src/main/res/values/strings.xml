@@ -43,6 +43,7 @@
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>
+    <string name="textfield_label_order_name">PEDIDO</string>
     <string name="textfield_label_email">EMAIL</string>
     <string name="textfield_label_password">SENHA</string>
     <string name="textfield_label_confirm_password">REPETIR SENHA</string>
@@ -60,6 +61,8 @@
 
     <!-- TextField Placeholders -->
     <string name="textfield_placeholder_name">Digite seu nome</string>
+    <string name="textfield_placeholder_order_name">Digite o nome do pedido</string>
+    <string name="textfield_placeholder_description">Descreva o pedido, como sabor, recheio, etc...</string>
     <string name="textfield_placeholder_email">Digite seu e-mail</string>
     <string name="textfield_placeholder_password">Digite sua senha</string>
     <string name="textfield_placeholder_confirm_password">Repita sua senha</string>
@@ -79,6 +82,11 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_orders">Pedidos</string>
     <string name="bottom_nav_customers">Clientes</string>
+
+    <!-- Gender Options -->
+    <string name="gender_male">Masculino</string>
+    <string name="gender_female">Feminino</string>
+    <string name="gender_other">Outros</string>
 
     <!-- Others -->
     <string name="choose_an_option_below">Escolha uma das opções\nabaixo:</string>

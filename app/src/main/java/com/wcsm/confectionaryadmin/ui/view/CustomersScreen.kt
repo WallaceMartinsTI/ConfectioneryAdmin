@@ -30,18 +30,31 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Female
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Mail
+import androidx.compose.material.icons.filled.Male
 import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Transgender
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDefaults
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,6 +70,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
@@ -87,7 +101,9 @@ import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.LightRed
 import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
+import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 
 val customersMock = listOf(
     Customer(
@@ -394,6 +410,7 @@ fun MinimizedCustomerCard(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedCustomerScreen(
     customer: Customer,
@@ -408,13 +425,33 @@ fun ExpandedCustomerScreen(
     var address by rememberSaveable { mutableStateOf(customer.address ?: "") }
     var notes by rememberSaveable { mutableStateOf(customer.notes ?: "") }
 
+    var showDatePickerDialog by remember { mutableStateOf(false) }
+    val datePickerState = rememberDatePickerState()
+    var selectedDate by remember { mutableStateOf("") }
+
+    var genderDropdownExpanded by remember { mutableStateOf(false) }
+    var genderSelected by remember { mutableStateOf("Selecione um gênero") }
+
     var isCustomerOrdersOpen by remember { mutableStateOf(false) }
+
     val customBlur = if(isCustomerOrdersOpen) 8.dp else 0.dp
 
     val customerIcon = when(customer.gender) {
         "Masculino" -> painterResource(id = R.drawable.male)
         "Feminino" -> painterResource(id = R.drawable.female)
         else -> painterResource(id = R.drawable.others)
+    }
+
+    LaunchedEffect(selectedDate) {
+        if(selectedDate.isNotEmpty()) {
+            dateOfBirth = selectedDate
+        }
+    }
+    
+    LaunchedEffect(genderSelected) {
+        if(genderSelected != "Selecione um gênero") {
+            gender = genderSelected
+        }
     }
 
     Box(
@@ -544,31 +581,131 @@ fun ExpandedCustomerScreen(
                 }
 
                 // GENDER DROPDOWN MENU
-                CustomTextField(
-                    label = stringResource(id = R.string.textfield_label_gender),
-                    placeholder = "",
-                    errorMessage = null,
-                    leadingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = null
-                        )
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null
-                        )
-                    },
-                    value = gender
-                ) {
-                    gender = it
+                Box {
+                    ExposedDropdownMenuBox(
+                        expanded = genderDropdownExpanded,
+                        onExpandedChange = {
+                            genderDropdownExpanded = !genderDropdownExpanded
+                        }
+                    ) {
+                        CustomTextField(
+                            modifier = Modifier.menuAnchor(),
+                            label = stringResource(id = R.string.textfield_label_gender),
+                            placeholder = "",
+                            errorMessage = null,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Person,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector =
+                                    if(genderDropdownExpanded) Icons.Filled.KeyboardArrowUp
+                                    else Icons.Filled.KeyboardArrowDown,
+                                    contentDescription = null,
+                                    tint = Primary
+                                )
+                            },
+                            singleLine = true,
+                            readOnly = true,
+                            value = gender
+                        ) {
+                            genderDropdownExpanded = !genderDropdownExpanded
+                        }
+
+                        ExposedDropdownMenu(
+                            expanded = genderDropdownExpanded,
+                            onDismissRequest = { genderDropdownExpanded = false },
+                            modifier = Modifier.background(color = StrongDarkPurple)
+                        ) {
+                            val genderOptions = listOf(
+                                stringResource(id = R.string.gender_male),
+                                stringResource(id = R.string.gender_female),
+                                stringResource(id = R.string.gender_other)
+                            )
+
+                            genderOptions.forEach {
+                                val icon = when(it) {
+                                    "Masculino" -> Icons.Default.Male
+                                    "Feminino" -> Icons.Default.Female
+                                    else -> Icons.Default.Transgender
+                                }
+                                DropdownMenuItem(
+                                    text = {
+                                           Text(
+                                               text = it,
+                                               color = Color.White,
+                                               fontFamily = InterFontFamily,
+                                               fontWeight = FontWeight.SemiBold
+                                           )
+                                    },
+                                    leadingIcon = {
+                                        Icon(
+                                            imageVector = icon,
+                                            contentDescription = null,
+                                            tint = Color.White
+                                        )
+                                    },
+                                    onClick = {
+                                        genderSelected = it
+                                        genderDropdownExpanded = false
+                                    }
+                                )
+                            }
+                        }
+                    }
                 }
 
-                // DATE PICKER
+
+
+                if(showDatePickerDialog) {
+                    DatePickerDialog(
+                        onDismissRequest = {
+                            showDatePickerDialog = false
+                        },
+                        confirmButton = {
+                            Button(
+                                onClick = {
+                                    datePickerState.selectedDateMillis?.let { millis ->
+                                        selectedDate = millis.toBrazillianDateFormat()
+                                    }
+                                    showDatePickerDialog = false
+                                },
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = Primary
+                                )
+                            ) {
+                                Text(text = stringResource(id = R.string.choose_date))
+                            }
+                        }
+                    ) {
+                        DatePicker(
+                            state = datePickerState,
+                            showModeToggle = false,
+                            colors = DatePickerDefaults.colors(
+                                headlineContentColor = Primary,
+                                weekdayContentColor = Primary,
+                                currentYearContentColor = Primary,
+                                selectedYearContainerColor = Primary,
+                                selectedDayContainerColor = Primary,
+                                todayContentColor = Primary,
+                                todayDateBorderColor = Primary
+                            )
+                        )
+                    }
+                }
+
                 CustomTextField(
                     label = stringResource(id = R.string.textfield_label_date_of_birth),
                     placeholder = "",
+                    modifier = Modifier
+                        .onFocusEvent {
+                          if(it.isFocused) {
+                              showDatePickerDialog = true
+                          }
+                        },
                     errorMessage = null,
                     leadingIcon = {
                         Icon(
@@ -583,9 +720,7 @@ fun ExpandedCustomerScreen(
                         )
                     },
                     value = dateOfBirth
-                ) {
-                    dateOfBirth = it
-                }
+                ) { }
 
                 CustomTextField(
                     label = stringResource(id = R.string.textfield_label_address),
@@ -771,7 +906,7 @@ fun CustomerOrders(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomersScreenPreview() {
+private fun CustomersScreenPreview() {
     ConfectionaryAdminTheme {
         val paddingValues = PaddingValues()
         CustomersScreen(paddingValues)
@@ -780,7 +915,7 @@ fun CustomersScreenPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun FilterCustomerPreview() {
+private fun FilterCustomerPreview() {
     ConfectionaryAdminTheme {
         FilterCustomer(
             leadingIcon = Icons.Default.Search,
@@ -795,7 +930,7 @@ fun FilterCustomerPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun MinimizedCustomerCardPreview() {
+private fun MinimizedCustomerCardPreview() {
     ConfectionaryAdminTheme {
         MinimizedCustomerCard(customersMock[0]) {}
     }
@@ -803,18 +938,17 @@ fun MinimizedCustomerCardPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun ExpandedCustomerScreenPreview() {
+private fun ExpandedCustomerScreenPreview() {
     ConfectionaryAdminTheme {
         ExpandedCustomerScreen(
-            customer = customersMock[0],
-            //paddingValues = PaddingValues()
+            customer = customersMock[0]
         ) {}
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-fun CustomDeleteButtonPreview() {
+private fun CustomDeleteButtonPreview() {
     ConfectionaryAdminTheme {
         CustomDeleteButton("DEKETAR") {}
     }
@@ -822,7 +956,7 @@ fun CustomDeleteButtonPreview() {
 
 @Preview
 @Composable
-fun CustomerOrdersPreview() {
+private fun CustomerOrdersPreview() {
     ConfectionaryAdminTheme {
         CustomerOrders(customersMock[0]) {}
     }

@@ -91,7 +91,7 @@ fun StarterScreen(navController: NavController) {
 
 @Preview
 @Composable
-fun StarterScreenPreview() {
+private fun StarterScreenPreview() {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         StarterScreen(navController = navController)

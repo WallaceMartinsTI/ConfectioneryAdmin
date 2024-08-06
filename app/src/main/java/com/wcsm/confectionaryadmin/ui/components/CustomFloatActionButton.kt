@@ -39,7 +39,7 @@ fun CustomFloatActionButton(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomFloatActionButtonPreview() {
+private fun CustomFloatActionButtonPreview() {
     ConfectionaryAdminTheme {
         Column(
             modifier = Modifier.height(300.dp).width(100.dp),

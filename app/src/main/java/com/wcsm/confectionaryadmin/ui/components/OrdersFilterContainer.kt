@@ -56,7 +56,7 @@ fun OrdersFilterContainer(
 
 @Preview(showBackground = true)
 @Composable
-fun OrdersFilterContainerPreview() {
+private fun OrdersFilterContainerPreview() {
     ConfectionaryAdminTheme {
         OrdersFilterContainer(text = null) {}
     }

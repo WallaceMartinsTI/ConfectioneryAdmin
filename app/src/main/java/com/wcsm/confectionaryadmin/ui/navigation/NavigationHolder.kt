@@ -42,6 +42,7 @@ fun NavigationHolder(
         Screen.Orders.route -> {
             icon = Icons.Default.PlaylistAdd
             onClick = {
+                navController.navigate(Screen.CreateOrder.route)
                 Log.i("#-#TESTE#-#", "CLICOU no FAB - Orders Screen")
             }
         }

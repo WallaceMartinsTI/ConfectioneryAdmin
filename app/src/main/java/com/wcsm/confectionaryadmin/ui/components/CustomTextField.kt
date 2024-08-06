@@ -48,6 +48,7 @@ fun CustomTextField(
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
     singleLine: Boolean = true,
+    readOnly: Boolean = false,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorMessage: String?,
     leadingIcon: @Composable() (() -> Unit)? = null,
@@ -96,6 +97,7 @@ fun CustomTextField(
         ),
         colors = colors,
         singleLine = singleLine,
+        readOnly = readOnly,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = keyboardType,
             imeAction = imeAction
@@ -113,7 +115,7 @@ fun CustomTextField(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomTextFieldPreview() {
+private fun CustomTextFieldPreview() {
     ConfectionaryAdminTheme {
         var email by remember {mutableStateOf("") }
         var password by remember {mutableStateOf("") }

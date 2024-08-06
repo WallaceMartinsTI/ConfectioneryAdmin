@@ -42,7 +42,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomStatus
 import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -62,6 +65,7 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(
+    navController: NavController,
     paddingValues: PaddingValues,
     mainViewModel: MainViewModel
 ) {
@@ -70,7 +74,9 @@ fun MainScreen(
     val customBlur = if(showChooseWhatWillCreateDialog) 8.dp else 0.dp
 
     Box(
-        modifier = Modifier.fillMaxSize().padding(paddingValues)
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(paddingValues)
     ) {
         Column(
             modifier = Modifier
@@ -156,7 +162,10 @@ fun MainScreen(
             ) {
                 ChooseWhatWillCreateDialog(
                     modifier = Modifier.align(Alignment.Center),
-                    onCreateOrderOptionClick = {},
+                    onCreateOrderOptionClick = {
+                        mainViewModel.changeShowChooseWhatWillCreateDialog(status = false)
+                        navController.navigate(Screen.CreateOrder.route)
+                    },
                     onCreateCustomerOptionClick = {},
                     onDissmissDialog = {
                         mainViewModel.changeShowChooseWhatWillCreateDialog(status = false)
@@ -164,18 +173,6 @@ fun MainScreen(
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun MainScreenPreview() {
-    ConfectionaryAdminTheme {
-        val paddingValues = PaddingValues()
-        MainScreen(
-            paddingValues = paddingValues,
-            mainViewModel = viewModel()
-        )
     }
 }
 
@@ -235,18 +232,6 @@ fun ChooseWhatWillCreateDialog(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun ChooseWhatWillCreateDialogPreview() {
-    ConfectionaryAdminTheme {
-        ChooseWhatWillCreateDialog(
-            onCreateOrderOptionClick = {},
-            onCreateCustomerOptionClick = {},
-            onDissmissDialog = {}
-        )
-    }
-}
-
 @Composable
 fun ChooseWhatWillCreateButton(
     text: String,
@@ -291,7 +276,34 @@ fun ChooseWhatWillCreateButton(
 
 @Preview(showBackground = true)
 @Composable
-fun ChooseWhatWillCreateButtonPreview() {
+private fun MainScreenPreview() {
+    ConfectionaryAdminTheme {
+        val navController = rememberNavController()
+        val paddingValues = PaddingValues()
+
+        MainScreen(
+            navController = navController,
+            paddingValues = paddingValues,
+            mainViewModel = viewModel()
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChooseWhatWillCreateDialogPreview() {
+    ConfectionaryAdminTheme {
+        ChooseWhatWillCreateDialog(
+            onCreateOrderOptionClick = {},
+            onCreateCustomerOptionClick = {},
+            onDissmissDialog = {}
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun ChooseWhatWillCreateButtonPreview() {
     ConfectionaryAdminTheme {
         Column(
             modifier = Modifier

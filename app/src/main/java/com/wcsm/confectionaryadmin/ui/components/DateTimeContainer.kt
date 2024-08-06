@@ -92,7 +92,7 @@ fun DateTimeContainerText(text: String) {
 
 @Preview
 @Composable
-fun DateTimeContainerPreview() {
+private fun DateTimeContainerPreview() {
     ConfectionaryAdminTheme {
         Column(
             modifier = Modifier.size(300.dp),

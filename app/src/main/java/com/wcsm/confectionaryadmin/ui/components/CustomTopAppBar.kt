@@ -58,7 +58,7 @@ fun CustomTopAppBar(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomTopAppBarPreview() {
+private fun CustomTopAppBarPreview() {
     ConfectionaryAdminTheme {
         CustomTopAppBar("REGISTRO") {}
     }

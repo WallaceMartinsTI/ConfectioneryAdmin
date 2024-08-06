@@ -312,7 +312,7 @@ fun OrderCard(
 
 @Preview(showBackground = true)
 @Composable
-fun OrderCardPreview() {
+private fun OrderCardPreview() {
     ConfectionaryAdminTheme {
         Column {
 

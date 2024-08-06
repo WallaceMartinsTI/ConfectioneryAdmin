@@ -11,9 +11,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 
-@Preview(showBackground = true)
 @Composable
 fun AppTitle(
     modifier: Modifier = Modifier
@@ -29,4 +29,12 @@ fun AppTitle(
         ),
         modifier = modifier
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun AppTitlePreview() {
+    ConfectionaryAdminTheme {
+        AppTitle()
+    }
 }

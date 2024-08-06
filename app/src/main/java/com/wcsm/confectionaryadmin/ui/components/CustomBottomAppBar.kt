@@ -99,7 +99,7 @@ fun RowScope.AddItem(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomBottomAppBarPreview() {
+private fun CustomBottomAppBarPreview() {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         CustomBottomAppBar(navController = navController)

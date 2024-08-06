@@ -249,7 +249,7 @@ fun UserRegisterScreen(navController: NavController) {
 
 @Preview
 @Composable
-fun UserRegisterScreenPreview() {
+private fun UserRegisterScreenPreview() {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         UserRegisterScreen(navController)

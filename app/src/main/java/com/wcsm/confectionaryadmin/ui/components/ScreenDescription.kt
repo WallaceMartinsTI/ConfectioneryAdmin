@@ -24,7 +24,7 @@ fun ScreenDescription(description: String, modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true)
 @Composable
-fun ScreenDescriptionPreview() {
+private fun ScreenDescriptionPreview() {
     ConfectionaryAdminTheme {
         ScreenDescription("Painel de Administrador")
     }

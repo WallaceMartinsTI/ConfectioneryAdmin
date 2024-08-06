@@ -168,7 +168,7 @@ fun LoginScreen(navController: NavController) {
 
 @Preview
 @Composable
-fun LoginScreenPreview() {
+private fun LoginScreenPreview() {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         LoginScreen(navController)

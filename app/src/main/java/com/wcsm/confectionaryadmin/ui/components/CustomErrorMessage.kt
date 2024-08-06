@@ -64,7 +64,7 @@ fun CustomErrorMessage(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomErrorMessagePreview() {
+private fun CustomErrorMessagePreview() {
     ConfectionaryAdminTheme {
         Column(
             modifier = Modifier.fillMaxSize(),

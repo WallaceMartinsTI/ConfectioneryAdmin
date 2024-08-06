@@ -41,6 +41,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
@@ -90,8 +91,10 @@ import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
 import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
+import com.wcsm.confectionaryadmin.ui.theme.LightDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
@@ -461,7 +464,8 @@ fun OrdersFilterDialog(
                             expanded = statusDropdownExpanded,
                             onDismissRequest = {
                                 statusDropdownExpanded = false
-                            }
+                            },
+                            modifier = Modifier.background(color = StrongDarkPurple)
                         ) {
                             val statusOptions = listOf(
                                 stringResource(id = R.string.status_quotation),
@@ -475,7 +479,12 @@ fun OrdersFilterDialog(
                             statusOptions.forEach {
                                 DropdownMenuItem(
                                     text = {
-                                        Text(text = it)
+                                        Text(
+                                            text = it,
+                                            color = Color.White,
+                                            fontFamily = InterFontFamily,
+                                            fontWeight = FontWeight.SemiBold
+                                        )
                                     },
                                     onClick = {
                                         selectedStatus = it
@@ -530,7 +539,7 @@ fun OrdersFilterDialog(
 
 @Preview(showBackground = true)
 @Composable
-fun OrdersScreenPreview() {
+private fun OrdersScreenPreview() {
     ConfectionaryAdminTheme {
         val paddingValues = PaddingValues()
         OrdersScreen(paddingValues)
@@ -541,7 +550,7 @@ fun OrdersScreenPreview() {
 
 @Preview
 @Composable
-fun OrdersFilterDialogPreview() {
+private fun OrdersFilterDialogPreview() {
     ConfectionaryAdminTheme {
         OrdersFilterDialog(ordersViewModel = viewModel()) {}
     }

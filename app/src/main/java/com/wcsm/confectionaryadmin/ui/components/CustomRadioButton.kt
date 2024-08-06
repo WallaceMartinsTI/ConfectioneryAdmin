@@ -64,7 +64,7 @@ fun CustomRadioButton(
 
 @Preview(showBackground = true)
 @Composable
-fun CustomRadioButtonPreview() {
+private fun CustomRadioButtonPreview() {
     ConfectionaryAdminTheme {
         Column {
             CustomRadioButton(text = "DATA", isSelected = false) {}
