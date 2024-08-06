@@ -21,6 +21,7 @@ val LightDarkPurple = Color(0xFFD20FB3)
 val LightRed = Color(0xFFDC3545)
 val ValueColor = Color(0xFF0D6B04)
 val BrownColor = Color(0xFF47260F)
+val GrayColor = Color(0xFFACA7A7)
 
 val Primary = Color(0xFF3E0540)
 val ScreenDescriptionColor = Color(0xFF775378)

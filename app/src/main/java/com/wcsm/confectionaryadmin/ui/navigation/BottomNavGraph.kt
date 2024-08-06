@@ -11,12 +11,12 @@ import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.view.CustomersScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.OrdersScreen
-import com.wcsm.confectionaryadmin.ui.viewmodel.MainScreenViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
-    mainScreenViewModel: MainScreenViewModel,
+    mainViewModel: MainViewModel,
     paddingValues: PaddingValues
 ) {
     NavHost(
@@ -28,7 +28,7 @@ fun BottomNavGraph(
         composable(route = Screen.Main.route) {
             MainScreen(
                 paddingValues = paddingValues,
-                mainScreenViewModel = mainScreenViewModel
+                mainViewModel = mainViewModel
             )
         }
 

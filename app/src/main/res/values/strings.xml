@@ -39,13 +39,14 @@
     <string name="btn_text_create_customer">CRIAR CLIENTE</string>
     <string name="btn_text_show_orders">VER PEDIDOS</string>
     <string name="btn_text_delete">DELETAR</string>
+    <string name="btn_text_save_edit">SALVAR ALTERAÇÕES</string>
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>
     <string name="textfield_label_email">EMAIL</string>
     <string name="textfield_label_password">SENHA</string>
     <string name="textfield_label_confirm_password">REPETIR SENHA</string>
-    <string name="textfield_label_phone_number">TELEFONE</string>
+    <string name="textfield_label_phone">TELEFONE</string>
     <string name="textfield_label_gender">GÊNERO</string>
     <string name="textfield_label_date_of_birth">DATA DE NASCIMENTO</string>
     <string name="textfield_label_address">ENDEREÇO</string>
@@ -62,6 +63,9 @@
     <string name="textfield_placeholder_email">Digite seu e-mail</string>
     <string name="textfield_placeholder_password">Digite sua senha</string>
     <string name="textfield_placeholder_confirm_password">Repita sua senha</string>
+    <string name="textfield_placeholder_phone">Digite o telefone</string>
+    <string name="textfield_placeholder_address">Digite o endereço</string>
+    <string name="textfield_placeholder_notes">Digite observações</string>
 
     <!-- Status -->
     <string name="status_quotation">Orçamento</string>
@@ -83,4 +87,6 @@
     <string name="filter_by">Filtrar por:</string>
     <string name="date">DATA</string>
     <string name="choose_date">Escolher data</string>
+    <string name="search_placeholder">Buscar…</string>
+    <string name="orders_from">PEDIDOS DE:</string>
 </resources>

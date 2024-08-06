@@ -1,5 +1,7 @@
 package com.wcsm.confectionaryadmin.ui
 
+import android.annotation.SuppressLint
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -24,9 +26,12 @@ import com.wcsm.confectionaryadmin.ui.view.StarterScreen
 import com.wcsm.confectionaryadmin.ui.view.UserRegisterScreen
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        installSplashScreen()
+
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
         setContent {
             ConfectionaryAdminTheme {
                 SetBarColor(color = Primary)

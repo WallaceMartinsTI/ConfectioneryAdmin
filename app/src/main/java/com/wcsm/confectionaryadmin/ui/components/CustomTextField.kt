@@ -47,6 +47,7 @@ fun CustomTextField(
     width: Dp = 280.dp,
     keyboardType: KeyboardType = KeyboardType.Text,
     imeAction: ImeAction = ImeAction.Default,
+    singleLine: Boolean = true,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorMessage: String?,
     leadingIcon: @Composable() (() -> Unit)? = null,
@@ -94,7 +95,7 @@ fun CustomTextField(
             fontSize = 18.sp
         ),
         colors = colors,
-        singleLine = true,
+        singleLine = singleLine,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = keyboardType,
             imeAction = imeAction

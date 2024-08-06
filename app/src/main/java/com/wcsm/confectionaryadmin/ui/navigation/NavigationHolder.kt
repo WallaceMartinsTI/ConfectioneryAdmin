@@ -4,27 +4,24 @@ import android.annotation.SuppressLint
 import android.util.Log
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.NoteAdd
-import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomBottomAppBar
 import com.wcsm.confectionaryadmin.ui.components.CustomFloatActionButton
-import com.wcsm.confectionaryadmin.ui.viewmodel.MainScreenViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationHolder(
-    mainScreenViewModel: MainScreenViewModel = viewModel()
+    mainViewModel: MainViewModel = viewModel()
 ) {
     val navController = rememberNavController()
 
@@ -38,7 +35,7 @@ fun NavigationHolder(
         Screen.Main.route -> {
             icon = Icons.Default.AddCircle
             onClick = {
-                mainScreenViewModel.changeShowChooseWhatWillCreateDialog(status = true)
+                mainViewModel.changeShowChooseWhatWillCreateDialog(status = true)
                 Log.i("#-#TESTE#-#", "CLICOU no FAB - Main Screen")
             }
         }
@@ -68,7 +65,7 @@ fun NavigationHolder(
     ) { paddingValues ->
         BottomNavGraph(
             navController = navController,
-            mainScreenViewModel = mainScreenViewModel,
+            mainViewModel = mainViewModel,
             paddingValues = paddingValues
         )
     }

@@ -22,7 +22,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.Circle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
@@ -33,6 +35,7 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
 import androidx.compose.material3.DatePickerDefaults
 import androidx.compose.material3.DatePickerDialog
+import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -42,8 +45,10 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
@@ -66,10 +71,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomRadioButton
+import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -88,8 +95,45 @@ import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
+import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 val ordersMock = listOf(
+    Order(
+        id = 0,
+        title = "Bolo Bento Cake",
+        description = "Recheio de chocolate e mousse de morango",
+        price = 120.50,
+        status = OrderStatus.QUOTATION,
+        orderDate = "15/02/2024 16:30",
+        deliverDate = "20/02/2024 17:25"
+    ),
+    Order(
+        id = 1,
+        title = "Doce Brigadeiro 100u",
+        description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
+        price = 115.00,
+        status = OrderStatus.CONFIRMED,
+        orderDate = "25/02/2024 12:30",
+        deliverDate = "28/02/2024 16:22"
+    ),
+    Order(
+        id = 2,
+        title = "Bolo de Aniversário",
+        description = "Massa de Chocolate e recheio de prestígio",
+        price = 95.25,
+        status = OrderStatus.IN_PRODUCTION,
+        orderDate = "28/03/2024 09:30",
+        deliverDate = "10/04/2024 13:15"
+    ),
+    Order(
+        id = 3,
+        title = "Bolo de Aniversário com nome meio grande vamos ver",
+        description = "Massa de Chocolate e recheio de prestígio",
+        price = 95.25,
+        status = OrderStatus.DELIVERED,
+        orderDate = "28/03/2024 11:00",
+        deliverDate = "10/04/2024 16:00"
+    ),
     Order(
         id = 0,
         title = "Bolo Bento Cake",
@@ -129,12 +173,17 @@ val ordersMock = listOf(
 )
 
 @Composable
-fun OrdersScreen(paddingValues: PaddingValues) {
+fun OrdersScreen(
+    paddingValues: PaddingValues,
+    ordersViewModel: OrdersViewModel = viewModel()
+) {
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
     var showFilterDialog by remember { mutableStateOf(false) }
 
     val customBlur = if(showFilterDialog) 8.dp else 0.dp
+
+    val filterResult by ordersViewModel.filterResult.collectAsState()
 
     Box(
         modifier = Modifier
@@ -161,8 +210,40 @@ fun OrdersScreen(paddingValues: PaddingValues) {
 
             Spacer(modifier = Modifier.height(80.dp))
 
-            OrdersFilterContainer {
-                showFilterDialog = true
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
+
+            ) {
+                Icon(
+                    imageVector = Icons.Default.ChangeCircle,
+                    contentDescription = null,
+                    tint = Primary,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            // Toggle Orders order by date
+                        }
+                )
+
+                OrdersFilterContainer(
+                    text = filterResult.ifEmpty {
+                        null
+                    }
+                ) {
+                    showFilterDialog = true
+                }
+
+                Icon(
+                    imageVector = Icons.Default.Clear,
+                    contentDescription = null,
+                    tint = Primary,
+                    modifier = Modifier
+                        .size(32.dp)
+                        .clickable {
+                            ordersViewModel.updateFilterResult(newResult = "")
+                        }
+                )
             }
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -174,7 +255,9 @@ fun OrdersScreen(paddingValues: PaddingValues) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            LazyColumn {
+            LazyColumn(
+                contentPadding = paddingValues
+            ) {
                 items(ordersMock) {
                     OrderCard(
                         order = it,
@@ -187,13 +270,11 @@ fun OrdersScreen(paddingValues: PaddingValues) {
                     Spacer(modifier = Modifier.height(8.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(50.dp))
         }
 
         if(showFilterDialog) {
             Dialog(onDismissRequest = { showFilterDialog = false }) {
-                OrdersFilterDialog {
+                OrdersFilterDialog(ordersViewModel = ordersViewModel) {
                     showFilterDialog = false
                 }
             }
@@ -201,266 +282,12 @@ fun OrdersScreen(paddingValues: PaddingValues) {
     }
 }
 
-@Composable
-fun OrderCard(
-    order: Order,
-    isExpanded: Boolean,
-    onExpandChange: (Boolean) -> Unit
-) {
-    var formattedStatus = ""
-    var statusColor = Color.Black
 
-    when(order.status) {
-        OrderStatus.QUOTATION -> {
-            formattedStatus = "Orçamento"
-            statusColor = QuotationStatus
-        }
-        OrderStatus.CONFIRMED -> {
-            formattedStatus = "Confirmado"
-            statusColor = ConfirmedStatus
-        }
-        OrderStatus.IN_PRODUCTION -> {
-            formattedStatus = "Em Produção"
-            statusColor = InProductionStatus
-        }
-        OrderStatus.FINISHED -> {
-            formattedStatus = "Finalizado"
-            statusColor = FinishedStatus
-        }
-        OrderStatus.DELIVERED -> {
-            formattedStatus = "Entregue"
-            statusColor = DeliveredStatus
-        }
-        OrderStatus.CANCELLED -> {
-            formattedStatus = "Cancelado"
-            statusColor = CancelledStatus
-        }
-    }
-
-    if(isExpanded) {
-        Column(
-            modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
-                .border(1.dp, Primary, RoundedCornerShape(15.dp))
-                .width(328.dp)
-                .padding(12.dp)
-        ) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = order.title,
-                    color = Primary,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
-                )
-
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowUp,
-                    contentDescription = null,
-                    modifier = Modifier
-                        .size(40.dp)
-                        .clickable { onExpandChange(false) }
-                )
-            }
-
-            Divider(color = Color.White)
-
-            Text(
-                text = order.description,
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.Bold,
-                textAlign = TextAlign.Justify,
-                maxLines = 5,
-                overflow = TextOverflow.Ellipsis,
-                modifier = Modifier.padding(vertical = 4.dp)
-            )
-
-            Divider(color = Color.White)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Text(
-                    text = "Valor: R$${order.price}",
-                    color = ValueColor,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold
-                )
-
-                Text(
-                    text = "Status: $formattedStatus",
-                    color = statusColor,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold
-                )
-            }
-
-            Divider(color = Color.White)
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Text(
-                    text = order.orderDate,
-                    color = BrownColor,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(100.dp)
-                )
-
-                Text(
-                    text = order.deliverDate,
-                    color = Primary,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(100.dp)
-                )
-
-                Box {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null,
-                            tint = InProductionStatus,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(Color.Black.copy(alpha = 0.5f))
-                                .border(1.dp, Color.White, RoundedCornerShape(5.dp))
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = CancelledStatus,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(Color.Black.copy(alpha = 0.8f))
-                                .border(1.dp, Color.White, RoundedCornerShape(5.dp))
-                        )
-                    }
-                }
-            }
-
-            Divider(color = Color.White, modifier = Modifier.padding(bottom = 8.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .border(1.dp, Primary, RoundedCornerShape(15.dp))
-                        .padding(vertical = 4.dp, horizontal = 12.dp)
-                        .clickable {
-                            // NEXT STATUS
-                        }
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.next_status_text),
-                        color = Primary,
-                        fontFamily = InterFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        modifier = Modifier.padding(end = 8.dp)
-                    )
-
-                    Icon(
-                        painter = painterResource(id = R.drawable.next_custom_icon),
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(40.dp)
-                    )
-                }
-            }
-        }
-    } else {
-        Row(
-            modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
-                .border(1.dp, Primary, RoundedCornerShape(15.dp))
-                .width(328.dp)
-                .padding(12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(
-                    text = order.title,
-                    color = Primary,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 20.sp,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Circle,
-                        contentDescription = null,
-                        tint = statusColor,
-                        modifier = Modifier.size(12.dp)
-                    )
-
-                    Text(
-                        text = formattedStatus,
-                        color = statusColor,
-                        fontFamily = InterFontFamily,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 20.sp,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
-                }
-
-                Text(
-                    text = "Entrega: ${order.deliverDate}",
-                    color = Color.White,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                )
-
-            }
-
-            Icon(
-                imageVector = Icons.Default.KeyboardArrowDown,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable { onExpandChange(true) }
-            )
-        }
-    }
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrdersFilterDialog(
+    ordersViewModel: OrdersViewModel,
     onDissmissDialog: () -> Unit
 ) {
     var dialogSelected by remember { mutableStateOf("") }
@@ -475,12 +302,10 @@ fun OrdersFilterDialog(
     var filterResult by remember { mutableStateOf("Selecione um filtro") }
 
     LaunchedEffect(selectedDate, selectedStatus) {
-        filterResult = if(selectedDate.isNotEmpty()) {
-             "Data: $selectedDate"
-        } else if(selectedStatus != "Selecione um status") {
-            "Status: $selectedStatus"
-        } else {
-            "Selecione um filtro"
+        filterResult = when {
+            selectedDate.isNotEmpty() -> "Data: $selectedDate"
+            selectedStatus != "Selecione um status" -> "Status: $selectedStatus"
+            else -> "Selecione um filtro"
         }
     }
 
@@ -555,8 +380,6 @@ fun OrdersFilterDialog(
                                     selectedDate = millis.toBrazillianDateFormat()
                                 }
                                 showDatePickerDialog = false
-                                Log.i("#-#TESTE#-#", "selectedDate: $selectedDate")
-                                // Pass selectedDate to viewmodel to show in Screen
                             },
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Primary
@@ -619,6 +442,7 @@ fun OrdersFilterDialog(
                             ),
                             colors = colors,
                             singleLine = true,
+                            readOnly = true,
                             keyboardOptions = KeyboardOptions.Default.copy(
                                 imeAction = ImeAction.None
                             ),
@@ -696,7 +520,7 @@ fun OrdersFilterDialog(
                 width = 200.dp,
                 modifier = Modifier.padding(top = 8.dp)
             ) {
-                // Send value to viewmodel to get in orders screen
+                ordersViewModel.updateFilterResult(newResult = filterResult)
                 onDissmissDialog()
             }
         }
@@ -713,29 +537,12 @@ fun OrdersScreenPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun OrderCardPreview() {
-    ConfectionaryAdminTheme {
-        Column {
 
-            ordersMock.forEach {
-                OrderCard(
-                    order = it,
-                    isExpanded = false,
-                    onExpandChange = {}
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-            }
-        }
-    }
-}
 
 @Preview
 @Composable
 fun OrdersFilterDialogPreview() {
     ConfectionaryAdminTheme {
-        OrdersFilterDialog() {}
+        OrdersFilterDialog(ordersViewModel = viewModel()) {}
     }
 }

@@ -4,7 +4,7 @@ import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class MainScreenViewModel : ViewModel() {
+class MainViewModel : ViewModel() {
 
     private var _showChooseWhatWillCreateDialog = MutableStateFlow(false)
     val showChooseWhatWillCreateDialog = _showChooseWhatWillCreateDialog.asStateFlow()

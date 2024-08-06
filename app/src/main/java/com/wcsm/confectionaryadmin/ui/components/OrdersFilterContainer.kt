@@ -21,10 +21,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
+import com.wcsm.confectionaryadmin.ui.theme.GrayColor
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 
 @Composable
 fun OrdersFilterContainer(
+    text: String?,
     modifier: Modifier = Modifier,
     onClickFilterContainer: () -> Unit
 ) {
@@ -39,14 +41,15 @@ fun OrdersFilterContainer(
     ) {
         Icon(
             imageVector = Icons.Default.FilterAlt,
-            contentDescription = null
+            contentDescription = null,
+            tint = GrayColor
         )
 
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = stringResource(id = R.string.filter_field_description),
-            color = Primary
+            text = text ?: stringResource(id = R.string.filter_field_description),
+            color = GrayColor
         )
     }
 }
@@ -55,6 +58,6 @@ fun OrdersFilterContainer(
 @Composable
 fun OrdersFilterContainerPreview() {
     ConfectionaryAdminTheme {
-        OrdersFilterContainer {}
+        OrdersFilterContainer(text = null) {}
     }
 }
