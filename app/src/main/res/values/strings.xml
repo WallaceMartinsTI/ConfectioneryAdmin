@@ -88,6 +88,21 @@
     <string name="gender_female">Feminino</string>
     <string name="gender_other">Outros</string>
 
+    <!-- Months -->
+    <string name="month_title">Selecione o mês e ano</string>
+    <string name="month_january">Janeiro</string>
+    <string name="month_february">Fevereiro</string>
+    <string name="month_march">Março</string>
+    <string name="month_april">Abril</string>
+    <string name="month_may">Maio</string>
+    <string name="month_june">Junho</string>
+    <string name="month_july">Julho</string>
+    <string name="month_august">Agosto</string>
+    <string name="month_september">Setembro</string>
+    <string name="month_october">Outubro</string>
+    <string name="month_november">Novembro</string>
+    <string name="month_december">Dezembro</string>
+
     <!-- Others -->
     <string name="choose_an_option_below">Escolha uma das opções\nabaixo:</string>
     <string name="filter_field_description">Filtrar por data ou status</string>

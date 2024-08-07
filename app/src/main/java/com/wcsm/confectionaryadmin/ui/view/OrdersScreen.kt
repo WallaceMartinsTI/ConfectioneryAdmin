@@ -2,7 +2,6 @@ package com.wcsm.confectionaryadmin.ui.view
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,34 +22,26 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
-import androidx.compose.material.icons.filled.Circle
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.DatePicker
-import androidx.compose.material3.DatePickerDefaults
-import androidx.compose.material3.DatePickerDialog
-import androidx.compose.material3.DateRangePicker
 import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberDateRangePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,14 +51,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,22 +71,15 @@ import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
-import com.wcsm.confectionaryadmin.ui.theme.BrownColor
-import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
-import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
-import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.LightDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
-import com.wcsm.confectionaryadmin.ui.theme.ValueColor
-import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
+import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
+import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
+import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 val ordersMock = listOf(
@@ -285,8 +267,6 @@ fun OrdersScreen(
     }
 }
 
-
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun OrdersFilterDialog(
@@ -296,7 +276,6 @@ fun OrdersFilterDialog(
     var dialogSelected by remember { mutableStateOf("") }
 
     var showDatePickerDialog by remember { mutableStateOf(false) }
-    val datePickerState = rememberDatePickerState()
     var selectedDate by remember { mutableStateOf("") }
 
     var statusDropdownExpanded by remember { mutableStateOf(false) }
@@ -372,41 +351,13 @@ fun OrdersFilterDialog(
             }
 
             if(dialogSelected == "DATA" && showDatePickerDialog) {
-                DatePickerDialog(
-                    onDismissRequest = {
-                        showDatePickerDialog = false
-                    },
-                    confirmButton = {
-                        Button(
-                            onClick = {
-                                datePickerState.selectedDateMillis?.let { millis ->
-                                    selectedDate = millis.toBrazillianDateFormat()
-                                }
-                                showDatePickerDialog = false
-                            },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = Primary
-                            )
-                        ) {
-                            Text(text = stringResource(id = R.string.choose_date))
-                        }
-                    }
-                ) {
-                    DatePicker(
-                        state = datePickerState,
-                        showModeToggle = false,
-                        colors = DatePickerDefaults.colors(
-                            headlineContentColor = Primary,
-                            weekdayContentColor = Primary,
-                            currentYearContentColor = Primary,
-                            selectedYearContainerColor = Primary,
-                            selectedDayContainerColor = Primary,
-                            todayContentColor = Primary,
-                            todayDateBorderColor = Primary
-                        )
-                    )
+                MonthYearPickerDialog(
+                    onDissmissDialog = { showDatePickerDialog = false }
+                ) { month, year ->  
+                    selectedDate = "$month/$year"
                 }
             }
+
             if(dialogSelected == "STATUS") {
                 val colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = TextFieldBackground,
@@ -537,6 +488,169 @@ fun OrdersFilterDialog(
     }
 }
 
+@Composable
+fun MonthYearPickerDialog(
+    onDissmissDialog: () -> Unit,
+    onMonthYearSelected: (month: String, year: Int) -> Unit
+) {
+    val monthList = listOf(
+        stringResource(id = R.string.month_january), stringResource(id = R.string.month_february),
+        stringResource(id = R.string.month_march), stringResource(id = R.string.month_april),
+        stringResource(id = R.string.month_may), stringResource(id = R.string.month_june),
+        stringResource(id = R.string.month_july), stringResource(id = R.string.month_august),
+        stringResource(id = R.string.month_september), stringResource(id = R.string.month_october),
+        stringResource(id = R.string.month_november), stringResource(id = R.string.month_december)
+    )
+
+    val month by remember { mutableStateOf(getCurrentMonth(ptBr = true)) }
+    var monthIndex by remember {
+        mutableIntStateOf(monthList.indexOf(capitalizeFirstLetter(month)))
+    }
+
+    var year by remember { mutableIntStateOf(getCurrentYear()) }
+
+    Dialog(
+        onDismissRequest = { onDissmissDialog() }
+    ) {
+        Column(
+            modifier = Modifier
+                .width(500.dp)
+                .clip(RoundedCornerShape(15.dp))
+                .background(brush = InvertedAppBackground)
+                .padding(12.dp)
+            ,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.month_title),
+                color = Color.White,
+                fontFamily = InterFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 24.sp
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color = Primary)
+                        .width(60.dp)
+                        .height(40.dp)
+                        .clickable {
+                            if (monthIndex == 0) {
+                                monthIndex = 11
+                            } else {
+                                monthIndex--
+                            }
+                        }
+                )
+
+                Text(
+                    text = monthList[monthIndex],
+                    color = Primary,
+                    textAlign = TextAlign.Center,
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
+                )
+
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color = Primary)
+                        .width(60.dp)
+                        .height(40.dp)
+                        .clickable {
+                            if (monthIndex == 11) {
+                                monthIndex = 0
+                            } else {
+                                monthIndex++
+                            }
+                        }
+                )
+            }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp, horizontal = 24.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color = Primary)
+                        .width(60.dp)
+                        .height(40.dp)
+                        .clickable { year-- }
+                )
+
+                Text(
+                    text = year.toString(),
+                    color = Primary,
+                    textAlign = TextAlign.Center,
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
+                )
+
+                Icon(
+                    imageVector = Icons.Default.KeyboardArrowRight,
+                    contentDescription = null,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(color = Primary)
+                        .width(60.dp)
+                        .height(40.dp)
+                        .clickable { year++ }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceAround
+            ) {
+                PrimaryButton(
+                    text = "Cancelar",
+                    width = 100.dp
+                ) {
+                    onDissmissDialog()
+                }
+
+                PrimaryButton(
+                    text = "Escolher data",
+                    width = 150.dp
+                ) {
+                    onMonthYearSelected(monthList[monthIndex], year)
+                    onDissmissDialog()
+                }
+            }
+        }
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun OrdersScreenPreview() {
@@ -546,12 +660,21 @@ private fun OrdersScreenPreview() {
     }
 }
 
-
-
 @Preview
 @Composable
 private fun OrdersFilterDialogPreview() {
     ConfectionaryAdminTheme {
         OrdersFilterDialog(ordersViewModel = viewModel()) {}
+    }
+}
+
+@Preview
+@Composable
+fun MonthYearPickerDialogPreview() {
+    ConfectionaryAdminTheme {
+        MonthYearPickerDialog(
+            onDissmissDialog = {},
+            onMonthYearSelected = { _, _ -> }
+        )
     }
 }
