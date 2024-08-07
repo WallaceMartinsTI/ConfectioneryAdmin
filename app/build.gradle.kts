@@ -97,6 +97,10 @@ dependencies {
     // Firebase Firestore
     //implementation("com.google.firebase:firebase-firestore-ktx")
 
+    // Room
+    implementation("androidx.room:room-ktx:2.6.0")
+    kapt("androidx.room:room-compiler:2.6.0")
+
     // Hilt
     implementation("com.google.dagger:hilt-android:2.48")
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
