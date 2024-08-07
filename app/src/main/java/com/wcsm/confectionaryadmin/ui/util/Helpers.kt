@@ -1,9 +1,11 @@
 package com.wcsm.confectionaryadmin.ui.util
 
 import android.os.Build
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.format.TextStyle
 import java.util.Calendar
+import java.util.Date
 import java.util.Locale
 
 fun getCurrentYear(): Int {
@@ -64,4 +66,16 @@ fun getStartAndEndOfMonth(month: Int, year: Int): Pair<Long, Long> {
     val endOfMonth = calendar.timeInMillis
 
     return Pair(startOfMonth, endOfMonth)
+}
+
+fun convertStringToDateMillis(dateString: String): Long {
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val date = dateFormat.parse(dateString)
+    return date?.time ?: 1577847600000 // 01/01/2020 00:00
+}
+
+fun convertMillisToString(millis: Long): String {
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val date = Date(millis)
+    return dateFormat.format(date)
 }

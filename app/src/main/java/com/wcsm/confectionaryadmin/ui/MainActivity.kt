@@ -24,7 +24,9 @@ import com.wcsm.confectionaryadmin.ui.view.LoginScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.StarterScreen
 import com.wcsm.confectionaryadmin.ui.view.UserRegisterScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {

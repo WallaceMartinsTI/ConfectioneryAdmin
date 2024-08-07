@@ -1,9 +1,21 @@
 package com.wcsm.confectionaryadmin.data.repository
 
+import android.util.Log
 import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.model.Order
+import javax.inject.Inject
 
-class OrderRepositoryImpl(private val orderDao: OrderDao) : OrderRepository {
+class OrderRepositoryImpl @Inject constructor(
+    private val orderDao: OrderDao
+) : OrderRepository {
+    override suspend fun getAllOrders(): List<Order> {
+        return orderDao.getAllOrders()
+    }
+
+    override suspend fun insertOrder(order: Order) {
+        Log.i("#-# TESTE #-#", "REPOSITORY IMPL order recebida: $order")
+        orderDao.insertOrder(order)
+    }
 
     override suspend fun getOrdersByOrderDateFilteredByMonthAndYear(
         startOfMonth: Long,

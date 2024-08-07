@@ -89,6 +89,7 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
+import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
 import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -281,7 +282,10 @@ fun CustomersScreen(paddingValues: PaddingValues) {
                 contentPadding = paddingValues
             ) {
                 items(customersMock) {
-                    MinimizedCustomerCard(customer = it) {
+                    MinimizedCustomerCard(
+                        customer = it,
+                        expandIcon = true
+                    ) {
                         selectedCustomer = it
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -302,7 +306,7 @@ fun CustomersScreen(paddingValues: PaddingValues) {
 }
 
 @Composable
-fun FilterCustomer(
+private fun FilterCustomer(
     leadingIcon: ImageVector,
     trailingIcon: ImageVector?,
     value: String,
@@ -360,54 +364,6 @@ fun FilterCustomer(
             }
         }
     )
-}
-
-@Composable
-fun MinimizedCustomerCard(
-    customer: Customer,
-    onExpandClick: () -> Unit
-) {
-    val customerIcon = when(customer.gender) {
-        "Masculino" -> painterResource(id = R.drawable.male)
-        "Feminino" -> painterResource(id = R.drawable.female)
-        else -> painterResource(id = R.drawable.others)
-    }
-
-    Row(
-        modifier = Modifier
-            .width(300.dp)
-            .height(60.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .background(brush = InvertedAppBackground)
-            .border(1.dp, Primary, RoundedCornerShape(15.dp))
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Icon(
-            painter = customerIcon,
-            contentDescription = null,
-            modifier = Modifier.size(40.dp)
-        )
-
-        Text(
-            text = customer.name,
-            color = Primary,
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-
-        Icon(
-            painter = painterResource(id = R.drawable.expand_icon),
-            contentDescription = null,
-            modifier = Modifier
-                .size(40.dp)
-                .clickable {
-                    onExpandClick()
-                }
-        )
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -928,13 +884,7 @@ private fun FilterCustomerPreview() {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun MinimizedCustomerCardPreview() {
-    ConfectionaryAdminTheme {
-        MinimizedCustomerCard(customersMock[0]) {}
-    }
-}
+
 
 @Preview(showBackground = true)
 @Composable

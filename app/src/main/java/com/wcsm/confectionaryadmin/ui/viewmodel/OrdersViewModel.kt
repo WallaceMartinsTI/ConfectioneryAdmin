@@ -4,16 +4,17 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
+import com.wcsm.confectionaryadmin.data.repository.OrderRepositoryImpl
 import com.wcsm.confectionaryadmin.ui.util.getMonthFromStringToIndex
 import com.wcsm.confectionaryadmin.ui.util.getStartAndEndOfMonth
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class OrdersViewModel(
-    private val orderRepository: OrderRepository
-) : ViewModel() {
-
+//@HiltViewModel
+class OrdersViewModel : ViewModel() {
     private val _orders = MutableStateFlow<List<Order>>(emptyList())
     val orders = _orders.asStateFlow()
 
@@ -24,7 +25,7 @@ class OrdersViewModel(
         _filterResult.value = newResult
     }
 
-    fun getOrdersFilteredByMonthAndYear(
+    /*fun getOrdersFilteredByMonthAndYear(
         month: String,
         year: Int,
         isByDeliverDate: Boolean = false
@@ -47,5 +48,5 @@ class OrdersViewModel(
                 )
             }
         }
-    }
+    }*/
 }

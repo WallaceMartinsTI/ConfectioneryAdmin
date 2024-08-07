@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -36,7 +35,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -61,6 +59,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Order
@@ -78,6 +77,7 @@ import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
 import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
+import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
 import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
@@ -85,81 +85,90 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 val ordersMock = listOf(
     Order(
         id = 0,
+        customerId = 0,
         title = "Bolo Bento Cake",
         description = "Recheio de chocolate e mousse de morango",
         price = 120.50,
         status = OrderStatus.QUOTATION,
-        orderDate = "15/02/2024 16:30",
-        deliverDate = "20/02/2024 17:25"
+        orderDate = convertStringToDateMillis("15/02/2024 16:30") ,
+        deliverDate = convertStringToDateMillis("20/02/2024 17:25")
     ),
     Order(
         id = 1,
+        customerId = 1,
         title = "Doce Brigadeiro 100u",
         description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
         price = 115.00,
         status = OrderStatus.CONFIRMED,
-        orderDate = "25/02/2024 12:30",
-        deliverDate = "28/02/2024 16:22"
+        orderDate = convertStringToDateMillis("25/02/2024 12:30"),
+        deliverDate = convertStringToDateMillis("28/02/2024 16:22")
     ),
     Order(
         id = 2,
+        customerId = 2,
         title = "Bolo de Aniversário",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
         status = OrderStatus.IN_PRODUCTION,
-        orderDate = "28/03/2024 09:30",
-        deliverDate = "10/04/2024 13:15"
+        orderDate = convertStringToDateMillis("28/03/2024 09:30"),
+        deliverDate = convertStringToDateMillis("28/03/2024 09:30")
     ),
     Order(
         id = 3,
+        customerId = 3,
         title = "Bolo de Aniversário com nome meio grande vamos ver",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
         status = OrderStatus.DELIVERED,
-        orderDate = "28/03/2024 11:00",
-        deliverDate = "10/04/2024 16:00"
+        orderDate = convertStringToDateMillis("28/03/2024 11:00"),
+        deliverDate = convertStringToDateMillis("10/04/2024 16:00")
     ),
     Order(
         id = 0,
+        customerId = 0,
         title = "Bolo Bento Cake",
         description = "Recheio de chocolate e mousse de morango",
         price = 120.50,
         status = OrderStatus.QUOTATION,
-        orderDate = "15/02/2024 16:30",
-        deliverDate = "20/02/2024 17:25"
+        orderDate = convertStringToDateMillis("15/02/2024 16:30"),
+        deliverDate = convertStringToDateMillis("20/02/2024 17:25")
     ),
     Order(
         id = 1,
+        customerId = 1,
         title = "Doce Brigadeiro 100u",
         description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
         price = 115.00,
         status = OrderStatus.CONFIRMED,
-        orderDate = "25/02/2024 12:30",
-        deliverDate = "28/02/2024 16:22"
+        orderDate = convertStringToDateMillis("25/02/2024 12:30"),
+        deliverDate = convertStringToDateMillis("28/02/2024 16:22")
     ),
     Order(
         id = 2,
+        customerId = 2,
         title = "Bolo de Aniversário",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
         status = OrderStatus.IN_PRODUCTION,
-        orderDate = "28/03/2024 09:30",
-        deliverDate = "10/04/2024 13:15"
+        orderDate = convertStringToDateMillis("28/03/2024 09:30"),
+        deliverDate = convertStringToDateMillis("10/04/2024 13:15")
     ),
     Order(
         id = 3,
+        customerId = 3,
         title = "Bolo de Aniversário com nome meio grande vamos ver",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
         status = OrderStatus.DELIVERED,
-        orderDate = "28/03/2024 11:00",
-        deliverDate = "10/04/2024 16:00"
+        orderDate = convertStringToDateMillis("28/03/2024 11:00"),
+        deliverDate = convertStringToDateMillis("10/04/2024 16:00")
     )
 )
 
 @Composable
 fun OrdersScreen(
     paddingValues: PaddingValues,
+    //ordersViewModel: OrdersViewModel = hiltViewModel()
     ordersViewModel: OrdersViewModel = viewModel()
 ) {
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }

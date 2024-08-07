@@ -51,6 +51,7 @@ import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
+import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
@@ -167,7 +168,7 @@ fun OrderCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = order.orderDate,
+                    text = convertMillisToString(order.orderDate),
                     color = BrownColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -176,7 +177,7 @@ fun OrderCard(
                 )
 
                 Text(
-                    text = order.deliverDate,
+                    text = convertMillisToString(order.deliverDate),
                     color = Primary,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
@@ -291,7 +292,7 @@ fun OrderCard(
                 }
 
                 Text(
-                    text = "Entrega: ${order.deliverDate}",
+                    text = "Entrega: ${convertMillisToString(order.deliverDate)}",
                     color = Color.White,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,

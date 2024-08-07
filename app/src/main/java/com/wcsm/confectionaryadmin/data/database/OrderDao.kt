@@ -1,14 +1,25 @@
 package com.wcsm.confectionaryadmin.data.database
 
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 import com.wcsm.confectionaryadmin.data.model.Order
 
+@Dao
 interface OrderDao {
 
-    @Query("SELECT * FROM orders WHERE orderDate BETWEEN :startOfMonth AND :endOfMonth")
-    fun getOrdersByOrderDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
+    @Query("SELECT * FROM orders")
+    suspend fun getAllOrders(): List<Order>
 
-    @Query("SELECT * FROM orders WHERE deliverDate BETWEEN :startOfMonth AND :endOfMonth")
-    fun getOrdersByDeliverDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertOrder(order: Order)
+
+    @Query("SELECT * FROM orders WHERE order_date BETWEEN :startOfMonth AND :endOfMonth")
+    suspend fun getOrdersByOrderDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
+
+    @Query("SELECT * FROM orders WHERE deliver_date BETWEEN :startOfMonth AND :endOfMonth")
+    suspend fun getOrdersByDeliverDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
 
 }
