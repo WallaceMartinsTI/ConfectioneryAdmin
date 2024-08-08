@@ -1,12 +1,20 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
 import android.util.Log
+import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.CreateOrderState
+import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
+import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
+import com.wcsm.confectionaryadmin.ui.util.getCurrentHourAndMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,37 +22,131 @@ import javax.inject.Inject
 class CreateOrderViewModel @Inject constructor(
     private val orderRepository: OrderRepository
 )  : ViewModel() {
+    private val _orderState = MutableStateFlow(CreateOrderState())
+    val orderState = _orderState.asStateFlow()
 
-    private val _orders = MutableStateFlow<List<Order>>(emptyList())
-    val orders = _orders
+    private val _newOrderCreated = MutableStateFlow(false)
+    val newOrderCreated = _newOrderCreated.asStateFlow()
 
-    init {
-        Log.i("#-# TESTE #-#", "VIEWMODEL - init")
-        getAllOrders()
+    fun updateCreateOrderState(newState: CreateOrderState) {
+        _orderState.value = newState
     }
 
-    private fun getAllOrders() {
-        viewModelScope.launch {
-            try {
-                val orders = orderRepository.getAllOrders()
-                _orders.value = orders
-            } catch (e: Exception) {
-                Log.i("#-# TESTE #-#", "VIEWMODEL - Caiu no CATCH")
-                e.printStackTrace()
-            }
+    fun createNewOrder() {
+        _newOrderCreated.value = false
+
+        if(isAllFieldValid()) {
+            val currentHourAndMinute = getCurrentHourAndMinutes()
+            val newOrder = Order(
+                customerId = orderState.value.customer!!.id,
+                title = orderState.value.orderName,
+                description = orderState.value.orderDescription,
+                price = 0.0,
+                status = orderState.value.status,
+                orderDate = convertStringToDateMillis(
+                    dateString = "${orderState.value.orderDate} $currentHourAndMinute"
+                ),
+                deliverDate = convertStringToDateMillis(
+                    dateString = "${orderState.value.deliverDate} 00:00"
+                )
+            )
+
+            saveOrderToDatabase(order = newOrder)
         }
     }
 
-    fun saveOrder(order: Order) {
-        Log.i("#-# TESTE #-#", "VIEWMODEL - Order recebida: $order")
+    private fun saveOrderToDatabase(order: Order) {
         viewModelScope.launch {
             try {
                 orderRepository.insertOrder(order)
+                _newOrderCreated.value = true
             } catch (e: Exception) {
-                Log.i("#-# TESTE #-#", "VIEWMODEL - Caiu no CATCH")
                 e.printStackTrace()
             }
         }
     }
 
+    private fun isAllFieldValid(): Boolean {
+        val customer = orderState.value.customer
+        val orderName = orderState.value.orderName
+        val orderDescription = orderState.value.orderDescription
+
+        return if(!validateCustomer(customer)) {
+            false
+        } else if(!validateOrderName(orderName)) {
+            false
+        } else if(!validateOrderDescription(orderDescription)) {
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun validateOrderDescription(orderDescription: String): Boolean {
+        val newState = _orderState.value.copy(
+            orderDescriptionErrorMessage = null
+        )
+        updateCreateOrderState(newState)
+
+        return if(orderDescription.isEmpty()) {
+            updateCreateOrderState(
+                newState.copy(
+                    orderDescriptionErrorMessage = "Digite uma descrição."
+                )
+            )
+            false
+        } else if(orderDescription.length < 3 || orderDescription.length > 100) {
+            updateCreateOrderState(
+                newState.copy(
+                    orderDescriptionErrorMessage = "Digite uma descrição entre 3 e 100 caracteres."
+                )
+            )
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun validateOrderName(orderName: String): Boolean {
+        val newState = _orderState.value.copy(
+            orderNameErrorMessage = null
+        )
+        updateCreateOrderState(newState)
+
+        return if(orderName.isEmpty()) {
+            updateCreateOrderState(
+                newState.copy(
+                    orderNameErrorMessage = "Digite o nome do pedido."
+                )
+            )
+            false
+        } else if(orderName.length < 3 || orderName.length > 40) {
+            updateCreateOrderState(
+                newState.copy(
+                    orderNameErrorMessage = "Digite um nome entre 3 e 40 caracteres."
+                )
+            )
+            false
+        } else {
+            true
+        }
+    }
+
+    private fun validateCustomer(customer: Customer?): Boolean {
+        val newState = _orderState.value.copy(
+            customerErrorMessage = null
+        )
+        updateCreateOrderState(newState)
+
+        return if(customer == null) {
+            updateCreateOrderState(
+                newState.copy(
+                    customerErrorMessage = "Selecione um cliente."
+                )
+            )
+            false
+        } else {
+            true
+        }
+    }
 }

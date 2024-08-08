@@ -58,6 +58,7 @@ import com.wcsm.confectionaryadmin.ui.view.ordersMock
 fun OrderCard(
     order: Order,
     isExpanded: Boolean,
+    onDelete: (order: Order) -> Unit,
     onExpandChange: (Boolean) -> Unit
 ) {
     var formattedStatus = ""
@@ -209,6 +210,7 @@ fun OrderCard(
                                 .clip(RoundedCornerShape(5.dp))
                                 .background(Color.Black.copy(alpha = 0.8f))
                                 .border(1.dp, Color.White, RoundedCornerShape(5.dp))
+                                .clickable { onDelete(order) }
                         )
                     }
                 }
@@ -292,6 +294,13 @@ fun OrderCard(
                 }
 
                 Text(
+                    text = "Pedido: ${convertMillisToString(order.orderDate)}",
+                    color = Color.White,
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
+
+                Text(
                     text = "Entrega: ${convertMillisToString(order.deliverDate)}",
                     color = Color.White,
                     fontFamily = InterFontFamily,
@@ -321,6 +330,7 @@ private fun OrderCardPreview() {
                 OrderCard(
                     order = it,
                     isExpanded = false,
+                    onDelete = {},
                     onExpandChange = {}
                 )
 

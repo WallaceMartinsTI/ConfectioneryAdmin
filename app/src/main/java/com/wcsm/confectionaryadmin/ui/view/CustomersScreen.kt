@@ -849,6 +849,7 @@ fun CustomerOrders(
             items(customer.orders) {
                 OrderCard(
                     order = it,
+                    onDelete = {},
                     isExpanded = expandedStates[it.id] ?: false
                 ) { expanded ->
                     expandedStates[it.id] = expanded

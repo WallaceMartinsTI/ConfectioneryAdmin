@@ -1,8 +1,10 @@
 package com.wcsm.confectionaryadmin.ui.util
 
 import android.os.Build
+import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.format.TextStyle
 import java.util.Calendar
 import java.util.Date
@@ -79,3 +81,42 @@ fun convertMillisToString(millis: Long): String {
     val date = Date(millis)
     return dateFormat.format(date)
 }
+
+fun getStatusFromString(status: String): OrderStatus {
+    return when (status) {
+        "Orçamento" -> OrderStatus.QUOTATION
+        "Confirmado" -> OrderStatus.CONFIRMED
+        "Em Produção" -> OrderStatus.IN_PRODUCTION
+        "Finalizado" -> OrderStatus.FINISHED
+        "Entregue" -> OrderStatus.DELIVERED
+        else -> OrderStatus.CANCELLED
+    }
+}
+
+fun getStringStatusFromStatus(status: OrderStatus): String {
+    return when (status) {
+        OrderStatus.QUOTATION -> "Orçamento"
+        OrderStatus.CONFIRMED -> "Confirmado"
+        OrderStatus.IN_PRODUCTION -> "Em Produção"
+        OrderStatus.FINISHED -> "Finalizado"
+        OrderStatus.DELIVERED -> "Entregue"
+        else -> "Cancelado"
+    }
+}
+
+fun getCurrentHourAndMinutes(): String {
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        val currentTime = LocalTime.now()
+        val currentHour = currentTime.hour
+        val currentMinute = currentTime.minute
+        "$currentHour:$currentMinute"
+    } else {
+        val calendar = Calendar.getInstance()
+        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
+        val currentMinute = calendar.get(Calendar.MINUTE)
+        "$currentHour:$currentMinute"
+    }
+}
+
+
+

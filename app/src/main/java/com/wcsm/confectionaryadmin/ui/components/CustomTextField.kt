@@ -49,6 +49,7 @@ fun CustomTextField(
     imeAction: ImeAction = ImeAction.Default,
     singleLine: Boolean = true,
     readOnly: Boolean = false,
+    maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     errorMessage: String?,
     leadingIcon: @Composable() (() -> Unit)? = null,
@@ -98,6 +99,7 @@ fun CustomTextField(
         colors = colors,
         singleLine = singleLine,
         readOnly = readOnly,
+        maxLines = maxLines,
         keyboardOptions = KeyboardOptions.Default.copy(
             keyboardType = keyboardType,
             imeAction = imeAction
@@ -107,8 +109,7 @@ fun CustomTextField(
         visualTransformation = visualTransformation,
         isError = isError,
     )
-
-    if(errorMessage != null) {
+    errorMessage?.let {
         CustomErrorMessage(errorMessage = errorMessage)
     }
 }

@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -86,7 +87,7 @@ val ordersMock = listOf(
     Order(
         id = 0,
         customerId = 0,
-        title = "Bolo Bento Cake",
+        title = "Bolo decenouro para o cliente com cobertura pr",
         description = "Recheio de chocolate e mousse de morango",
         price = 120.50,
         status = OrderStatus.QUOTATION,
@@ -168,9 +169,11 @@ val ordersMock = listOf(
 @Composable
 fun OrdersScreen(
     paddingValues: PaddingValues,
-    //ordersViewModel: OrdersViewModel = hiltViewModel()
-    ordersViewModel: OrdersViewModel = viewModel()
+    ordersViewModel: OrdersViewModel = hiltViewModel()
 ) {
+    val orders by ordersViewModel.orders.collectAsState()
+    Log.i("#-# TESTE #-#", "orders: $orders")
+
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
     var showFilterDialog by remember { mutableStateOf(false) }
@@ -252,10 +255,13 @@ fun OrdersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(ordersMock) {
+                items(orders) {
                     OrderCard(
                         order = it,
                         isExpanded = expandedStates[it.id] ?: false,
+                        onDelete = { order ->
+                            ordersViewModel.deleteOrder(order)
+                        },
                         onExpandChange = { expanded ->
                             expandedStates[it.id] = expanded
                         }
