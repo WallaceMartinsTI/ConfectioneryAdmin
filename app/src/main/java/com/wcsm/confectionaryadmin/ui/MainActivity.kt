@@ -20,6 +20,7 @@ import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.navigation.NavigationHolder
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.view.CreateOrderScreen
 import com.wcsm.confectionaryadmin.ui.view.LoginScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.StarterScreen
@@ -79,8 +80,16 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Screen.NavigationHolder.route) {
-                        NavigationHolder()
+                        NavigationHolder(navController = navController)
                     }
+
+                    composable(route = Screen.CreateOrder.route) {
+                        CreateOrderScreen(navController = navController)
+                    }
+
+                    /*composable(route = Screen.CreateCustomers.route) {
+                        CustomersScreen(paddingValues = paddingValues)
+                    }*/
                 }
             }
         }

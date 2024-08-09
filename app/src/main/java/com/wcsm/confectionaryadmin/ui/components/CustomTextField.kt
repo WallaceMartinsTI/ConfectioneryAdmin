@@ -110,7 +110,10 @@ fun CustomTextField(
         isError = isError,
     )
     errorMessage?.let {
-        CustomErrorMessage(errorMessage = errorMessage)
+        CustomErrorMessage(
+            errorMessage = errorMessage,
+            width = width
+        )
     }
 }
 

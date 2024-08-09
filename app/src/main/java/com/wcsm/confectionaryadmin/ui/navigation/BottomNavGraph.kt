@@ -4,6 +4,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -28,7 +29,6 @@ fun BottomNavGraph(
     ) {
         composable(route = Screen.Main.route) {
             MainScreen(
-                navController = navController,
                 paddingValues = paddingValues,
                 mainViewModel = mainViewModel
             )
@@ -41,13 +41,5 @@ fun BottomNavGraph(
         composable(route = Screen.Customers.route) {
             CustomersScreen(paddingValues = paddingValues)
         }
-
-        composable(route = Screen.CreateOrder.route) {
-            CreateOrderScreen(navController = navController)
-        }
-
-        /*composable(route = Screen.CreateCustomers.route) {
-            CustomersScreen(paddingValues = paddingValues)
-        }*/
     }
 }

@@ -65,7 +65,6 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @Composable
 fun MainScreen(
-    navController: NavController,
     paddingValues: PaddingValues,
     mainViewModel: MainViewModel
 ) {
@@ -150,26 +149,6 @@ fun MainScreen(
                     text = stringResource(id = R.string.status_cancelled),
                     color = CancelledStatus,
                     quantity = 3
-                )
-            }
-        }
-
-        if(showChooseWhatWillCreateDialog) {
-            Dialog(
-                onDismissRequest = {
-                    mainViewModel.changeShowChooseWhatWillCreateDialog(status = false)
-                }
-            ) {
-                ChooseWhatWillCreateDialog(
-                    modifier = Modifier.align(Alignment.Center),
-                    onCreateOrderOptionClick = {
-                        mainViewModel.changeShowChooseWhatWillCreateDialog(status = false)
-                        navController.navigate(Screen.CreateOrder.route)
-                    },
-                    onCreateCustomerOptionClick = {},
-                    onDissmissDialog = {
-                        mainViewModel.changeShowChooseWhatWillCreateDialog(status = false)
-                    }
                 )
             }
         }
@@ -278,11 +257,9 @@ fun ChooseWhatWillCreateButton(
 @Composable
 private fun MainScreenPreview() {
     ConfectionaryAdminTheme {
-        val navController = rememberNavController()
         val paddingValues = PaddingValues()
 
         MainScreen(
-            navController = navController,
             paddingValues = paddingValues,
             mainViewModel = viewModel()
         )

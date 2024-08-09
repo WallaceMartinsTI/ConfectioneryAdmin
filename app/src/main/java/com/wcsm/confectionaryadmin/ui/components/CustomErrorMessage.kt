@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
@@ -30,6 +31,7 @@ import com.wcsm.confectionaryadmin.ui.theme.LightRed
 
 @Composable
 fun CustomErrorMessage(
+    width: Dp = 280.dp,
     errorMessage: String,
     errorIcon: @Composable (() -> Unit) = {
         Icon(
@@ -42,7 +44,7 @@ fun CustomErrorMessage(
     Row(
         modifier = Modifier
             .padding(top = 4.dp)
-            .width(280.dp)
+            .width(width)
             .clip(RoundedCornerShape(10.dp))
             .background(LightRed)
             .padding(8.dp),

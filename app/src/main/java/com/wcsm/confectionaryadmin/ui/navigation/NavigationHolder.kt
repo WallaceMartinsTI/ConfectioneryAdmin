@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.data.model.Screen
@@ -21,24 +22,18 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationHolder(
+    navController: NavController,
     mainViewModel: MainViewModel = viewModel()
 ) {
-    val navController = rememberNavController()
+    val navHostController = rememberNavController()
 
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val navBackStackEntry by navHostController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
 
     var icon: ImageVector? = null
     var onClick: (() -> Unit)? = {}
 
     when(currentDestination?.route) {
-        Screen.Main.route -> {
-            icon = Icons.Default.AddCircle
-            onClick = {
-                mainViewModel.changeShowChooseWhatWillCreateDialog(status = true)
-                Log.i("#-#TESTE#-#", "CLICOU no FAB - Main Screen")
-            }
-        }
         Screen.Orders.route -> {
             icon = Icons.Default.PlaylistAdd
             onClick = {
@@ -55,17 +50,19 @@ fun NavigationHolder(
     }
 
     Scaffold(
-        bottomBar = { CustomBottomAppBar(navController = navController) },
+        bottomBar = { CustomBottomAppBar(navController = navHostController) },
         floatingActionButton = {
-            if (icon != null && onClick != null) {
-                CustomFloatActionButton(icon = icon) {
-                    onClick()
+            if(currentDestination?.route != Screen.Main.route) {
+                if (icon != null && onClick != null) {
+                    CustomFloatActionButton(icon = icon) {
+                        onClick()
+                    }
                 }
             }
         }
     ) { paddingValues ->
         BottomNavGraph(
-            navController = navController,
+            navController = navHostController,
             mainViewModel = mainViewModel,
             paddingValues = paddingValues
         )
