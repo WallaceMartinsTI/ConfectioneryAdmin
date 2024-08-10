@@ -2,6 +2,8 @@ package com.wcsm.confectionaryadmin.ui.navigation
 
 import android.annotation.SuppressLint
 import android.util.Log
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.PersonAddAlt1
@@ -9,6 +11,7 @@ import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -19,10 +22,8 @@ import com.wcsm.confectionaryadmin.ui.components.CustomBottomAppBar
 import com.wcsm.confectionaryadmin.ui.components.CustomFloatActionButton
 import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
-@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun NavigationHolder(
-    navController: NavController,
     mainViewModel: MainViewModel = viewModel()
 ) {
     val navHostController = rememberNavController()
@@ -37,7 +38,7 @@ fun NavigationHolder(
         Screen.Orders.route -> {
             icon = Icons.Default.PlaylistAdd
             onClick = {
-                navController.navigate(Screen.CreateOrder.route)
+                navHostController.navigate(Screen.CreateOrder.route)
                 Log.i("#-#TESTE#-#", "CLICOU no FAB - Orders Screen")
             }
         }
@@ -49,22 +50,36 @@ fun NavigationHolder(
         }
     }
 
-    Scaffold(
-        bottomBar = { CustomBottomAppBar(navController = navHostController) },
-        floatingActionButton = {
-            if(currentDestination?.route != Screen.Main.route) {
-                if (icon != null && onClick != null) {
-                    CustomFloatActionButton(icon = icon) {
-                        onClick()
+    if(
+        currentDestination?.route == Screen.CreateOrder.route ||
+        currentDestination?.route == Screen.CreateCustomers.route
+    ) {
+        Column(
+            modifier = Modifier.fillMaxSize()
+        ) {
+            BottomNavGraph(
+                navController = navHostController,
+                mainViewModel = mainViewModel
+            )
+        }
+    } else {
+        Scaffold(
+            bottomBar = { CustomBottomAppBar(navController = navHostController) },
+            floatingActionButton = {
+                if(currentDestination?.route != Screen.Main.route) {
+                    if (icon != null && onClick != null) {
+                        CustomFloatActionButton(icon = icon) {
+                            onClick()
+                        }
                     }
                 }
             }
+        ) { paddingValues ->
+            BottomNavGraph(
+                navController = navHostController,
+                mainViewModel = mainViewModel,
+                paddingValues = paddingValues
+            )
         }
-    ) { paddingValues ->
-        BottomNavGraph(
-            navController = navHostController,
-            mainViewModel = mainViewModel,
-            paddingValues = paddingValues
-        )
     }
 }

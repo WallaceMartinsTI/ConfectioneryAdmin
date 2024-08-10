@@ -43,6 +43,7 @@
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>
+    <string name="textfield_label_valor">VALOR</string>
     <string name="textfield_label_order_name">PEDIDO</string>
     <string name="textfield_label_email">EMAIL</string>
     <string name="textfield_label_password">SENHA</string>
@@ -62,7 +63,7 @@
     <!-- TextField Placeholders -->
     <string name="textfield_placeholder_name">Digite seu nome</string>
     <string name="textfield_placeholder_order_name">Digite o nome do pedido</string>
-    <string name="textfield_placeholder_description">Descreva o pedido, como sabor, recheio, etc...</string>
+    <string name="textfield_placeholder_description">Descreva o pedido, como sabor, recheio, etc…</string>
     <string name="textfield_placeholder_email">Digite seu e-mail</string>
     <string name="textfield_placeholder_password">Digite sua senha</string>
     <string name="textfield_placeholder_confirm_password">Repita sua senha</string>

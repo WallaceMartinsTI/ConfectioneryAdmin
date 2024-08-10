@@ -10,4 +10,6 @@ data class CreateOrderState(
     val customerErrorMessage: String? = null,
     val orderNameErrorMessage: String? = null,
     val orderDescriptionErrorMessage: String? = null,
+    val orderDateErrorMessage: String? = null,
+    val deliverDateErrorMessage: String? = null
 )

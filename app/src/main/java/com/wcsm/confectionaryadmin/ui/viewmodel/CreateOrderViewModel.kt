@@ -70,12 +70,43 @@ class CreateOrderViewModel @Inject constructor(
         val customer = orderState.value.customer
         val orderName = orderState.value.orderName
         val orderDescription = orderState.value.orderDescription
+        val orderDate = orderState.value.orderDate
+        val deliverDate = orderState.value.deliverDate
 
         return if(!validateCustomer(customer)) {
             false
         } else if(!validateOrderName(orderName)) {
             false
         } else if(!validateOrderDescription(orderDescription)) {
+            false
+        } else if(!validateDateFields(orderDate, deliverDate)) {
+            false
+        }
+        else {
+            true
+        }
+    }
+
+    private fun validateDateFields(orderDate: String, deliverDate: String): Boolean {
+        val newState = _orderState.value.copy(
+            orderDateErrorMessage = null,
+            deliverDateErrorMessage = null
+        )
+        updateCreateOrderState(newState)
+
+        return if(orderDate.isEmpty()) {
+            updateCreateOrderState(
+                newState.copy(
+                    orderDateErrorMessage = "Selecione a data do pedido."
+                )
+            )
+            false
+        } else if(deliverDate.isEmpty()) {
+            updateCreateOrderState(
+                newState.copy(
+                    deliverDateErrorMessage = "Selecione a data da entrega."
+                )
+            )
             false
         } else {
             true

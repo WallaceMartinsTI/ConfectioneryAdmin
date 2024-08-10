@@ -1,16 +1,13 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,8 +19,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
@@ -40,7 +39,6 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
@@ -48,8 +46,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -57,16 +54,15 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
@@ -85,6 +81,7 @@ import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.util.CurrencyVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.getStatusFromString
 import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
@@ -99,23 +96,26 @@ fun CreateOrderScreen(
     val orderState by createOrderViewModel.orderState.collectAsState()
     val newOrderCreated by createOrderViewModel.newOrderCreated.collectAsState()
 
-    var stringStatus by remember {
+    var value by rememberSaveable { mutableStateOf("0") }
+
+    var stringStatus by rememberSaveable {
         mutableStateOf(getStringStatusFromStatus(orderState.status))
     }
 
-    var statusDropdownExpanded by remember { mutableStateOf(false) }
+    var statusDropdownExpanded by rememberSaveable { mutableStateOf(false) }
 
-    var orderDateShowDatePickerDialog by remember { mutableStateOf(false) }
+    var orderDateShowDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val orderDateDatePickerState = rememberDatePickerState()
-    var orderDateSelectedDate by remember { mutableStateOf("") }
+    var orderDateSelectedDate by rememberSaveable { mutableStateOf("") }
 
-    var deliverDateShowDatePickerDialog by remember { mutableStateOf(false) }
+    var deliverDateShowDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val deliverDateDatePickerState = rememberDatePickerState()
-    var deliverDateSelectedDate by remember { mutableStateOf("") }
+    var deliverDateSelectedDate by rememberSaveable { mutableStateOf("") }
 
-    var showCustomerChooser by remember { mutableStateOf(false) }
+    var showCustomerChooser by rememberSaveable { mutableStateOf(false) }
 
-    val focusRequester = remember { List(2) { FocusRequester() } }
+    val focusRequester = rememberSaveable { List(3) { FocusRequester() } }
+    val focusManager = LocalFocusManager.current
 
     val customBlur = if (showCustomerChooser) 8.dp else 0.dp
 
@@ -139,34 +139,38 @@ fun CreateOrderScreen(
         }
     }
 
-    LaunchedEffect(orderState.status) {
-        stringStatus = getStringStatusFromStatus(orderState.status)
-    }
-
     LaunchedEffect(newOrderCreated) {
         if(newOrderCreated) {
             navController.navigate(Screen.Orders.route)
         }
     }
 
-    LaunchedEffect(
-        orderState.customer,
-        orderState.orderName,
-        orderState.orderDescription
-    ) {
+    LaunchedEffect(orderState.status) {
+        stringStatus = getStringStatusFromStatus(orderState.status)
+    }
+
+    LaunchedEffect(orderState.customer) {
         if(orderState.customer != null) {
             createOrderViewModel.updateCreateOrderState(
                 orderState.copy(
                     customerErrorMessage = null
                 )
             )
-        } else if(orderState.orderName.isNotEmpty()) {
+        }
+    }
+
+    LaunchedEffect(orderState.orderName) {
+        if(orderState.orderName.length >= 3) {
             createOrderViewModel.updateCreateOrderState(
                 orderState.copy(
                     orderNameErrorMessage = null
                 )
             )
-        } else if(orderState.orderDescription.isNotEmpty()) {
+        }
+    }
+
+    LaunchedEffect(orderState.orderDescription) {
+        if(orderState.orderDescription.isNotEmpty()) {
             createOrderViewModel.updateCreateOrderState(
                 orderState.copy(
                     orderDescriptionErrorMessage = null
@@ -175,9 +179,29 @@ fun CreateOrderScreen(
         }
     }
 
-    // SCAFFOLD dentro de outro SCAFFOLD (Da Bottom Navigation)
+    LaunchedEffect(orderState.orderDate) {
+        if(orderState.orderDate.isNotEmpty()) {
+            createOrderViewModel.updateCreateOrderState(
+                orderState.copy(
+                    orderDateErrorMessage = null
+                )
+            )
+        }
+    }
+
+    LaunchedEffect(orderState.deliverDate) {
+        if(orderState.deliverDate.isNotEmpty()) {
+            createOrderViewModel.updateCreateOrderState(
+                orderState.copy(
+                    deliverDateErrorMessage = null
+                )
+            )
+        }
+    }
+
     Column(
         modifier = Modifier.fillMaxSize(),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomTopAppBar(
             title = stringResource(id = R.string.screen_title_create_order_screen),
@@ -187,16 +211,13 @@ fun CreateOrderScreen(
 
         Box(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxSize()
                 .blur(customBlur)
-                .background(AppBackground)
-                .border(1.dp, Color.Red),
+                .background(AppBackground),
             contentAlignment = Alignment.Center
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .border(1.dp, Color.Blue),
+                modifier = Modifier.fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
@@ -205,15 +226,14 @@ fun CreateOrderScreen(
                     modifier = Modifier.padding(top = 8.dp)
                 )
 
-                Spacer(modifier = Modifier.height(20.dp))
-
                 Column(
                     modifier = Modifier
-                        //.fillMaxWidth()
-                        //.fillMaxHeight()
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp)
                         .verticalScroll(rememberScrollState())
-                        .border(1.dp, Color.Yellow),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                        .weight(weight = 1f, fill = false),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     Row(
                         modifier = Modifier.width(280.dp),
@@ -223,8 +243,6 @@ fun CreateOrderScreen(
                             CustomTextField(
                                 label = stringResource(id = R.string.textfield_label_customer),
                                 placeholder = "Selecione ao lado >",
-                                modifier = Modifier
-                                    .focusRequester(focusRequester[0]),
                                 keyboardType = KeyboardType.Text,
                                 imeAction = ImeAction.Next,
                                 width = 200.dp,
@@ -250,6 +268,7 @@ fun CreateOrderScreen(
                     CustomTextField(
                         label = stringResource(id = R.string.textfield_label_order_name),
                         placeholder = stringResource(id = R.string.textfield_placeholder_order_name),
+                        modifier = Modifier.focusRequester(focusRequester[0]),
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
                         errorMessage = orderState.orderNameErrorMessage,
@@ -260,10 +279,20 @@ fun CreateOrderScreen(
                             )
                         },
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = null
-                            )
+                            if(orderState.orderName.isNotEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable {
+                                        createOrderViewModel.updateCreateOrderState(
+                                            orderState.copy(
+                                                orderName = ""
+                                            )
+                                        )
+                                        focusRequester[0].requestFocus()
+                                    }
+                                )
+                            }
                         },
                         value = orderState.orderName
                     ) {
@@ -275,8 +304,47 @@ fun CreateOrderScreen(
                     }
 
                     CustomTextField(
+                        label = stringResource(id = R.string.textfield_label_valor),
+                        placeholder = "",
+                        modifier = Modifier.focusRequester(focusRequester[2]),
+                        keyboardType = KeyboardType.Decimal,
+                        imeAction = ImeAction.Next,
+                        singleLine = true,
+                        errorMessage = null,
+                        visualTransformation = CurrencyVisualTransformation(),
+                        leadingIcon = {
+                            Icon(
+                                imageVector = Icons.Default.AttachMoney,
+                                contentDescription = null
+                            )
+                        },
+                        trailingIcon = {
+                            if(value != "0") {
+                                if (value != "") {
+                                    Icon(
+                                        imageVector = Icons.Default.Clear,
+                                        contentDescription = null,
+                                        modifier = Modifier.clickable {
+                                            value = "0"
+                                            focusRequester[2].requestFocus()
+                                        }
+                                    )
+                                }
+                            }
+                        },
+                        value = value
+                    ) { newValue ->
+                        if(newValue.all { it.isDigit() }) {
+                            value = newValue.ifEmpty {
+                                ""
+                            }
+                        }
+                    }
+
+                    CustomTextField(
                         label = stringResource(id = R.string.textfield_label_description),
                         placeholder = stringResource(id = R.string.textfield_placeholder_description),
+                        modifier = Modifier.focusRequester(focusRequester[1]),
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
                         singleLine = false,
@@ -289,10 +357,20 @@ fun CreateOrderScreen(
                             )
                         },
                         trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = null
-                            )
+                            if(orderState.orderDescription.isNotEmpty()) {
+                                Icon(
+                                    imageVector = Icons.Default.Clear,
+                                    contentDescription = null,
+                                    modifier = Modifier.clickable {
+                                        createOrderViewModel.updateCreateOrderState(
+                                            orderState.copy(
+                                                orderDescription = ""
+                                            )
+                                        )
+                                        focusRequester[1].requestFocus()
+                                    }
+                                )
+                            }
                         },
                         value = orderState.orderDescription
                     ) {
@@ -303,12 +381,11 @@ fun CreateOrderScreen(
                         )
                     }
 
-                    // PRICE
-
                     if (orderDateShowDatePickerDialog) {
                         DatePickerDialog(
                             onDismissRequest = {
                                 orderDateShowDatePickerDialog = false
+                                focusManager.clearFocus()
                             },
                             confirmButton = {
                                 Button(
@@ -317,6 +394,7 @@ fun CreateOrderScreen(
                                             orderDateSelectedDate = millis.toBrazillianDateFormat()
                                         }
                                         orderDateShowDatePickerDialog = false
+                                        focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Primary
@@ -342,8 +420,6 @@ fun CreateOrderScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(120.dp))
-
                     CustomTextField(
                         label = stringResource(id = R.string.textfield_label_order_request_date),
                         placeholder = "",
@@ -353,7 +429,8 @@ fun CreateOrderScreen(
                                     orderDateShowDatePickerDialog = true
                                 }
                             },
-                        errorMessage = null,
+                        errorMessage = orderState.orderDateErrorMessage,
+                        readOnly = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.CalendarMonth,
@@ -373,6 +450,7 @@ fun CreateOrderScreen(
                         DatePickerDialog(
                             onDismissRequest = {
                                 deliverDateShowDatePickerDialog = false
+                                focusManager.clearFocus()
                             },
                             confirmButton = {
                                 Button(
@@ -381,6 +459,7 @@ fun CreateOrderScreen(
                                             deliverDateSelectedDate = millis.toBrazillianDateFormat()
                                         }
                                         deliverDateShowDatePickerDialog = false
+                                        focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
                                         containerColor = Primary
@@ -405,9 +484,7 @@ fun CreateOrderScreen(
                             )
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(120.dp))
-
+                    // INVESTIGAR ABERTURA DO DIALOG DE DATA
                     CustomTextField(
                         label = stringResource(id = R.string.textfield_label_order_deliver_date),
                         placeholder = "",
@@ -417,7 +494,8 @@ fun CreateOrderScreen(
                                     deliverDateShowDatePickerDialog = true
                                 }
                             },
-                        errorMessage = null,
+                        errorMessage = orderState.deliverDateErrorMessage,
+                        readOnly = true,
                         leadingIcon = {
                             Icon(
                                 imageVector = Icons.Default.CalendarMonth,
@@ -432,8 +510,6 @@ fun CreateOrderScreen(
                         },
                         value = orderState.deliverDate
                     ) { }
-
-                    Spacer(modifier = Modifier.height(120.dp))
 
                     Box {
                         ExposedDropdownMenuBox(
@@ -510,8 +586,11 @@ fun CreateOrderScreen(
                     Spacer(modifier = Modifier.height(16.dp))
 
                     PrimaryButton(text = stringResource(id = R.string.btn_text_create_order)) {
+                        if(value.isEmpty()) value = "0"
                         createOrderViewModel.createNewOrder()
                     }
+
+                    Spacer(modifier = Modifier.height(24.dp))
                 }
             }
 

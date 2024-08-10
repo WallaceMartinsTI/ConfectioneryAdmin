@@ -19,7 +19,7 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 fun BottomNavGraph(
     navController: NavHostController,
     mainViewModel: MainViewModel,
-    paddingValues: PaddingValues
+    paddingValues: PaddingValues = PaddingValues()
 ) {
     NavHost(
         navController = navController,
@@ -41,5 +41,13 @@ fun BottomNavGraph(
         composable(route = Screen.Customers.route) {
             CustomersScreen(paddingValues = paddingValues)
         }
+
+        composable(route = Screen.CreateOrder.route) {
+            CreateOrderScreen(navController = navController)
+        }
+
+        /*composable(route = Screen.CreateCustomers.route) {
+            CustomersScreen(paddingValues = paddingValues)
+        }*/
     }
 }

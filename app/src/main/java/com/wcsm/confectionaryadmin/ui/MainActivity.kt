@@ -80,16 +80,8 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Screen.NavigationHolder.route) {
-                        NavigationHolder(navController = navController)
+                        NavigationHolder()
                     }
-
-                    composable(route = Screen.CreateOrder.route) {
-                        CreateOrderScreen(navController = navController)
-                    }
-
-                    /*composable(route = Screen.CreateCustomers.route) {
-                        CustomersScreen(paddingValues = paddingValues)
-                    }*/
                 }
             }
         }
