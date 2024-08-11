@@ -3,7 +3,10 @@ package com.wcsm.confectionaryadmin.di
 import android.content.Context
 import androidx.room.Room
 import com.wcsm.confectionaryadmin.data.database.OrderDao
-import com.wcsm.confectionaryadmin.data.database.OrderDatabase
+import com.wcsm.confectionaryadmin.data.database.ConfectionaryAdminDatabase
+import com.wcsm.confectionaryadmin.data.database.CustomerDao
+import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.data.repository.CustomerRepositoryImpl
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.data.repository.OrderRepositoryImpl
 import dagger.Module
@@ -21,20 +24,28 @@ object AppModule {
     @Singleton
     fun provideOrderDatabase(
         @ApplicationContext context: Context
-    ): OrderDatabase {
+    ): ConfectionaryAdminDatabase {
         return Room.databaseBuilder(
             context.applicationContext,
-            OrderDatabase::class.java,
-            "order_database"
+            ConfectionaryAdminDatabase::class.java,
+            "confectionary_admin_database"
         ).build()
     }
 
     @Provides
     @Singleton
     fun provideOrderDao(
-        database: OrderDatabase
+        database: ConfectionaryAdminDatabase
     ): OrderDao {
         return database.orderDao
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomerDao(
+        database: ConfectionaryAdminDatabase
+    ): CustomerDao {
+        return database.customerDao
     }
 
     @Provides
@@ -43,6 +54,14 @@ object AppModule {
         orderDao: OrderDao
     ): OrderRepository {
         return OrderRepositoryImpl(orderDao)
+    }
+
+    @Provides
+    @Singleton
+    fun provideCustomerRepository(
+        customerDao: CustomerDao
+    ): CustomerRepository {
+        return CustomerRepositoryImpl(customerDao)
     }
 
 }

@@ -1,13 +1,17 @@
 package com.wcsm.confectionaryadmin.data.model
 
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
+@Entity(tableName = "customers")
 data class Customer(
-    val id: Int,
+    @PrimaryKey(autoGenerate = true) val customerId: Int = 0,
     val name: String,
     val email: String?,
     val phone: String?,
     val gender: String?,
-    val dateOfBirth: String?,
+    @ColumnInfo(name = "date_of_birth") val dateOfBirth: String?,
     val address: String?,
-    val notes: String?,
-    val orders: List<Order>
+    val notes: String?
 )

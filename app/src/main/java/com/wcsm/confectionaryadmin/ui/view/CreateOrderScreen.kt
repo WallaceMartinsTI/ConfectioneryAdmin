@@ -71,6 +71,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
@@ -89,15 +90,18 @@ import com.wcsm.confectionaryadmin.ui.util.getStatusFromString
 import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateOrderViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOrderScreen(
     navController: NavController,
+    customersViewModel: CustomersViewModel = hiltViewModel(),
     createOrderViewModel: CreateOrderViewModel = hiltViewModel()
 ) {
     val orderState by createOrderViewModel.orderState.collectAsState()
     val newOrderCreated by createOrderViewModel.newOrderCreated.collectAsState()
+    val customersWithOrders by customersViewModel.customersWithOrders.collectAsState()
 
     var value by rememberSaveable { mutableStateOf("0") }
 
@@ -301,6 +305,11 @@ fun CreateOrderScreen(
                                         focusRequester[0].requestFocus()
                                     }
                                 )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
+                                )
                             }
                         },
                         value = orderState.orderName
@@ -378,6 +387,11 @@ fun CreateOrderScreen(
                                         )
                                         focusRequester[1].requestFocus()
                                     }
+                                )
+                            } else {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
                                 )
                             }
                         },
@@ -557,7 +571,7 @@ fun CreateOrderScreen(
                         ) {
                             CustomTextField(
                                 modifier = Modifier.menuAnchor(),
-                                label = stringResource(id = R.string.textfield_label_gender),
+                                label = stringResource(id = R.string.textfield_label_status),
                                 placeholder = "",
                                 errorMessage = null,
                                 leadingIcon = {
@@ -633,7 +647,7 @@ fun CreateOrderScreen(
 
             if (showCustomerChooser) {
                 ChooseCustomerForOrder(
-                    customers = customersMock,
+                    customersWithOrders = customersWithOrders,
                     onDissmiss = { showCustomerChooser = false }
                 ) {
                     createOrderViewModel.updateCreateOrderState(
@@ -677,7 +691,7 @@ private fun ChooseCustomerForOrderButton(
 
 @Composable
 fun ChooseCustomerForOrder(
-    customers: List<Customer>,
+    customersWithOrders: List<CustomerWithOrders>,
     onDissmiss: () -> Unit,
     onClick: (customer: Customer) -> Unit
 ) {
@@ -689,11 +703,11 @@ fun ChooseCustomerForOrder(
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(customers) {
+            items(customersWithOrders) {
                 MinimizedCustomerCard(
-                    customer = it,
+                    customer = it.customer,
                 ) {
-                    onClick(it)
+                    onClick(it.customer)
                 }
             }
         }

@@ -257,7 +257,8 @@ fun OrderCard(
                 .background(brush = InvertedAppBackground)
                 .border(1.dp, Primary, RoundedCornerShape(15.dp))
                 .width(328.dp)
-                .padding(12.dp),
+                .padding(12.dp)
+                .clickable { onExpandChange(true) },
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(
@@ -307,14 +308,22 @@ fun OrderCard(
                     fontWeight = FontWeight.Bold,
                 )
 
+                Row() {
+                    Text(
+                        text = "Cliente:"
+                    )
+
+                    Text(
+                        text = ""
+                    )
+                }
+
             }
 
             Icon(
                 imageVector = Icons.Default.KeyboardArrowDown,
                 contentDescription = null,
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable { onExpandChange(true) }
+                modifier = Modifier.size(40.dp)
             )
         }
     }

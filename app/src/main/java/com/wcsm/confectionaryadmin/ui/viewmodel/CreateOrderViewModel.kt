@@ -1,14 +1,10 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
-import androidx.compose.ui.res.stringResource
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.CreateOrderState
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
-import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import com.wcsm.confectionaryadmin.ui.util.getCurrentHourAndMinutes
@@ -38,7 +34,7 @@ class CreateOrderViewModel @Inject constructor(
         if(isAllFieldValid()) {
             val currentHourAndMinute = getCurrentHourAndMinutes()
             val newOrder = Order(
-                customerId = orderState.value.customer!!.id,
+                customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,
                 description = orderState.value.orderDescription,
                 price = 0.0,

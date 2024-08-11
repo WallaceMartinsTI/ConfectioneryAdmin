@@ -68,7 +68,7 @@ fun CustomTimePicker(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(15.dp))
                     .background(Primary)
-                    .padding(8.dp)
+                    .padding(12.dp)
                     .clickable {
                         val selectedHour = timePickerState.hour
                         val selectedMinute = timePickerState.minute
@@ -102,7 +102,7 @@ private fun CustomTimePickerPreview() {
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {
-            var showDial by remember { mutableStateOf(false) }
+            var showDial by remember { mutableStateOf(true) }
             var selectedTime by remember { mutableStateOf("No time selected") }
 
             if(showDial) {

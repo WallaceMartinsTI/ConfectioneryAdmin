@@ -1,13 +1,15 @@
 package com.wcsm.confectionaryadmin.data.model
 
 import androidx.room.ColumnInfo
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Relation
 
 @Entity(tableName = "orders")
 data class Order(
-    @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    @ColumnInfo(name = "customer_id") val customerId: Int,
+    @PrimaryKey(autoGenerate = true) val orderId: Int = 0,
+    val customerOwnerId: Int,
     val title: String,
     val description: String,
     val price: Double,

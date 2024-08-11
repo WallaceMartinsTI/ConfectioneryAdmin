@@ -85,8 +85,8 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 val ordersMock = listOf(
     Order(
-        id = 0,
-        customerId = 0,
+        orderId = 0,
+        customerOwnerId = 0,
         title = "Bolo decenouro para o cliente com cobertura pr",
         description = "Recheio de chocolate e mousse de morango",
         price = 120.50,
@@ -95,8 +95,8 @@ val ordersMock = listOf(
         deliverDate = convertStringToDateMillis("20/02/2024 17:25")
     ),
     Order(
-        id = 1,
-        customerId = 1,
+        orderId = 1,
+        customerOwnerId = 1,
         title = "Doce Brigadeiro 100u",
         description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
         price = 115.00,
@@ -105,8 +105,8 @@ val ordersMock = listOf(
         deliverDate = convertStringToDateMillis("28/02/2024 16:22")
     ),
     Order(
-        id = 2,
-        customerId = 2,
+        orderId = 2,
+        customerOwnerId = 2,
         title = "Bolo de Aniversário",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
@@ -115,48 +115,8 @@ val ordersMock = listOf(
         deliverDate = convertStringToDateMillis("28/03/2024 09:30")
     ),
     Order(
-        id = 3,
-        customerId = 3,
-        title = "Bolo de Aniversário com nome meio grande vamos ver",
-        description = "Massa de Chocolate e recheio de prestígio",
-        price = 95.25,
-        status = OrderStatus.DELIVERED,
-        orderDate = convertStringToDateMillis("28/03/2024 11:00"),
-        deliverDate = convertStringToDateMillis("10/04/2024 16:00")
-    ),
-    Order(
-        id = 0,
-        customerId = 0,
-        title = "Bolo Bento Cake",
-        description = "Recheio de chocolate e mousse de morango",
-        price = 120.50,
-        status = OrderStatus.QUOTATION,
-        orderDate = convertStringToDateMillis("15/02/2024 16:30"),
-        deliverDate = convertStringToDateMillis("20/02/2024 17:25")
-    ),
-    Order(
-        id = 1,
-        customerId = 1,
-        title = "Doce Brigadeiro 100u",
-        description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
-        price = 115.00,
-        status = OrderStatus.CONFIRMED,
-        orderDate = convertStringToDateMillis("25/02/2024 12:30"),
-        deliverDate = convertStringToDateMillis("28/02/2024 16:22")
-    ),
-    Order(
-        id = 2,
-        customerId = 2,
-        title = "Bolo de Aniversário",
-        description = "Massa de Chocolate e recheio de prestígio",
-        price = 95.25,
-        status = OrderStatus.IN_PRODUCTION,
-        orderDate = convertStringToDateMillis("28/03/2024 09:30"),
-        deliverDate = convertStringToDateMillis("10/04/2024 13:15")
-    ),
-    Order(
-        id = 3,
-        customerId = 3,
+        orderId = 3,
+        customerOwnerId = 3,
         title = "Bolo de Aniversário com nome meio grande vamos ver",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
@@ -258,12 +218,12 @@ fun OrdersScreen(
                 items(orders) {
                     OrderCard(
                         order = it,
-                        isExpanded = expandedStates[it.id] ?: false,
+                        isExpanded = expandedStates[it.orderId] ?: false,
                         onDelete = { order ->
                             ordersViewModel.deleteOrder(order)
                         },
                         onExpandChange = { expanded ->
-                            expandedStates[it.id] = expanded
+                            expandedStates[it.orderId] = expanded
                         }
                     )
 

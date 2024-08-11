@@ -39,13 +39,12 @@ fun NavigationHolder(
             icon = Icons.Default.PlaylistAdd
             onClick = {
                 navHostController.navigate(Screen.CreateOrder.route)
-                Log.i("#-#TESTE#-#", "CLICOU no FAB - Orders Screen")
             }
         }
         Screen.Customers.route -> {
             icon = Icons.Default.PersonAddAlt1
             onClick = {
-                Log.i("#-#TESTE#-#", "CLICOU no FAB - Customers Screen")
+                navHostController.navigate(Screen.CreateCustomers.route)
             }
         }
     }

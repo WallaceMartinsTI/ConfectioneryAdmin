@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,6 +58,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -85,8 +87,10 @@ import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
@@ -105,124 +109,76 @@ import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
+import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 
 val customersMock = listOf(
     Customer(
-        id = 0,
+        customerId = 0,
         name = "Carlos Maia",
         email = "carlos.maia@hotmail.com",
         phone = "31997862543",
         gender = "Masculino",
         dateOfBirth = "23/10/1998",
         address = "Rua José Malvo, Nº 32, Guabas - Betim MG",
-        notes = "Não gosta de abacaxi",
-        orders = ordersMock
+        notes = "Não gosta de abacaxi"
     ),
     Customer(
-        id = 1,
+        customerId = 1,
         name = "Isabella Silva",
         email = "isabella.silva@gmail.com",
         phone = "31976357843",
         gender = "Feminino",
         dateOfBirth = "12/05/2002",
         address = "Rua Malvino Costa, Nº 21, Mecs - Belo Horizonte MG",
-        notes= "Não gosta de morango",
-        orders = ordersMock
+        notes= "Não gosta de morango"
     ),
     Customer(
-        id = 2,
+        customerId = 2,
         name = "Ana Maria",
         email = "ana.maria@hotmail.com",
         phone = "31976487624",
         gender = "Feminino",
         dateOfBirth = "07/12/2000",
         address = "Av. Costa Silva, Nº 735, Quatis - Contagem MG",
-        notes= "",
-        orders = ordersMock
+        notes= ""
     ),
     Customer(
-        id = 3,
+        customerId = 3,
         name = "Julesca Matil",
         email = "julesca.metil@gmail.com",
         phone = "31974826374",
         gender = "Outros",
         dateOfBirth = "10/09/1982",
         address = "Rua Paris, Nº 8, Kansas - Betim MG",
-        notes= "Não gosta de castanha",
-        orders = ordersMock
+        notes= "Não gosta de castanha"
     ),
     Customer(
-        id = 4,
+        customerId = 4,
         name = "João Silva",
         email = "joao.silva@hotmail.com",
         phone = "31978652738",
         gender = "Masculino",
         dateOfBirth = "29/01/1999",
         address = "Av. Brasil, Nº 32, Centro - Belo Horizonte MG",
-        notes= "",
-        orders = ordersMock
-    ),
-    Customer(
-        id = 0,
-        name = "Carlos Maia",
-        email = "carlos.maia@hotmail.com",
-        phone = "31997862543",
-        gender = "Masculino",
-        dateOfBirth = "23/10/1998",
-        address = "Rua José Malvo, Nº 32, Guabas - Betim MG",
-        notes = "Não gosta de abacaxi",
-        orders = ordersMock
-    ),
-    Customer(
-        id = 1,
-        name = "Isabella Silva",
-        email = "isabella.silva@gmail.com",
-        phone = "31976357843",
-        gender = "Feminino",
-        dateOfBirth = "12/05/2002",
-        address = "Rua Malvino Costa, Nº 21, Mecs - Belo Horizonte MG",
-        notes= "Não gosta de morango",
-        orders = ordersMock
-    ),
-    Customer(
-        id = 2,
-        name = "Ana Maria",
-        email = "ana.maria@hotmail.com",
-        phone = "31976487624",
-        gender = "Feminino",
-        dateOfBirth = "07/12/2000",
-        address = "Av. Costa Silva, Nº 735, Quatis - Contagem MG",
-        notes= "",
-        orders = ordersMock
-    ),
-    Customer(
-        id = 3,
-        name = "Julesca Matil",
-        email = "julesca.metil@gmail.com",
-        phone = "31974826374",
-        gender = "Outros",
-        dateOfBirth = "10/09/1982",
-        address = "Rua Paris, Nº 8, Kansas - Betim MG",
-        notes= "Não gosta de castanha",
-        orders = ordersMock
-    ),
-    Customer(
-        id = 4,
-        name = "João Silva",
-        email = "joao.silva@hotmail.com",
-        phone = "31978652738",
-        gender = "Masculino",
-        dateOfBirth = "29/01/1999",
-        address = "Av. Brasil, Nº 32, Centro - Belo Horizonte MG",
-        notes= "",
+        notes= ""
+    )
+)
+val customersWithOthersMock = listOf(
+    CustomerWithOrders(
+        customer = customersMock[0],
         orders = ordersMock
     )
 )
 
 @Composable
-fun CustomersScreen(paddingValues: PaddingValues) {
+fun CustomersScreen(
+    paddingValues: PaddingValues,
+    customersViewModel: CustomersViewModel = hiltViewModel()
+) {
+    val customersWithOrders by customersViewModel.customersWithOrders.collectAsState()
+
     var searchInput by remember { mutableStateOf("") }
-    var selectedCustomer by remember { mutableStateOf<Customer?>(null) }
+    var selectedCustomer by remember { mutableStateOf<CustomerWithOrders?>(null) }
 
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -240,7 +196,7 @@ fun CustomersScreen(paddingValues: PaddingValues) {
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(id = R.string.screen_title_orders_screen),
+                text = stringResource(id = R.string.screen_title_customers_screen),
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
@@ -281,9 +237,9 @@ fun CustomersScreen(paddingValues: PaddingValues) {
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(customersMock) {
+                items(customersWithOrders) {
                     MinimizedCustomerCard(
-                        customer = it,
+                        customer = it.customer,
                         expandIcon = true
                     ) {
                         selectedCustomer = it
@@ -296,7 +252,7 @@ fun CustomersScreen(paddingValues: PaddingValues) {
         if(selectedCustomer != null) {
             Column {
                 ExpandedCustomerScreen(
-                    customer = selectedCustomer!!
+                    customersWithOrders = selectedCustomer!!
                 ) {
                     selectedCustomer = null
                 }
@@ -369,10 +325,13 @@ private fun FilterCustomer(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ExpandedCustomerScreen(
-    customer: Customer,
+    customersWithOrders: CustomerWithOrders,
     modifier: Modifier = Modifier,
     onDissmiss: () -> Unit
 ) {
+    val customer = customersWithOrders.customer
+    val orders = customersWithOrders.orders
+
     var name by rememberSaveable { mutableStateOf(customer.name) }
     var email by rememberSaveable { mutableStateOf(customer.email ?: "") }
     var phone by rememberSaveable { mutableStateOf(customer.phone ?: "") }
@@ -750,7 +709,10 @@ fun ExpandedCustomerScreen(
 
         if(isCustomerOrdersOpen) {
             Dialog(onDismissRequest = { isCustomerOrdersOpen = false }) {
-                CustomerOrders(customer = customer) {
+                CustomerOrders(
+                    customer = customer,
+                    orders = orders
+                ) {
                     isCustomerOrdersOpen = false
                 }
             }
@@ -793,6 +755,7 @@ private fun CustomDeleteButton(
 @Composable
 fun CustomerOrders(
     customer: Customer,
+    orders: List<Order>,
     onDissmiss: () -> Unit
 ) {
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
@@ -846,13 +809,13 @@ fun CustomerOrders(
         LazyColumn(
             modifier = Modifier.padding(horizontal = 16.dp)
         ) {
-            items(customer.orders) {
+            items(orders) {
                 OrderCard(
                     order = it,
                     onDelete = {},
-                    isExpanded = expandedStates[it.id] ?: false
+                    isExpanded = expandedStates[it.orderId] ?: false
                 ) { expanded ->
-                    expandedStates[it.id] = expanded
+                    expandedStates[it.orderId] = expanded
                 }
 
                 Spacer(modifier = Modifier.height(8.dp))
@@ -892,7 +855,7 @@ private fun FilterCustomerPreview() {
 private fun ExpandedCustomerScreenPreview() {
     ConfectionaryAdminTheme {
         ExpandedCustomerScreen(
-            customer = customersMock[0]
+            customersWithOrders = customersWithOthersMock[0]
         ) {}
     }
 }
@@ -909,6 +872,9 @@ private fun CustomDeleteButtonPreview() {
 @Composable
 private fun CustomerOrdersPreview() {
     ConfectionaryAdminTheme {
-        CustomerOrders(customersMock[0]) {}
+        CustomerOrders(
+            customer = customersMock[0],
+            orders = ordersMock
+        ) {}
     }
 }
