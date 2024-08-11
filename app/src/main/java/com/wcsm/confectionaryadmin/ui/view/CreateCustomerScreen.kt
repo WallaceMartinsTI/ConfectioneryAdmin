@@ -72,6 +72,7 @@ import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateCustomerViewModel
 
@@ -241,6 +242,7 @@ fun CreateCustomerScreen(
                 modifier = Modifier.focusRequester(focusRequester[2]),
                 keyboardType = KeyboardType.Phone,
                 imeAction = ImeAction.Next,
+                visualTransformation = PhoneNumberVisualTransformation(),
                 errorMessage = null,
                 leadingIcon = {
                     Icon(
@@ -270,12 +272,14 @@ fun CreateCustomerScreen(
                     }
                 },
                 value = customerState.phone
-            ) {
-                createCustomerViewModel.updateCreateCustomerState(
-                    customerState.copy(
-                        phone = it
+            ) { newValue ->
+                if(newValue.all { it.isDigit() }) {
+                    createCustomerViewModel.updateCreateCustomerState(
+                        customerState.copy(
+                            phone = newValue.ifEmpty { "" }
+                        )
                     )
-                )
+                }
             }
 
             if(showDatePickerDialog) {
