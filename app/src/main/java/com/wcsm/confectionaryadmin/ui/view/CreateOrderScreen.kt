@@ -40,7 +40,9 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
+import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -71,6 +73,7 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
+import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
@@ -108,9 +111,15 @@ fun CreateOrderScreen(
     val orderDateDatePickerState = rememberDatePickerState()
     var orderDateSelectedDate by rememberSaveable { mutableStateOf("") }
 
+    var orderDateShowTimePickerDialog by rememberSaveable { mutableStateOf(false) }
+    var orderDateSelectedTime by rememberSaveable { mutableStateOf("") }
+
     var deliverDateShowDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val deliverDateDatePickerState = rememberDatePickerState()
     var deliverDateSelectedDate by rememberSaveable { mutableStateOf("") }
+
+    var deliverDateShowTimePickerDialog by rememberSaveable { mutableStateOf(false) }
+    var deliverDateSelectedTime by rememberSaveable { mutableStateOf("") }
 
     var showCustomerChooser by rememberSaveable { mutableStateOf(false) }
 
@@ -118,26 +127,6 @@ fun CreateOrderScreen(
     val focusManager = LocalFocusManager.current
 
     val customBlur = if (showCustomerChooser) 8.dp else 0.dp
-
-    LaunchedEffect(orderDateSelectedDate) {
-        if (orderDateSelectedDate.isNotEmpty()) {
-            createOrderViewModel.updateCreateOrderState(
-                orderState.copy(
-                    orderDate = orderDateSelectedDate
-                )
-            )
-        }
-    }
-
-    LaunchedEffect(deliverDateSelectedDate) {
-        if (deliverDateSelectedDate.isNotEmpty()) {
-            createOrderViewModel.updateCreateOrderState(
-                orderState.copy(
-                    deliverDate = deliverDateSelectedDate
-                )
-            )
-        }
-    }
 
     LaunchedEffect(newOrderCreated) {
         if(newOrderCreated) {
@@ -147,6 +136,26 @@ fun CreateOrderScreen(
 
     LaunchedEffect(orderState.status) {
         stringStatus = getStringStatusFromStatus(orderState.status)
+    }
+
+    LaunchedEffect(orderDateSelectedDate, orderDateSelectedTime) {
+        if (orderDateSelectedDate.isNotEmpty() && orderDateSelectedTime.isNotEmpty()) {
+            createOrderViewModel.updateCreateOrderState(
+                orderState.copy(
+                    orderDate = "$orderDateSelectedDate $orderDateSelectedTime"
+                )
+            )
+        }
+    }
+
+    LaunchedEffect(deliverDateSelectedDate, deliverDateSelectedTime) {
+        if (deliverDateSelectedDate.isNotEmpty() && deliverDateSelectedTime.isNotEmpty()) {
+            createOrderViewModel.updateCreateOrderState(
+                orderState.copy(
+                    deliverDate = "$deliverDateSelectedDate $deliverDateSelectedTime"
+                )
+            )
+        }
     }
 
     LaunchedEffect(orderState.customer) {
@@ -394,6 +403,7 @@ fun CreateOrderScreen(
                                             orderDateSelectedDate = millis.toBrazillianDateFormat()
                                         }
                                         orderDateShowDatePickerDialog = false
+                                        orderDateShowTimePickerDialog = true
                                         focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
@@ -417,6 +427,19 @@ fun CreateOrderScreen(
                                     todayDateBorderColor = Primary
                                 )
                             )
+                        }
+                    }
+
+                    if(orderDateShowTimePickerDialog) {
+                        Dialog(
+                            onDismissRequest = { orderDateShowTimePickerDialog = false },
+                        ) {
+                            CustomTimePicker(
+                                onDismiss = { orderDateShowTimePickerDialog = false }
+                            ) { time ->
+                                orderDateSelectedTime = time
+                                orderDateShowTimePickerDialog = false
+                            }
                         }
                     }
 
@@ -459,6 +482,7 @@ fun CreateOrderScreen(
                                             deliverDateSelectedDate = millis.toBrazillianDateFormat()
                                         }
                                         deliverDateShowDatePickerDialog = false
+                                        deliverDateShowTimePickerDialog = true
                                         focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
@@ -484,7 +508,20 @@ fun CreateOrderScreen(
                             )
                         }
                     }
-                    // INVESTIGAR ABERTURA DO DIALOG DE DATA
+
+                    if(deliverDateShowTimePickerDialog) {
+                        Dialog(
+                            onDismissRequest = { deliverDateShowTimePickerDialog = false },
+                        ) {
+                            CustomTimePicker(
+                                onDismiss = { deliverDateShowTimePickerDialog = false }
+                            ) { time ->
+                                deliverDateSelectedTime = time
+                                deliverDateShowTimePickerDialog = false
+                            }
+                        }
+                    }
+
                     CustomTextField(
                         label = stringResource(id = R.string.textfield_label_order_deliver_date),
                         placeholder = "",
