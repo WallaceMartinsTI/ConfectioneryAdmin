@@ -1,11 +1,11 @@
 package com.wcsm.confectionaryadmin.data.repository
 
 import com.wcsm.confectionaryadmin.data.model.Order
-import kotlinx.coroutines.flow.StateFlow
+import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 
 interface OrderRepository {
 
-    suspend fun getAllOrders(): List<Order>
+    suspend fun getAllOrdersWithCustomer(): List<OrderWithCustomer>
 
     suspend fun insertOrder(order: Order)
 

@@ -38,7 +38,7 @@
     <string name="btn_text_create_order">CRIAR PEDIDO</string>
     <string name="btn_text_create_customer">CRIAR CLIENTE</string>
     <string name="btn_text_show_orders">VER PEDIDOS</string>
-    <string name="btn_text_delete">DELETAR</string>
+    <string name="btn_text_delete_customer">DELETAR CLIENTE</string>
     <string name="btn_text_save_edit">SALVAR ALTERAÇÕES</string>
 
     <!-- TextField Labels -->

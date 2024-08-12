@@ -8,9 +8,6 @@ import javax.inject.Inject
 class CustomerRepositoryImpl @Inject constructor(
     private val customerDao: CustomerDao
 ) : CustomerRepository {
-    override suspend fun getAllCustomers(): List<Customer> {
-        return customerDao.getAllCustomers()
-    }
 
     override suspend fun getCustomersWithOrders(): List<CustomerWithOrders> {
         return customerDao.getCustomersWithOrders()

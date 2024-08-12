@@ -12,11 +12,8 @@ import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 @Dao
 interface CustomerDao {
 
-    @Query("SELECT * FROM customers")
-    suspend fun getAllCustomers(): List<Customer>
-
     @Transaction
-    @Query("SELECT * FROM customers")
+    @Query("SELECT * FROM customers ORDER BY name")
     suspend fun getCustomersWithOrders(): List<CustomerWithOrders>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -4,23 +4,26 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.view.CreateCustomerScreen
 import com.wcsm.confectionaryadmin.ui.view.CreateOrderScreen
+import com.wcsm.confectionaryadmin.ui.view.CustomerDetailsScreen
 import com.wcsm.confectionaryadmin.ui.view.CustomersScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.OrdersScreen
+import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
     mainViewModel: MainViewModel,
-    paddingValues: PaddingValues = PaddingValues()
+    paddingValues: PaddingValues = PaddingValues(),
+    customersViewModel: CustomersViewModel = hiltViewModel()
 ) {
     NavHost(
         navController = navController,
@@ -40,7 +43,11 @@ fun BottomNavGraph(
         }
 
         composable(route = Screen.Customers.route) {
-            CustomersScreen(paddingValues = paddingValues)
+            CustomersScreen(
+                navController = navController,
+                paddingValues = paddingValues,
+                customersViewModel = customersViewModel
+            )
         }
 
         composable(route = Screen.CreateOrder.route) {
@@ -49,6 +56,13 @@ fun BottomNavGraph(
 
         composable(route = Screen.CreateCustomers.route) {
             CreateCustomerScreen(navController = navController)
+        }
+
+        composable(route = Screen.CustomerDetails.route){
+            CustomerDetailsScreen(
+                navController = navController,
+                customersViewModel = customersViewModel
+            )
         }
     }
 }

@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -37,6 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor
@@ -50,14 +52,17 @@ import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
+import com.wcsm.confectionaryadmin.ui.util.customersMock
 import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
 fun OrderCard(
     order: Order,
     isExpanded: Boolean,
+    customerOwner: Customer? = null,
     onDelete: (order: Order) -> Unit,
     onExpandChange: (Boolean) -> Unit
 ) {
@@ -308,14 +313,30 @@ fun OrderCard(
                     fontWeight = FontWeight.Bold,
                 )
 
-                Row() {
-                    Text(
-                        text = "Cliente:"
-                    )
+                if(customerOwner != null) {
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Divider(color = Primary)
+                    Spacer(modifier = Modifier.height(4.dp))
 
-                    Text(
-                        text = ""
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Cliente: ",
+                            color = Primary,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.SemiBold
+                        )
+
+                        Text(
+                            text = customerOwner.name,
+                            color = Color.White,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                 }
 
             }
@@ -333,12 +354,39 @@ fun OrderCard(
 @Composable
 private fun OrderCardPreview() {
     ConfectionaryAdminTheme {
-        Column {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(top = 16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            val customerOwner = customersMock[0]
+
+            OrderCard(
+                order = ordersMock[0],
+                isExpanded = false,
+                customerOwner = customerOwner,
+                onDelete = {},
+                onExpandChange = {}
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            OrderCard(
+                order = ordersMock[0],
+                isExpanded = true,
+                customerOwner = customerOwner,
+                onDelete = {},
+                onExpandChange = {}
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
 
             ordersMock.forEach {
                 OrderCard(
                     order = it,
                     isExpanded = false,
+                    customerOwner = customerOwner,
                     onDelete = {},
                     onExpandChange = {}
                 )

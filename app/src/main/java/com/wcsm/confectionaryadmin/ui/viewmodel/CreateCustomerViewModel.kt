@@ -30,8 +30,9 @@ class CreateCustomerViewModel @Inject constructor(
 
         val customerName = customerState.value.name
         if(validateCustomername(customerName)) {
+            val formattedName = formatName(customerName)
             val newCustomer = Customer(
-                name = customerState.value.name,
+                name = formattedName,
                 email = customerState.value.email,
                 phone = customerState.value.phone,
                 gender = customerState.value.gender,
@@ -41,6 +42,16 @@ class CreateCustomerViewModel @Inject constructor(
             )
             saveCustomerToDatabase(customer = newCustomer)
         }
+    }
+
+    private fun formatName(name: String): String {
+        return name
+            .split(" ")
+            .joinToString(" ") {
+                it.lowercase().replaceFirstChar {
+                    char -> char.uppercase()
+                }
+            }
     }
 
     private fun saveCustomerToDatabase(customer: Customer) {

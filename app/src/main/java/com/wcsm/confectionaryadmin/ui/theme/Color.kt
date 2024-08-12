@@ -33,8 +33,8 @@ val TextFieldBackground = Color(0x33FF00C7)
 val QuotationStatus = Color(0xFF007BFF)
 val ConfirmedStatus = Color(0xFF28A745)
 val InProductionStatus = Color(0xFFFFF73A)
-val FinishedStatus = Color(0xFFFF00D7)
-val DeliveredStatus = Color(0xFF004085)
+val FinishedStatus = Color(0xFF004085)
+val DeliveredStatus = Color(0xFF7800C8)
 val CancelledStatus = LightRed
 
 // Linear Colors (Brush)

@@ -2,7 +2,10 @@ package com.wcsm.confectionaryadmin.data.repository
 
 import android.util.Log
 import com.wcsm.confectionaryadmin.data.database.OrderDao
+import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.withContext
@@ -11,9 +14,8 @@ import javax.inject.Inject
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao
 ) : OrderRepository {
-
-    override suspend fun getAllOrders(): List<Order> {
-        return orderDao.getAllOrders()
+    override suspend fun getAllOrdersWithCustomer(): List<OrderWithCustomer> {
+        return orderDao.getAllOrdersWithCustomer()
     }
 
     override suspend fun insertOrder(order: Order) {

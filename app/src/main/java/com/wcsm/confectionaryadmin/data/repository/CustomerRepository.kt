@@ -5,8 +5,6 @@ import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 
 interface CustomerRepository {
 
-    suspend fun getAllCustomers(): List<Customer>
-
     suspend fun getCustomersWithOrders(): List<CustomerWithOrders>
 
     suspend fun insertCustomer(customer: Customer)

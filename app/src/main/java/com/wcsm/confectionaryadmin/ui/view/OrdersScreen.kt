@@ -131,8 +131,7 @@ fun OrdersScreen(
     paddingValues: PaddingValues,
     ordersViewModel: OrdersViewModel = hiltViewModel()
 ) {
-    val orders by ordersViewModel.orders.collectAsState()
-    Log.i("#-# TESTE #-#", "orders: $orders")
+    val ordersWithCustomers by ordersViewModel.ordersWithCustomer.collectAsState()
 
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
@@ -215,15 +214,16 @@ fun OrdersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(orders) {
+                items(ordersWithCustomers) {
                     OrderCard(
-                        order = it,
-                        isExpanded = expandedStates[it.orderId] ?: false,
+                        order = it.order,
+                        isExpanded = expandedStates[it.order.orderId] ?: false,
+                        customerOwner = it.customer,
                         onDelete = { order ->
                             ordersViewModel.deleteOrder(order)
                         },
                         onExpandChange = { expanded ->
-                            expandedStates[it.orderId] = expanded
+                            expandedStates[it.order.orderId] = expanded
                         }
                     )
 

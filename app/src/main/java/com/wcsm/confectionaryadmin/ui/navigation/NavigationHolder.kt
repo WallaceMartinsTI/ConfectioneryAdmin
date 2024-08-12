@@ -49,10 +49,13 @@ fun NavigationHolder(
         }
     }
 
-    if(
-        currentDestination?.route == Screen.CreateOrder.route ||
-        currentDestination?.route == Screen.CreateCustomers.route
-    ) {
+    val routesWithoutScaffold = listOf(
+        Screen.CreateOrder.route,
+        Screen.CreateCustomers.route,
+        Screen.CustomerDetails.route
+    )
+
+    if(currentDestination?.route in routesWithoutScaffold) {
         Column(
             modifier = Modifier.fillMaxSize()
         ) {

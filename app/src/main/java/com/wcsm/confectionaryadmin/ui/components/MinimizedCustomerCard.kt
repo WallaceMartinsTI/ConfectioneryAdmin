@@ -27,7 +27,7 @@ import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.view.customersMock
+import com.wcsm.confectionaryadmin.ui.util.customersMock
 
 @Composable
 fun MinimizedCustomerCard(
