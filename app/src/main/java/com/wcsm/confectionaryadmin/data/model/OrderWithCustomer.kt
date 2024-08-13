@@ -6,8 +6,8 @@ import androidx.room.Relation
 data class OrderWithCustomer(
     @Embedded val order: Order,
     @Relation(
-        parentColumn = "customerOwnerId",
-        entityColumn = "customerId"
+        parentColumn = "customer_owner_id",
+        entityColumn = "customer_id"
     )
     val customer: Customer
 )

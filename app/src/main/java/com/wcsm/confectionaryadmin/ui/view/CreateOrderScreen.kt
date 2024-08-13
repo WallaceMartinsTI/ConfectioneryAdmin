@@ -40,9 +40,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TimePicker
 import androidx.compose.material3.rememberDatePickerState
-import androidx.compose.material3.rememberTimePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -71,7 +69,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
@@ -91,17 +88,20 @@ import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateOrderViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateOrderScreen(
     navController: NavController,
-    customersViewModel: CustomersViewModel = hiltViewModel(),
+    ordersViewModel: OrdersViewModel,
+    customersViewModel: CustomersViewModel,
     createOrderViewModel: CreateOrderViewModel = hiltViewModel()
 ) {
     val orderState by createOrderViewModel.orderState.collectAsState()
     val newOrderCreated by createOrderViewModel.newOrderCreated.collectAsState()
-    val customersWithOrders by customersViewModel.customersWithOrders.collectAsState()
+
+    val customers by customersViewModel.customers.collectAsState()
 
     var value by rememberSaveable { mutableStateOf("0") }
 
@@ -134,6 +134,7 @@ fun CreateOrderScreen(
 
     LaunchedEffect(newOrderCreated) {
         if(newOrderCreated) {
+            ordersViewModel.getAllOrders()
             navController.navigate(Screen.Orders.route)
         }
     }
@@ -638,6 +639,11 @@ fun CreateOrderScreen(
 
                     PrimaryButton(text = stringResource(id = R.string.btn_text_create_order)) {
                         if(value.isEmpty()) value = "0"
+                        createOrderViewModel.updateCreateOrderState(
+                            orderState.copy(
+                                price = value.toDouble()
+                            )
+                        )
                         createOrderViewModel.createNewOrder()
                     }
 
@@ -647,7 +653,7 @@ fun CreateOrderScreen(
 
             if (showCustomerChooser) {
                 ChooseCustomerForOrder(
-                    customersWithOrders = customersWithOrders,
+                    customers = customers,
                     onDissmiss = { showCustomerChooser = false }
                 ) {
                     createOrderViewModel.updateCreateOrderState(
@@ -691,7 +697,7 @@ private fun ChooseCustomerForOrderButton(
 
 @Composable
 fun ChooseCustomerForOrder(
-    customersWithOrders: List<CustomerWithOrders>,
+    customers: List<Customer>,
     onDissmiss: () -> Unit,
     onClick: (customer: Customer) -> Unit
 ) {
@@ -703,23 +709,27 @@ fun ChooseCustomerForOrder(
                 .padding(12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(customersWithOrders) {
+            items(customers) {
                 MinimizedCustomerCard(
-                    customer = it.customer,
+                    customer = it,
                 ) {
-                    onClick(it.customer)
+                    onClick(it)
                 }
             }
         }
     }
 }
 
+/*
 @Preview
 @Composable
-private fun CreateOrderScreenPreview() {
+private fun CreateOrderScreenPreview(customersViewModel: CustomersViewModel = hiltViewModel()) {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
-        CreateOrderScreen(navController = navController)
+        CreateOrderScreen(
+            navController = navController,
+            customersViewModel = customersViewModel
+        )
     }
 }
 
@@ -729,4 +739,4 @@ private fun ChooseCustomerForOrderButtonPreview() {
     ConfectionaryAdminTheme {
         ChooseCustomerForOrderButton {}
     }
-}
+}*/

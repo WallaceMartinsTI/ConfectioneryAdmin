@@ -29,6 +29,8 @@ val ScreenDescriptionColor = Color(0xFF775378)
 val ButtonBackground = Color(0xFFD88BD5)
 val TextFieldBackground = Color(0x33FF00C7)
 
+val DarkGreen = Color(0xFF097107)
+
 // Status Colors
 val QuotationStatus = Color(0xFF007BFF)
 val ConfirmedStatus = Color(0xFF28A745)

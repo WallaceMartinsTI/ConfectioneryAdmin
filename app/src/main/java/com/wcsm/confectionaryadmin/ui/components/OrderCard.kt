@@ -21,14 +21,17 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -41,29 +44,36 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor
+import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
 import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
 import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
 import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
+import com.wcsm.confectionaryadmin.ui.theme.GrayColor
 import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
+import com.wcsm.confectionaryadmin.ui.theme.LightRed
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
+import com.wcsm.confectionaryadmin.ui.util.toBRL
 import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
 fun OrderCard(
     order: Order,
     isExpanded: Boolean,
-    customerOwner: Customer? = null,
+    customerOwnerName: String? = null,
+    onEdit: (order: Order) -> Unit,
     onDelete: (order: Order) -> Unit,
+    onChangeStatus: () -> Unit,
     onExpandChange: (Boolean) -> Unit
 ) {
     var formattedStatus = ""
@@ -95,6 +105,8 @@ fun OrderCard(
             statusColor = CancelledStatus
         }
     }
+
+    val blockedOrderStatus = listOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED)
 
     if(isExpanded) {
         Column(
@@ -152,7 +164,7 @@ fun OrderCard(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Text(
-                    text = "Valor: R$${order.price}",
+                    text = order.price.toBRL(),
                     color = ValueColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold
@@ -169,89 +181,120 @@ fun OrderCard(
             Divider(color = Color.White)
 
             Row(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = convertMillisToString(order.orderDate),
-                    color = BrownColor,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(100.dp)
-                )
-
-                Text(
-                    text = convertMillisToString(order.deliverDate),
-                    color = Primary,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.width(100.dp)
-                )
-
-                Box {
-                    Row {
-                        Icon(
-                            imageVector = Icons.Default.Edit,
-                            contentDescription = null,
-                            tint = InProductionStatus,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(Color.Black.copy(alpha = 0.5f))
-                                .border(1.dp, Color.White, RoundedCornerShape(5.dp))
-                        )
-
-                        Spacer(modifier = Modifier.width(8.dp))
-
-                        Icon(
-                            imageVector = Icons.Default.Delete,
-                            contentDescription = null,
-                            tint = CancelledStatus,
-                            modifier = Modifier
-                                .size(32.dp)
-                                .clip(RoundedCornerShape(5.dp))
-                                .background(Color.Black.copy(alpha = 0.8f))
-                                .border(1.dp, Color.White, RoundedCornerShape(5.dp))
-                                .clickable { onDelete(order) }
-                        )
-                    }
-                }
-            }
-
-            Divider(color = Color.White, modifier = Modifier.padding(bottom = 8.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Row(
-                    modifier = Modifier
-                        .border(1.dp, Primary, RoundedCornerShape(15.dp))
-                        .padding(vertical = 4.dp, horizontal = 12.dp)
-                        .clickable {
-                            // NEXT STATUS
-                        }
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(
-                        text = stringResource(id = R.string.next_status_text),
+                        text = "Pedido: ${convertMillisToString(order.orderDate)}",
+                        color = BrownColor,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center
+                    )
+
+                    Text(
+                        text = "Entrega: ${convertMillisToString(order.deliverDate)}",
                         color = Primary,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp,
-                        modifier = Modifier.padding(end = 8.dp)
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            if(customerOwnerName?.isNotEmpty() == true) {
+                Divider(color = Color.White)
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "Cliente: ",
+                        color = Primary,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.SemiBold
                     )
 
-                    Icon(
-                        painter = painterResource(id = R.drawable.next_custom_icon),
-                        contentDescription = null,
-                        tint = Primary,
-                        modifier = Modifier.size(40.dp)
+                    Text(
+                        text = customerOwnerName,
+                        color = Color.White,
+                        fontFamily = InterFontFamily,
+                        fontWeight = FontWeight.SemiBold,
+                        overflow = TextOverflow.Ellipsis
                     )
+                }
+            }
+
+            Divider(color = Color.White)
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center
+            ) {
+                CustomActionButton(
+                    text = stringResource(id = R.string.btn_text_edit),
+                    color = InProductionStatus,
+                    icon = Icons.Default.Edit
+                ) {
+                    onEdit(order)
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                CustomActionButton(
+                    text = stringResource(id = R.string.btn_text_delete),
+                    color = LightRed,
+                    icon = Icons.Default.Delete
+                ) {
+                    onDelete(order)
+                }
+            }
+
+            if(order.status !in blockedOrderStatus) {
+                Divider(color = Color.White, modifier = Modifier.padding(bottom = 8.dp))
+
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(15.dp))
+                            .background(brush = AppTitleGradient)
+                            .border(1.dp, Color.White, RoundedCornerShape(15.dp))
+                            .padding(vertical = 4.dp, horizontal = 12.dp)
+                            .clickable {
+                                onChangeStatus()
+                            }
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.next_status_text),
+                            color = Color.White,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 24.sp,
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+
+                        Icon(
+                            painter = painterResource(id = R.drawable.next_custom_icon),
+                            contentDescription = null,
+                            tint = Color.White,
+                            modifier = Modifier.size(40.dp)
+                        )
+                    }
                 }
             }
         }
@@ -313,7 +356,7 @@ fun OrderCard(
                     fontWeight = FontWeight.Bold,
                 )
 
-                if(customerOwner != null) {
+                if(customerOwnerName?.isNotEmpty() == true) {
                     Spacer(modifier = Modifier.height(4.dp))
                     Divider(color = Primary)
                     Spacer(modifier = Modifier.height(4.dp))
@@ -330,7 +373,7 @@ fun OrderCard(
                         )
 
                         Text(
-                            text = customerOwner.name,
+                            text = customerOwnerName,
                             color = Color.White,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold,
@@ -350,6 +393,40 @@ fun OrderCard(
     }
 }
 
+@Composable
+fun CustomActionButton(
+    text: String,
+    color: Color,
+    icon: ImageVector,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .clip(RoundedCornerShape(15.dp))
+            .background(Primary)
+            .border(1.dp, Primary, RoundedCornerShape(15.dp))
+            .padding(vertical = 4.dp, horizontal = 12.dp)
+            .clickable { onClick() },
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = icon,
+            contentDescription = null,
+            tint = color,
+        )
+
+        Spacer(modifier = Modifier.width(8.dp))
+
+        Text(
+            text = text,
+            color = color,
+            fontFamily = InterFontFamily,
+            fontWeight = FontWeight.SemiBold,
+            fontSize = 14.sp
+        )
+    }
+}
+
 @Preview(showBackground = true)
 @Composable
 private fun OrderCardPreview() {
@@ -365,9 +442,11 @@ private fun OrderCardPreview() {
             OrderCard(
                 order = ordersMock[0],
                 isExpanded = false,
-                customerOwner = customerOwner,
+                customerOwnerName = customerOwner.name,
+                onExpandChange = {},
+                onEdit = {},
                 onDelete = {},
-                onExpandChange = {}
+                onChangeStatus = {}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -375,9 +454,11 @@ private fun OrderCardPreview() {
             OrderCard(
                 order = ordersMock[0],
                 isExpanded = true,
-                customerOwner = customerOwner,
+                customerOwnerName = customerOwner.name,
+                onExpandChange = {},
+                onEdit = {},
                 onDelete = {},
-                onExpandChange = {}
+                onChangeStatus = {}
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -386,13 +467,27 @@ private fun OrderCardPreview() {
                 OrderCard(
                     order = it,
                     isExpanded = false,
-                    customerOwner = customerOwner,
+                    customerOwnerName = customerOwner.name,
+                    onExpandChange = {},
+                    onEdit = {},
                     onDelete = {},
-                    onExpandChange = {}
+                    onChangeStatus = {}
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun CustomActionButtonPreview() {
+    ConfectionaryAdminTheme {
+        CustomActionButton(
+            text = "EDITAR",
+            color = InProductionStatus,
+            icon = Icons.Default.Edit,
+        ) {}
     }
 }

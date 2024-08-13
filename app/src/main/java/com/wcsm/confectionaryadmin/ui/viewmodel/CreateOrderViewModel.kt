@@ -37,7 +37,7 @@ class CreateOrderViewModel @Inject constructor(
                 customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,
                 description = orderState.value.orderDescription,
-                price = 0.0,
+                price = orderState.value.price,
                 status = orderState.value.status,
                 orderDate = convertStringToDateMillis(
                     dateString = "${orderState.value.orderDate} $currentHourAndMinute"

@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.CreateCustomerState
@@ -25,15 +26,17 @@ class CreateCustomerViewModel @Inject constructor(
         _customerState.value = newState
     }
 
-    fun createNewCustomer() {
-        _newCustomerCreated.value = false
+    fun updateNewCustomerCreated(newStatus: Boolean) {
+        _newCustomerCreated.value = newStatus
+    }
 
+    fun createNewCustomer() {
         val customerName = customerState.value.name
         if(validateCustomername(customerName)) {
             val formattedName = formatName(customerName)
             val newCustomer = Customer(
                 name = formattedName,
-                email = customerState.value.email,
+                email = customerState.value.email.lowercase(),
                 phone = customerState.value.phone,
                 gender = customerState.value.gender,
                 dateOfBirth = customerState.value.dateOfBirth,
@@ -58,6 +61,7 @@ class CreateCustomerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 customerRepository.insertCustomer(customer)
+                Log.i("#-# TESTE #-#", "Inseriu customer no DB: $customer")
                 _newCustomerCreated.value = true
             } catch (e: Exception) {
                 e.printStackTrace()

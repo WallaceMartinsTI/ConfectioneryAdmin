@@ -75,11 +75,13 @@ import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateCustomerViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CreateCustomerScreen(
     navController: NavController,
+    customersViewModel: CustomersViewModel,
     createCustomerViewModel: CreateCustomerViewModel = hiltViewModel()
 ) {
     val customerState by createCustomerViewModel.customerState.collectAsState()
@@ -97,6 +99,9 @@ fun CreateCustomerScreen(
 
     LaunchedEffect(newCustomerCreate) {
         if(newCustomerCreate) {
+            createCustomerViewModel.updateNewCustomerCreated(false)
+            customersViewModel.getAllCustomers()
+            Log.i("#-# TESTE #-#", "newCustomer foi criado, vai navegar")
             navController.navigate(Screen.Customers.route)
         }
     }
@@ -531,9 +536,11 @@ fun CreateCustomerScreen(
 
 @Preview
 @Composable
-private fun CreateCustomerScreenPreview() {
+private fun CreateCustomerScreenPreview(
+    customersViewModel: CustomersViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
-        CreateCustomerScreen(navController)
+        CreateCustomerScreen(navController, customersViewModel)
     }
 }

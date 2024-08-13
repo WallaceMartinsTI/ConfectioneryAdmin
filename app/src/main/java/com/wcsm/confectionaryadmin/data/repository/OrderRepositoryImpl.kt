@@ -1,25 +1,31 @@
 package com.wcsm.confectionaryadmin.data.repository
 
-import android.util.Log
+import com.wcsm.confectionaryadmin.data.database.CustomerDao
 import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao
 ) : OrderRepository {
-    override suspend fun getAllOrdersWithCustomer(): List<OrderWithCustomer> {
-        return orderDao.getAllOrdersWithCustomer()
+
+    override suspend fun getOrdersWithCustomers(): List<OrderWithCustomer> {
+        return orderDao.getOrdersWithCustomers()
     }
+
+    override suspend fun getOrderByCustomerOwner(customerOwnerId: Int): List<Order> {
+        return orderDao.getOrderByCustomerOwner(customerOwnerId)
+    }
+
 
     override suspend fun insertOrder(order: Order) {
         orderDao.insertOrder(order)
+    }
+
+    override suspend fun updateOrder(order: Order) {
+        return orderDao.updateOrder(order)
     }
 
     override suspend fun deleteOrder(order: Order) {

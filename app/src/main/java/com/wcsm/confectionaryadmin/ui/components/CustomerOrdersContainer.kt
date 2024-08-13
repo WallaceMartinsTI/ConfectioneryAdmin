@@ -99,8 +99,10 @@ fun CustomerOrdersContainer(
             items(orders) {
                 OrderCard(
                     order = it,
+                    isExpanded = expandedStates[it.orderId] ?: false,
+                    onEdit = {},
                     onDelete = {},
-                    isExpanded = expandedStates[it.orderId] ?: false
+                    onChangeStatus = {}
                 ) { expanded ->
                     expandedStates[it.orderId] = expanded
                 }

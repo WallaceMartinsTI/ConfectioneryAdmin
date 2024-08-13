@@ -1,7 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.util
 
 import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 val customersMock = listOf(
@@ -54,12 +53,5 @@ val customersMock = listOf(
         dateOfBirth = "29/01/1999",
         address = "Av. Brasil, Nº 32, Centro - Belo Horizonte MG",
         notes= ""
-    )
-)
-
-val customersWithOthersMock = listOf(
-    CustomerWithOrders(
-        customer = customersMock[0],
-        orders = ordersMock
     )
 )

@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -82,16 +83,21 @@ import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.LightRed
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CustomerDetailsScreen(
     navController: NavController,
+    ordersViewModel: OrdersViewModel,
     customersViewModel: CustomersViewModel
 ) {
-    val selectedCustomerWithOrders by customersViewModel.selectedCustomer.collectAsState()
+    val selectedCustomer by customersViewModel.selectedCustomer.collectAsState()
+    val isCustomerDeleted by customersViewModel.isCustomerDeleted.collectAsState()
+    val customerOrders by ordersViewModel.customerOrders.collectAsState()
 
     var customer: Customer? by rememberSaveable { mutableStateOf(null) }
     var orders: List<Order>? by rememberSaveable { mutableStateOf(null) }
@@ -123,10 +129,23 @@ fun CustomerDetailsScreen(
         else -> painterResource(id = R.drawable.others)
     }
 
-    LaunchedEffect(selectedCustomerWithOrders) {
-        if(selectedCustomerWithOrders != null) {
-            customer = selectedCustomerWithOrders!!.customer
-            orders = selectedCustomerWithOrders!!.orders
+    LaunchedEffect(selectedCustomer) {
+        if(selectedCustomer != null) {
+            ordersViewModel.getOrdersByCustomer(selectedCustomer!!.customerId)
+        }
+    }
+
+    LaunchedEffect(isCustomerDeleted) {
+        if(isCustomerDeleted) {
+            ordersViewModel.getAllOrders()
+            navController.popBackStack()
+        }
+    }
+
+    LaunchedEffect(customerOrders) {
+        if(customerOrders != null) {
+            customer = selectedCustomer
+            orders = customerOrders
 
             name = customer!!.name
             email = customer!!.email ?: ""
@@ -181,7 +200,7 @@ fun CustomerDetailsScreen(
                     )
 
                     Text(
-                        text = customer?.name ?: "",
+                        text = name,
                         color = Primary,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.Bold,
@@ -195,6 +214,7 @@ fun CustomerDetailsScreen(
                             .size(50.dp)
                             .clickable {
                                 navController.popBackStack()
+                                customersViewModel.updateSelectedCustomer(null)
                             }
                     )
                 }
@@ -263,6 +283,7 @@ fun CustomerDetailsScreen(
                         placeholder = stringResource(id = R.string.textfield_placeholder_phone),
                         keyboardType = KeyboardType.Phone,
                         imeAction = ImeAction.Next,
+                        visualTransformation = PhoneNumberVisualTransformation(),
                         errorMessage = null,
                         leadingIcon = {
                             Icon(
@@ -491,7 +512,6 @@ fun CustomerDetailsScreen(
 
                 CustomDeleteButton(text = stringResource(id = R.string.btn_text_delete_customer)) {
                     customersViewModel.deleteCustomer(customer!!)
-                    navController.popBackStack()
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -546,12 +566,14 @@ private fun CustomDeleteButton(
 @Preview
 @Composable
 fun CustomerDetailsScreenPreview(
+    ordersViewModel: OrdersViewModel = hiltViewModel(),
     customersViewModel: CustomersViewModel = hiltViewModel()
 ) {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         CustomerDetailsScreen(
             navController = navController,
+            ordersViewModel = ordersViewModel,
             customersViewModel = customersViewModel
         )
     }

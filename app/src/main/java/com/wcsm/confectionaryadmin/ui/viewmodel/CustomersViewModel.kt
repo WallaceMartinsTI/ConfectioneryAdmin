@@ -1,10 +1,8 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,18 +14,21 @@ import javax.inject.Inject
 class CustomersViewModel @Inject constructor(
     private val customerRepository: CustomerRepository
 ) : ViewModel() {
-    private val _customersWithOrders = MutableStateFlow<List<CustomerWithOrders>>(emptyList())
-    val customersWithOrders = _customersWithOrders.asStateFlow()
+    private val _customers = MutableStateFlow<List<Customer>>(emptyList())
+    val customers = _customers.asStateFlow()
 
-    private val _selectedCustomer = MutableStateFlow<CustomerWithOrders?>(null)
+    private val _selectedCustomer = MutableStateFlow<Customer?>(null)
     val selectedCustomer = _selectedCustomer.asStateFlow()
+
+    private val _isCustomerDeleted = MutableStateFlow(false)
+    val isCustomerDeleted = _isCustomerDeleted.asStateFlow()
 
     init {
         getAllCustomers()
     }
 
-    fun updateSelectedCustomer(customerWithOrders: CustomerWithOrders) {
-        _selectedCustomer.value = customerWithOrders
+    fun updateSelectedCustomer(customer: Customer?) {
+        _selectedCustomer.value = customer
     }
 
     fun deleteCustomer(customer: Customer) {
@@ -35,17 +36,19 @@ class CustomersViewModel @Inject constructor(
             try {
                 customerRepository.deleteCustomer(customer)
                 getAllCustomers()
+                _isCustomerDeleted.value = true
             } catch (e: Exception) {
                 e.printStackTrace()
+                _isCustomerDeleted.value = false
             }
         }
     }
 
-    private fun getAllCustomers() {
+    fun getAllCustomers() {
         viewModelScope.launch {
             try {
-                val customersWithOrders = customerRepository.getCustomersWithOrders()
-                _customersWithOrders.value = customersWithOrders
+                val customers = customerRepository.getAllCustomers()
+                _customers.value = customers
             } catch (e: Exception) {
                 e.printStackTrace()
             }

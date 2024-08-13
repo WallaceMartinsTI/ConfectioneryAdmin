@@ -65,9 +65,11 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog
 import com.wcsm.confectionaryadmin.ui.components.CustomRadioButton
 import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
+import com.wcsm.confectionaryadmin.ui.components.OrdersFilterDialog
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
@@ -81,6 +83,7 @@ import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
 import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
+import com.wcsm.confectionaryadmin.ui.util.getNextStatus
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 val ordersMock = listOf(
@@ -129,13 +132,15 @@ val ordersMock = listOf(
 @Composable
 fun OrdersScreen(
     paddingValues: PaddingValues,
-    ordersViewModel: OrdersViewModel = hiltViewModel()
+    ordersViewModel: OrdersViewModel
 ) {
-    val ordersWithCustomers by ordersViewModel.ordersWithCustomer.collectAsState()
+    val ordersWithCustomer by ordersViewModel.ordersWithCustomer.collectAsState()
+    val orderToChangeStatus by ordersViewModel.orderToChangeStatus.collectAsState()
 
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
     var showFilterDialog by remember { mutableStateOf(false) }
+    var showChangeOrderStatusDialog by remember { mutableStateOf(false) }
 
     val customBlur = if(showFilterDialog) 8.dp else 0.dp
 
@@ -214,16 +219,21 @@ fun OrdersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(ordersWithCustomers) {
+                items(ordersWithCustomer) {
                     OrderCard(
                         order = it.order,
                         isExpanded = expandedStates[it.order.orderId] ?: false,
-                        customerOwner = it.customer,
+                        customerOwnerName = it.customer.name,
+                        onExpandChange = { expanded ->
+                            expandedStates[it.order.orderId] = expanded
+                        },
+                        onEdit = {},
                         onDelete = { order ->
                             ordersViewModel.deleteOrder(order)
                         },
-                        onExpandChange = { expanded ->
-                            expandedStates[it.order.orderId] = expanded
+                        onChangeStatus = {
+                            ordersViewModel.updateOrderToChangeStatus(it.order)
+                            showChangeOrderStatusDialog = true
                         }
                     )
 
@@ -239,387 +249,25 @@ fun OrdersScreen(
                 }
             }
         }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun OrdersFilterDialog(
-    ordersViewModel: OrdersViewModel,
-    onDissmissDialog: () -> Unit
-) {
-    var dialogSelected by remember { mutableStateOf("") }
-
-    var showDatePickerDialog by remember { mutableStateOf(false) }
-    var selectedDate by remember { mutableStateOf("") }
-
-    var statusDropdownExpanded by remember { mutableStateOf(false) }
-    var selectedStatus by remember { mutableStateOf("Selecione um status") }
-
-    var filterResult by remember { mutableStateOf("Selecione um filtro") }
-
-    LaunchedEffect(selectedDate, selectedStatus) {
-        filterResult = when {
-            selectedDate.isNotEmpty() -> "Data: $selectedDate"
-            selectedStatus != "Selecione um status" -> "Status: $selectedStatus"
-            else -> "Selecione um filtro"
-        }
-    }
-
-    Column(
-        modifier = Modifier
-            .width(300.dp)
-            .clip(RoundedCornerShape(15.dp))
-            .background(brush = InvertedAppBackground)
-            .padding(vertical = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(id = R.string.filter_by),
-                color = Primary,
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                textDecoration = TextDecoration.Underline
-            )
-
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable { onDissmissDialog() },
-                tint = Primary
-            )
-        }
-
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            CustomRadioButton(
-                text = stringResource(id = R.string.date),
-                isSelected = dialogSelected == "DATA"
-            ) {
-                dialogSelected = "DATA"
-                showDatePickerDialog = true
-                filterResult = "Selecione um filtro"
-                selectedStatus = "Selecione um status"
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            CustomRadioButton(
-                text = stringResource(id = R.string.textfield_label_status),
-                isSelected = dialogSelected == "STATUS"
-            ) {
-                dialogSelected = "STATUS"
-                filterResult = "Selecione um filtro"
-                selectedDate = ""
-            }
-
-            if(dialogSelected == "DATA" && showDatePickerDialog) {
-                MonthYearPickerDialog(
-                    onDissmissDialog = { showDatePickerDialog = false }
-                ) { month, year ->  
-                    selectedDate = "$month/$year"
-                }
-            }
-
-            if(dialogSelected == "STATUS") {
-                val colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = TextFieldBackground,
-                    unfocusedContainerColor = TextFieldBackground,
-                    errorContainerColor = TextFieldBackground,
-                    cursorColor = Primary,
-                    focusedBorderColor = Primary,
-                    unfocusedBorderColor = Primary,
-                    selectionColors = TextSelectionColors(
-                        Primary, Color.Transparent
-                    )
-                )
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                Box {
-                    ExposedDropdownMenuBox(
-                        expanded = dialogSelected == "STATUS" && statusDropdownExpanded,
-                        onExpandedChange = {
-                            statusDropdownExpanded = !statusDropdownExpanded
-                        }
-                    ) {
-                        OutlinedTextField(
-                            modifier = Modifier
-                                .menuAnchor()
-                                .height(50.dp)
-                                .width(250.dp),
-                            value = selectedStatus,
-                            onValueChange = {
-                                statusDropdownExpanded = !statusDropdownExpanded
-                            },
-                            textStyle = TextStyle(
-                                color = Primary,
-                                fontFamily = InterFontFamily,
-                                fontSize = 18.sp
-                            ),
-                            colors = colors,
-                            singleLine = true,
-                            readOnly = true,
-                            keyboardOptions = KeyboardOptions.Default.copy(
-                                imeAction = ImeAction.None
-                            ),
-                            trailingIcon = {
-                                Icon(
-                                    imageVector =
-                                    if(statusDropdownExpanded) Icons.Filled.KeyboardArrowUp
-                                    else Icons.Filled.KeyboardArrowDown,
-                                    contentDescription = null,
-                                    tint = Primary
-                                )
-                            }
-                        )
-
-                        ExposedDropdownMenu(
-                            expanded = statusDropdownExpanded,
-                            onDismissRequest = {
-                                statusDropdownExpanded = false
-                            },
-                            modifier = Modifier.background(color = StrongDarkPurple)
-                        ) {
-                            val statusOptions = listOf(
-                                stringResource(id = R.string.status_quotation),
-                                stringResource(id = R.string.status_confirmed),
-                                stringResource(id = R.string.status_in_production),
-                                stringResource(id = R.string.status_finished),
-                                stringResource(id = R.string.status_delivered),
-                                stringResource(id = R.string.status_cancelled)
-                            )
-
-                            statusOptions.forEach {
-                                DropdownMenuItem(
-                                    text = {
-                                        Text(
-                                            text = it,
-                                            color = Color.White,
-                                            fontFamily = InterFontFamily,
-                                            fontWeight = FontWeight.SemiBold
-                                        )
-                                    },
-                                    onClick = {
-                                        selectedStatus = it
-                                        statusDropdownExpanded = false
-                                    }
-                                )
-                            }
-                        }
-                    }
-                }
-            }
-
-            OutlinedTextField(
-                modifier = Modifier
-                    .width(250.dp)
-                    .padding(top = 16.dp),
-                value = filterResult,
-                enabled = false,
-                onValueChange = {
-                    statusDropdownExpanded = !statusDropdownExpanded
-                },
-                textStyle = TextStyle(
-                    color = Primary,
-                    fontFamily = InterFontFamily,
-                    fontSize = 18.sp
-                ),
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = TextFieldBackground,
-                    unfocusedContainerColor = TextFieldBackground,
-                    errorContainerColor = TextFieldBackground,
-                    cursorColor = Primary,
-                    focusedBorderColor = Primary,
-                    unfocusedBorderColor = Primary,
-                    selectionColors = TextSelectionColors(
-                        Primary, Color.Transparent
-                    )
-                ),
-            )
-
-            PrimaryButton(
-                text = "CONFIRMAR",
-                width = 200.dp,
-                modifier = Modifier.padding(top = 8.dp)
-            ) {
-                ordersViewModel.updateFilterResult(newResult = filterResult)
-                onDissmissDialog()
-            }
-        }
         
-    }
-}
-
-@Composable
-fun MonthYearPickerDialog(
-    onDissmissDialog: () -> Unit,
-    onMonthYearSelected: (month: String, year: Int) -> Unit
-) {
-    val monthList = listOf(
-        stringResource(id = R.string.month_january), stringResource(id = R.string.month_february),
-        stringResource(id = R.string.month_march), stringResource(id = R.string.month_april),
-        stringResource(id = R.string.month_may), stringResource(id = R.string.month_june),
-        stringResource(id = R.string.month_july), stringResource(id = R.string.month_august),
-        stringResource(id = R.string.month_september), stringResource(id = R.string.month_october),
-        stringResource(id = R.string.month_november), stringResource(id = R.string.month_december)
-    )
-
-    val month by remember { mutableStateOf(getCurrentMonth(ptBr = true)) }
-    var monthIndex by remember {
-        mutableIntStateOf(monthList.indexOf(capitalizeFirstLetter(month)))
-    }
-
-    var year by remember { mutableIntStateOf(getCurrentYear()) }
-
-    Dialog(
-        onDismissRequest = { onDissmissDialog() }
-    ) {
-        Column(
-            modifier = Modifier
-                .width(500.dp)
-                .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
-                .padding(12.dp)
-            ,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = stringResource(id = R.string.month_title),
-                color = Color.White,
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 24.sp
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
-                        .width(60.dp)
-                        .height(40.dp)
-                        .clickable {
-                            if (monthIndex == 0) {
-                                monthIndex = 11
-                            } else {
-                                monthIndex--
-                            }
-                        }
-                )
-
-                Text(
-                    text = monthList[monthIndex],
-                    color = Primary,
-                    textAlign = TextAlign.Center,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp
-                )
-
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
-                        .width(60.dp)
-                        .height(40.dp)
-                        .clickable {
-                            if (monthIndex == 11) {
-                                monthIndex = 0
-                            } else {
-                                monthIndex++
-                            }
-                        }
-                )
-            }
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 8.dp, horizontal = 24.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
-                        .width(60.dp)
-                        .height(40.dp)
-                        .clickable { year-- }
-                )
-
-                Text(
-                    text = year.toString(),
-                    color = Primary,
-                    textAlign = TextAlign.Center,
-                    fontFamily = InterFontFamily,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 20.sp
-                )
-
-                Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
-                        .width(60.dp)
-                        .height(40.dp)
-                        .clickable { year++ }
-                )
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceAround
-            ) {
-                PrimaryButton(
-                    text = "Cancelar",
-                    width = 100.dp
+        if(showChangeOrderStatusDialog && orderToChangeStatus != null) {
+            Dialog(onDismissRequest = {
+                showChangeOrderStatusDialog = false
+                ordersViewModel.updateOrderToChangeStatus(null)
+            }) {
+                ChangeStatusDialog(
+                    order = orderToChangeStatus!!,
+                    onDissmiss = {
+                        showChangeOrderStatusDialog = false
+                        ordersViewModel.updateOrderToChangeStatus(null)
+                    }
                 ) {
-                    onDissmissDialog()
-                }
-
-                PrimaryButton(
-                    text = "Escolher data",
-                    width = 150.dp
-                ) {
-                    onMonthYearSelected(monthList[monthIndex], year)
-                    onDissmissDialog()
+                    val statusChangedOrder = orderToChangeStatus!!.copy(
+                        status = getNextStatus(orderToChangeStatus!!.status)
+                    )
+                    ordersViewModel.updateOrder(statusChangedOrder)
+                    ordersViewModel.updateOrderToChangeStatus(null)
+                    showChangeOrderStatusDialog = false
                 }
             }
         }
@@ -628,28 +276,11 @@ fun MonthYearPickerDialog(
 
 @Preview(showBackground = true)
 @Composable
-private fun OrdersScreenPreview() {
+private fun OrdersScreenPreview(
+    ordersViewModel: OrdersViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
         val paddingValues = PaddingValues()
-        OrdersScreen(paddingValues)
-    }
-}
-
-@Preview
-@Composable
-private fun OrdersFilterDialogPreview() {
-    ConfectionaryAdminTheme {
-        OrdersFilterDialog(ordersViewModel = viewModel()) {}
-    }
-}
-
-@Preview
-@Composable
-fun MonthYearPickerDialogPreview() {
-    ConfectionaryAdminTheme {
-        MonthYearPickerDialog(
-            onDissmissDialog = {},
-            onMonthYearSelected = { _, _ -> }
-        )
+        OrdersScreen(paddingValues, ordersViewModel)
     }
 }

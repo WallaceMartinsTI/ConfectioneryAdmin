@@ -119,3 +119,14 @@ fun getCurrentHourAndMinutes(): String {
         "$currentHour:$currentMinute"
     }
 }
+
+fun getNextStatus(orderStatus: OrderStatus): OrderStatus {
+    return when(orderStatus) {
+        OrderStatus.QUOTATION -> OrderStatus.CONFIRMED
+        OrderStatus.CONFIRMED -> OrderStatus.IN_PRODUCTION
+        OrderStatus.IN_PRODUCTION -> OrderStatus.FINISHED
+        OrderStatus.FINISHED -> OrderStatus.DELIVERED
+        OrderStatus.DELIVERED -> OrderStatus.CANCELLED
+        OrderStatus.CANCELLED -> OrderStatus.QUOTATION
+    }
+}

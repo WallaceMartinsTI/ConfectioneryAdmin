@@ -40,6 +40,8 @@
     <string name="btn_text_show_orders">VER PEDIDOS</string>
     <string name="btn_text_delete_customer">DELETAR CLIENTE</string>
     <string name="btn_text_save_edit">SALVAR ALTERAÇÕES</string>
+    <string name="btn_text_edit">EDITAR</string>
+    <string name="btn_text_delete">DELETAR</string>
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>

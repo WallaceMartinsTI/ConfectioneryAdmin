@@ -6,7 +6,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "customers")
 data class Customer(
-    @PrimaryKey(autoGenerate = true) val customerId: Int = 0,
+    @PrimaryKey(autoGenerate = true)
+    @ColumnInfo(name = "customer_id") val customerId: Int = 0,
     val name: String,
     val email: String?,
     val phone: String?,

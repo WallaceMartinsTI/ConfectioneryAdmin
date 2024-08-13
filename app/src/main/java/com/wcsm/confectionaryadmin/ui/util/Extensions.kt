@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.util
 
+import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -15,4 +16,9 @@ fun Long.toBrazillianDateFormat(
         timeZone = TimeZone.getTimeZone("GMT")
     }
     return formatter.format(date)
+}
+
+fun Double.toBRL(): String {
+    val ptBR = Locale("pt", "BR")
+    return NumberFormat.getCurrencyInstance(ptBR).format(this)
 }

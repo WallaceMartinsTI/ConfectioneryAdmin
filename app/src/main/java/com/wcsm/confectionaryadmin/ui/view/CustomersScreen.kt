@@ -42,7 +42,6 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomersScreenFilter
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
@@ -58,10 +57,10 @@ fun CustomersScreen(
     paddingValues: PaddingValues,
     customersViewModel: CustomersViewModel
 ) {
-    val customersWithOrders by customersViewModel.customersWithOrders.collectAsState()
+    val customers by customersViewModel.customers.collectAsState()
 
     var searchInput by remember { mutableStateOf("") }
-    var selectedCustomer by remember { mutableStateOf<CustomerWithOrders?>(null) }
+    var selectedCustomer by remember { mutableStateOf<Customer?>(null) }
 
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
@@ -69,7 +68,7 @@ fun CustomersScreen(
     LaunchedEffect(selectedCustomer) {
         if(selectedCustomer != null) {
             customersViewModel.updateSelectedCustomer(
-                customerWithOrders = selectedCustomer!!
+                customer = selectedCustomer!!
             )
             navController.navigate(Screen.CustomerDetails.route)
         }
@@ -129,9 +128,9 @@ fun CustomersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(customersWithOrders) {
+                items(customers) {
                     MinimizedCustomerCard(
-                        customer = it.customer,
+                        customer = it,
                         expandIcon = true
                     ) {
                         selectedCustomer = it

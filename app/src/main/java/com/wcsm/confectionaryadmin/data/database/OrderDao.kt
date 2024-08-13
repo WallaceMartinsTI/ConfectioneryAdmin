@@ -6,8 +6,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.CustomerWithOrders
+import androidx.room.Update
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 
@@ -16,10 +15,16 @@ interface OrderDao {
 
     @Transaction
     @Query("SELECT * FROM orders")
-    suspend fun getAllOrdersWithCustomer(): List<OrderWithCustomer>
+    suspend fun getOrdersWithCustomers(): List<OrderWithCustomer>
+
+    @Query("SELECT * FROM orders WHERE customer_owner_id = :customerOwnerId")
+    suspend fun getOrderByCustomerOwner(customerOwnerId: Int): List<Order>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrder(order: Order)
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun updateOrder(order: Order)
 
     @Delete
     suspend fun deleteOrder(order: Order)
