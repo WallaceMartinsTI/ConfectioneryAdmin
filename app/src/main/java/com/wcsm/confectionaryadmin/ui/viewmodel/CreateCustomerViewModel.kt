@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.CreateCustomerState
@@ -22,6 +21,9 @@ class CreateCustomerViewModel @Inject constructor(
     private val _newCustomerCreated = MutableStateFlow(false)
     val newCustomerCreated = _newCustomerCreated.asStateFlow()
 
+    private val _customerUpdated = MutableStateFlow(false)
+    val customerUpdated = _customerUpdated.asStateFlow()
+
     fun updateCreateCustomerState(newState: CreateCustomerState) {
         _customerState.value = newState
     }
@@ -30,11 +32,18 @@ class CreateCustomerViewModel @Inject constructor(
         _newCustomerCreated.value = newStatus
     }
 
-    fun createNewCustomer() {
+    fun updateCustomerUpdated(newStatus: Boolean) {
+        _customerUpdated.value = newStatus
+    }
+
+    fun saveCustomer(
+        isUpdateCustomer: Boolean = false
+    ) {
         val customerName = customerState.value.name
         if(validateCustomername(customerName)) {
             val formattedName = formatName(customerName)
-            val newCustomer = Customer(
+            val customer = Customer(
+                customerId = customerState.value.customerId ?: 0,
                 name = formattedName,
                 email = customerState.value.email.lowercase(),
                 phone = customerState.value.phone,
@@ -43,7 +52,12 @@ class CreateCustomerViewModel @Inject constructor(
                 address = customerState.value.address,
                 notes = customerState.value.notes
             )
-            saveCustomerToDatabase(customer = newCustomer)
+
+            if(isUpdateCustomer) {
+                updateUserToDatabase(customer = customer)
+            } else {
+                saveUserToDatabase(customer = customer)
+            }
         }
     }
 
@@ -57,11 +71,21 @@ class CreateCustomerViewModel @Inject constructor(
             }
     }
 
-    private fun saveCustomerToDatabase(customer: Customer) {
+    private fun updateUserToDatabase(customer: Customer) {
+        viewModelScope.launch {
+            try {
+                customerRepository.updateCustomer(customer)
+                _customerUpdated.value = true
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+
+    private fun saveUserToDatabase(customer: Customer) {
         viewModelScope.launch {
             try {
                 customerRepository.insertCustomer(customer)
-                Log.i("#-# TESTE #-#", "Inseriu customer no DB: $customer")
                 _newCustomerCreated.value = true
             } catch (e: Exception) {
                 e.printStackTrace()

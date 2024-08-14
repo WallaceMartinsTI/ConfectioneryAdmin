@@ -21,7 +21,9 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.PostAdd
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -45,10 +47,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomStatus
 import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -80,6 +84,8 @@ fun MainScreen(
     var deliveredOrders by rememberSaveable { mutableIntStateOf(0) }
     var cancelledOrders by rememberSaveable { mutableIntStateOf(0) }
 
+    var isScreenLoading by rememberSaveable { mutableStateOf(true) }
+
     LaunchedEffect(order) {
         quotationOrders = order.filter {
             it.order.status == OrderStatus.QUOTATION
@@ -104,17 +110,26 @@ fun MainScreen(
         cancelledOrders = order.filter {
             it.order.status == OrderStatus.CANCELLED
         }.size
+
+        isScreenLoading = false
     }
 
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(paddingValues)
-    ) {
+    if(isScreenLoading) {
         Column(
             modifier = Modifier
                 .background(AppBackground)
                 .fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            CustomLoading(size = 80.dp)
+        }
+    } else {
+        Column(
+            modifier = Modifier
+                .background(AppBackground)
+                .fillMaxSize()
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(

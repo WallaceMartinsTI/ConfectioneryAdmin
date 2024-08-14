@@ -1,7 +1,9 @@
 package com.wcsm.confectionaryadmin.ui.util
 
+import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import java.io.Serializable
 import java.text.SimpleDateFormat
@@ -35,41 +37,6 @@ fun getCurrentMonth(ptBr: Boolean = false): String {
 
 fun capitalizeFirstLetter(text: String): String {
     return text.replaceFirstChar { it.uppercase() }
-}
-
-fun getMonthFromStringToIndex(month: String, ptBr: Boolean = false): Int {
-    val ptBrMonths = listOf(
-        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-    )
-    val enUsMonths = listOf(
-        "January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"
-    )
-
-    return if(ptBr) {
-        ptBrMonths.indexOf(month)
-    } else {
-        enUsMonths.indexOf(month)
-    }
-}
-
-fun getStartAndEndOfMonth(month: Int, year: Int): Pair<Long, Long> {
-    val calendar = Calendar.getInstance()
-
-    // Set start of the month
-    calendar.set(year, month, 1, 0, 0, 0)
-    calendar.set(Calendar.MILLISECOND, 0)
-    val startOfMonth = calendar.timeInMillis
-
-    // Set end of the month
-    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH))
-    calendar.set(Calendar.HOUR_OF_DAY, 23)
-    calendar.set(Calendar.MINUTE, 59)
-    calendar.set(Calendar.SECOND, 59)
-    val endOfMonth = calendar.timeInMillis
-
-    return Pair(startOfMonth, endOfMonth)
 }
 
 fun convertStringToDateMillis(dateString: String): Long {
@@ -129,4 +96,8 @@ fun getNextStatus(orderStatus: OrderStatus): OrderStatus {
         OrderStatus.DELIVERED -> OrderStatus.CANCELLED
         OrderStatus.CANCELLED -> OrderStatus.QUOTATION
     }
+}
+
+fun showToastMessage(context: Context, message: String) {
+    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
 }

@@ -44,6 +44,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -139,6 +140,8 @@ fun OrdersScreen(
 
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
+    var invertedList by rememberSaveable { mutableStateOf(false) }
+
     var showFilterDialog by remember { mutableStateOf(false) }
     var showChangeOrderStatusDialog by remember { mutableStateOf(false) }
 
@@ -183,7 +186,7 @@ fun OrdersScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
-                            // Toggle Orders order by date
+                            invertedList = !invertedList
                         }
                 )
 
@@ -219,7 +222,12 @@ fun OrdersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(ordersWithCustomer) {
+                val ordersList = if(invertedList) {
+                    ordersWithCustomer.reversed()
+                } else {
+                    ordersWithCustomer
+                }
+                items(ordersList) {
                     OrderCard(
                         order = it.order,
                         isExpanded = expandedStates[it.order.orderId] ?: false,

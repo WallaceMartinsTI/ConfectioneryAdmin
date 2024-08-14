@@ -23,6 +23,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material3.Button
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -142,7 +143,7 @@ fun OrderCard(
                 )
             }
 
-            Divider(color = Color.White)
+            HorizontalDivider(color = Color.White)
 
             Text(
                 text = order.description,
@@ -154,7 +155,7 @@ fun OrderCard(
                 modifier = Modifier.padding(vertical = 4.dp)
             )
 
-            Divider(color = Color.White)
+            HorizontalDivider(color = Color.White)
 
             Row(
                 modifier = Modifier
@@ -178,7 +179,7 @@ fun OrderCard(
                 )
             }
 
-            Divider(color = Color.White)
+            HorizontalDivider(color = Color.White)
 
             Row(
                 modifier = Modifier
@@ -209,7 +210,7 @@ fun OrderCard(
             }
 
             if(customerOwnerName?.isNotEmpty() == true) {
-                Divider(color = Color.White)
+                HorizontalDivider(color = Color.White)
 
                 Row(
                     modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
@@ -232,7 +233,7 @@ fun OrderCard(
                 }
             }
 
-            Divider(color = Color.White)
+            HorizontalDivider(color = Color.White)
 
             Row(
                 modifier = Modifier
@@ -261,7 +262,7 @@ fun OrderCard(
             }
 
             if(order.status !in blockedOrderStatus) {
-                Divider(color = Color.White, modifier = Modifier.padding(bottom = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp), color = Color.White)
 
                 Row(
                     modifier = Modifier
@@ -277,7 +278,8 @@ fun OrderCard(
                             .padding(vertical = 4.dp, horizontal = 12.dp)
                             .clickable {
                                 onChangeStatus()
-                            }
+                            },
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
                             text = stringResource(id = R.string.next_status_text),
@@ -357,9 +359,7 @@ fun OrderCard(
                 )
 
                 if(customerOwnerName?.isNotEmpty() == true) {
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Divider(color = Primary)
-                    Spacer(modifier = Modifier.height(4.dp))
+                    HorizontalDivider(color = Primary, modifier = Modifier.padding(vertical = 4.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),

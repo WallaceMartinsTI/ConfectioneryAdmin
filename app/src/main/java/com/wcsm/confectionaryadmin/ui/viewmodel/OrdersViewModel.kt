@@ -7,6 +7,7 @@ import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -66,7 +67,7 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 val orders = orderRepository.getOrderByCustomerOwner(customerOwnerId)
-                _customerOrders.value = orders
+                _customerOrders.value = orders.reversed()
             } catch (e: Exception) {
                 e.printStackTrace()
             }

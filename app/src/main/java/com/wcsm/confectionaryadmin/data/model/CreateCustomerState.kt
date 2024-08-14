@@ -1,6 +1,7 @@
 package com.wcsm.confectionaryadmin.data.model
 
 data class CreateCustomerState(
+    val customerId: Int? = null,
     val name: String = "",
     val email: String = "",
     val phone: String = "",

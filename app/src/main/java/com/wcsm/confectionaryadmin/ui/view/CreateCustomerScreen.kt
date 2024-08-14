@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Note
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
@@ -23,7 +24,6 @@ import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Male
-import androidx.compose.material.icons.filled.Note
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Transgender
@@ -489,7 +489,7 @@ fun CreateCustomerScreen(
                 maxLines = 10,
                 leadingIcon = {
                     Icon(
-                        imageVector = Icons.Default.Note,
+                        imageVector = Icons.AutoMirrored.Default.Note,
                         contentDescription = null
                     )
                 },
@@ -526,7 +526,7 @@ fun CreateCustomerScreen(
             Spacer(modifier = Modifier.height(16.dp))
 
             PrimaryButton(text = stringResource(id = R.string.btn_text_create_customer)) {
-                createCustomerViewModel.createNewCustomer()
+                createCustomerViewModel.saveCustomer()
             }
 
             Spacer(modifier = Modifier.height(24.dp))

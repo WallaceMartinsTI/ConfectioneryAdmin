@@ -40,14 +40,15 @@ fun DateTimeContainer(modifier: Modifier = Modifier) {
         if(it.isLowerCase()) it.titlecase() else it.toString()
     }
 
-    if(dayOfTheWeek != "Sábado" && dayOfTheWeek != "Domingo") {
-        dayOfTheWeek += "-Feira"
+    if(dayOfTheWeek.endsWith("-feira")) {
+        dayOfTheWeek = dayOfTheWeek.replace("-feira", "-Feira")
     }
 
     val dateFormat = SimpleDateFormat(
         "dd 'de' MMMM 'de' yyyy", Locale("pt", "BR")
     )
-    val date = dateFormat.format(currentDate)
+    val rawDate = dateFormat.format(currentDate)
+    val formattedDate = capitalizeMonth(rawDate)
 
     var time by remember { mutableStateOf(getCurrentTime()) }
 
@@ -74,7 +75,7 @@ fun DateTimeContainer(modifier: Modifier = Modifier) {
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         DateTimeContainerText(text = dayOfTheWeek)
-        DateTimeContainerText(text = date)
+        DateTimeContainerText(text = formattedDate)
         DateTimeContainerText(text = time)
     }
 }
@@ -107,4 +108,13 @@ private fun DateTimeContainerPreview() {
 private fun getCurrentTime(): String {
     val timeFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
     return timeFormat.format(Date())
+}
+
+private fun capitalizeMonth(date: String): String {
+    val monthRegex = Regex("\\d{2} de ([a-záéíóúãõ]+) de \\d{4}")
+    return date.replace(monthRegex) { match ->
+        val month = match.groupValues[1]
+        val capitalizedMonth = month.replaceFirstChar { it.titlecase(Locale.getDefault()) }
+        match.groupValues[0].replace(month, capitalizedMonth)
+    }
 }
