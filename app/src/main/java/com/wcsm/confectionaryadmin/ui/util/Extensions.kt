@@ -52,3 +52,14 @@ fun OrderStatus.getStatusColor(): Color {
         OrderStatus.CANCELLED -> CancelledStatus
     }
 }
+
+fun OrderStatus.getNextStatus(): OrderStatus {
+    return when(this) {
+        OrderStatus.QUOTATION -> OrderStatus.CONFIRMED
+        OrderStatus.CONFIRMED -> OrderStatus.IN_PRODUCTION
+        OrderStatus.IN_PRODUCTION -> OrderStatus.FINISHED
+        OrderStatus.FINISHED -> OrderStatus.DELIVERED
+        OrderStatus.DELIVERED -> OrderStatus.CANCELLED
+        OrderStatus.CANCELLED -> OrderStatus.QUOTATION
+    }
+}
