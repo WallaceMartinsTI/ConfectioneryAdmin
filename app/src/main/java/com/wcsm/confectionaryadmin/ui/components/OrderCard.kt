@@ -64,7 +64,9 @@ import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
+import com.wcsm.confectionaryadmin.ui.util.getStatusColor
 import com.wcsm.confectionaryadmin.ui.util.toBRL
+import com.wcsm.confectionaryadmin.ui.util.toStatusString
 import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
@@ -77,7 +79,7 @@ fun OrderCard(
     onChangeStatus: () -> Unit,
     onExpandChange: (Boolean) -> Unit
 ) {
-    var formattedStatus = ""
+    /*var formattedStatus = ""
     var statusColor = Color.Black
 
     when(order.status) {
@@ -105,7 +107,7 @@ fun OrderCard(
             formattedStatus = "Cancelado"
             statusColor = CancelledStatus
         }
-    }
+    }*/
 
     val blockedOrderStatus = listOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED)
 
@@ -172,8 +174,8 @@ fun OrderCard(
                 )
 
                 Text(
-                    text = "Status: $formattedStatus",
-                    color = statusColor,
+                    text = "Status: ${order.status.toStatusString()}",
+                    color = order.status.getStatusColor(),
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold
                 )
@@ -330,13 +332,13 @@ fun OrderCard(
                     Icon(
                         imageVector = Icons.Default.Circle,
                         contentDescription = null,
-                        tint = statusColor,
+                        tint = order.status.getStatusColor(),
                         modifier = Modifier.size(12.dp)
                     )
 
                     Text(
-                        text = formattedStatus,
-                        color = statusColor,
+                        text = order.status.toStatusString(),
+                        color = order.status.getStatusColor(),
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.Bold,
                         fontSize = 20.sp,

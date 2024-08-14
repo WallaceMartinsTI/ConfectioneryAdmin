@@ -81,6 +81,7 @@ import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomerOrdersContainer
+import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
@@ -116,6 +117,8 @@ fun CustomerDetailsScreen(
 
     var customer: Customer? by rememberSaveable { mutableStateOf(null) }
     var orders: List<Order>? by rememberSaveable { mutableStateOf(null) }
+
+    var showDeleteCustomerDialog by remember { mutableStateOf(false) }
 
     var isCustomerDetailsScreenLoading by rememberSaveable { mutableStateOf(true) }
 
@@ -553,10 +556,23 @@ fun CustomerDetailsScreen(
                     Spacer(modifier = Modifier.height(12.dp))
 
                     CustomDeleteButton(text = stringResource(id = R.string.btn_text_delete_customer)) {
-                        customersViewModel.deleteCustomer(customer!!)
+                        showDeleteCustomerDialog = true
                     }
 
                     Spacer(modifier = Modifier.height(12.dp))
+                }
+
+                if(showDeleteCustomerDialog && customer != null) {
+                    DeletionConfirmDialog(
+                        order = null,
+                        customer = customer,
+                        onConfirm = {
+                            customersViewModel.deleteCustomer(customer!!)
+                            showDeleteCustomerDialog = false
+                        }
+                    ) {
+                        showDeleteCustomerDialog = false
+                    }
                 }
 
                 if(isCustomerOrdersOpen) {

@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.NavigateNext
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -155,52 +156,29 @@ fun ChangeStatusDialog(
             )
         }
 
-        Divider(modifier = Modifier.padding(vertical = 8.dp),color = Color.White)
+        HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp), color = Color.White)
 
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            ChangeStatusDialogButton(
+            CustomDialogButton(
                 text = "NÃO",
-                color = LightRed
+                color = LightRed,
+                width = 100.dp
             ) {
                 onDissmiss()
             }
 
-            ChangeStatusDialogButton(
+            CustomDialogButton(
                 text = "SIM",
-                color = DarkGreen
+                color = DarkGreen,
+                width = 100.dp
             ) {
                 onConfirm()
             }
         }
-    }
-}
-
-@Composable
-private fun ChangeStatusDialogButton(
-    text: String,
-    color: Color,
-    onClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier
-            .clip(RoundedCornerShape(15.dp))
-            .width(100.dp)
-            .border(1.dp, color, RoundedCornerShape(15.dp))
-            .padding(vertical = 8.dp, horizontal = 24.dp)
-            .clickable { onClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.Center
-    ) {
-        Text(
-            text = text,
-            color = color,
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.SemiBold
-        )
     }
 }
 
@@ -214,17 +192,5 @@ private fun ChangeStatusDialogPreview() {
             onDissmiss = {},
             onConfirm = {}
         )
-    }
-}
-
-@Preview
-@Composable
-private fun ChangeStatusDialogButtonPreview() {
-    ConfectionaryAdminTheme {
-        Column {
-            ChangeStatusDialogButton(text = "SIM", color = DarkGreen) {}
-            Spacer(modifier = Modifier.height(8.dp))
-            ChangeStatusDialogButton(text = "NÃO", color = LightRed) {}
-        }
     }
 }

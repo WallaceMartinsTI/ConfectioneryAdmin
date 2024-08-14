@@ -32,6 +32,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -66,8 +67,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog
 import com.wcsm.confectionaryadmin.ui.components.CustomRadioButton
+import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
 import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterDialog
@@ -144,6 +147,8 @@ fun OrdersScreen(
 
     var showFilterDialog by remember { mutableStateOf(false) }
     var showChangeOrderStatusDialog by remember { mutableStateOf(false) }
+    var showDeleteOrderDialog by remember { mutableStateOf(false) }
+    var orderWithCustomerToBeDeleted by remember { mutableStateOf<OrderWithCustomer?>(null) }
 
     val customBlur = if(showFilterDialog) 8.dp else 0.dp
 
@@ -212,7 +217,7 @@ fun OrdersScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.width(300.dp),
                 color = Color.White
             )
@@ -237,7 +242,8 @@ fun OrdersScreen(
                         },
                         onEdit = {},
                         onDelete = { order ->
-                            ordersViewModel.deleteOrder(order)
+                            orderWithCustomerToBeDeleted = it
+                            showDeleteOrderDialog = true
                         },
                         onChangeStatus = {
                             ordersViewModel.updateOrderToChangeStatus(it.order)
@@ -247,6 +253,22 @@ fun OrdersScreen(
 
                     Spacer(modifier = Modifier.height(8.dp))
                 }
+            }
+        }
+
+        if(showDeleteOrderDialog && orderWithCustomerToBeDeleted != null) {
+            val order = orderWithCustomerToBeDeleted!!.order
+            val customer = orderWithCustomerToBeDeleted!!.customer
+            DeletionConfirmDialog(
+                order = order,
+                customerOwnerName = customer.name,
+                customer = null,
+                onConfirm = {
+                    ordersViewModel.deleteOrder(order)
+                    showDeleteOrderDialog = false
+                }
+            ) {
+                showDeleteOrderDialog = false
             }
         }
 
