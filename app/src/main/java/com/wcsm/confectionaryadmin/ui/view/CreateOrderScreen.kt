@@ -641,7 +641,7 @@ fun CreateOrderScreen(
                         if(value.isEmpty()) value = "0"
                         createOrderViewModel.updateCreateOrderState(
                             orderState.copy(
-                                price = value.toDouble()
+                                price = value
                             )
                         )
                         createOrderViewModel.createNewOrder()

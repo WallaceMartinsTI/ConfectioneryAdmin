@@ -24,8 +24,13 @@ import androidx.compose.material.icons.filled.PostAdd
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -40,12 +45,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomStatus
 import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -61,16 +64,47 @@ import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
-import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @Composable
 fun MainScreen(
     paddingValues: PaddingValues,
-    mainViewModel: MainViewModel
+    ordersViewModel: OrdersViewModel
 ) {
-    val showChooseWhatWillCreateDialog by mainViewModel.showChooseWhatWillCreateDialog.collectAsState()
+    val order by ordersViewModel.ordersWithCustomer.collectAsState()
 
-    val customBlur = if(showChooseWhatWillCreateDialog) 8.dp else 0.dp
+    var quotationOrders by rememberSaveable { mutableIntStateOf(0) }
+    var confirmedOrders by rememberSaveable { mutableIntStateOf(0) }
+    var inProductionOrders by rememberSaveable { mutableIntStateOf(0) }
+    var finishedOrders by rememberSaveable { mutableIntStateOf(0) }
+    var deliveredOrders by rememberSaveable { mutableIntStateOf(0) }
+    var cancelledOrders by rememberSaveable { mutableIntStateOf(0) }
+
+    LaunchedEffect(order) {
+        quotationOrders = order.filter {
+            it.order.status == OrderStatus.QUOTATION
+        }.size
+
+        confirmedOrders = order.filter {
+            it.order.status == OrderStatus.CONFIRMED
+        }.size
+
+        inProductionOrders = order.filter {
+            it.order.status == OrderStatus.IN_PRODUCTION
+        }.size
+
+        finishedOrders = order.filter {
+            it.order.status == OrderStatus.FINISHED
+        }.size
+
+        deliveredOrders = order.filter {
+            it.order.status == OrderStatus.DELIVERED
+        }.size
+
+        cancelledOrders = order.filter {
+            it.order.status == OrderStatus.CANCELLED
+        }.size
+    }
 
     Box(
         modifier = Modifier
@@ -80,8 +114,7 @@ fun MainScreen(
         Column(
             modifier = Modifier
                 .background(AppBackground)
-                .fillMaxSize()
-                .blur(customBlur),
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -123,183 +156,46 @@ fun MainScreen(
                 CustomStatus(
                     text = stringResource(id = R.string.status_quotation),
                     color = QuotationStatus,
-                    quantity = 2
+                    quantity = quotationOrders
                 )
                 CustomStatus(
                     text = stringResource(id = R.string.status_confirmed),
                     color = ConfirmedStatus,
-                    quantity = 3
+                    quantity = confirmedOrders
                 )
                 CustomStatus(
                     text = stringResource(id = R.string.status_in_production),
                     color = InProductionStatus,
-                    quantity = 2
+                    quantity = inProductionOrders
                 )
                 CustomStatus(
                     text = stringResource(id = R.string.status_finished),
                     color = FinishedStatus,
-                    quantity = 1
+                    quantity = finishedOrders
                 )
                 CustomStatus(
                     text = stringResource(id = R.string.status_delivered),
                     color = DeliveredStatus,
-                    quantity = 15
+                    quantity = deliveredOrders
                 )
                 CustomStatus(
                     text = stringResource(id = R.string.status_cancelled),
                     color = CancelledStatus,
-                    quantity = 3
+                    quantity = cancelledOrders
                 )
             }
         }
     }
 }
 
-@Composable
-fun ChooseWhatWillCreateDialog(
-    modifier: Modifier = Modifier,
-    onCreateOrderOptionClick: () -> Unit,
-    onCreateCustomerOptionClick: () -> Unit,
-    onDissmissDialog: () -> Unit
-) {
-    Column(
-        modifier = modifier
-            .clip(RoundedCornerShape(15.dp))
-            .background(InvertedAppBackground)
-            .padding(top = 16.dp, start = 12.dp, end = 12.dp, bottom = 24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 8.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Text(
-                text = stringResource(id = R.string.choose_an_option_below),
-                color = Color.White,
-                fontFamily = InterFontFamily,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 20.sp,
-            )
-
-            Icon(
-                imageVector = Icons.Default.Close,
-                contentDescription = null,
-                modifier = Modifier
-                    .size(32.dp)
-                    .clickable { onDissmissDialog() },
-                tint = Primary
-            )
-        }
-
-        ChooseWhatWillCreateButton(
-            text = stringResource(id = R.string.btn_text_create_order),
-            icon = Icons.Default.PlaylistAdd
-        ) {
-            onCreateOrderOptionClick()
-        }
-        
-        ChooseWhatWillCreateButton(
-            text = stringResource(id = R.string.btn_text_create_customer),
-            icon = Icons.Default.PersonAddAlt1,
-        ) {
-            onCreateCustomerOptionClick()
-        }
-    }
-}
-
-@Composable
-fun ChooseWhatWillCreateButton(
-    text: String,
-    icon: ImageVector,
-    modifier: Modifier = Modifier,
-    width: Dp = 290.dp,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .width(width)
-            .clip(RoundedCornerShape(15.dp))
-            .background(ButtonBackground)
-            .border(
-                width = 1.dp,
-                color = Primary,
-                shape = RoundedCornerShape(15.dp)
-            )
-            .height(50.dp)
-            .clickable { onClick() },
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            modifier = Modifier.size(32.dp),
-            tint = Primary
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        Text(
-            text = text,
-            color = Primary,
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
-private fun MainScreenPreview() {
+private fun MainScreenPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
     ConfectionaryAdminTheme {
         val paddingValues = PaddingValues()
-
         MainScreen(
             paddingValues = paddingValues,
-            mainViewModel = viewModel()
+            ordersViewModel = ordersViewModel
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ChooseWhatWillCreateDialogPreview() {
-    ConfectionaryAdminTheme {
-        ChooseWhatWillCreateDialog(
-            onCreateOrderOptionClick = {},
-            onCreateCustomerOptionClick = {},
-            onDissmissDialog = {}
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun ChooseWhatWillCreateButtonPreview() {
-    ConfectionaryAdminTheme {
-        Column(
-            modifier = Modifier
-                .height(150.dp)
-                .width(350.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
-            ChooseWhatWillCreateButton(
-                text = "CRIAR PEDIDO",
-                icon = Icons.Default.PlaylistAdd,
-            ) {}
-
-            Spacer(modifier = Modifier.height(12.dp))
-
-            ChooseWhatWillCreateButton(
-                text = "CRIAR CLIENTE",
-                icon = Icons.Default.PostAdd,
-            ) {}
-        }
     }
 }

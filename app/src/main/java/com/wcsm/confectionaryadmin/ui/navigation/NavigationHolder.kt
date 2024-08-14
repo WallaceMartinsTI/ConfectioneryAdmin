@@ -1,11 +1,8 @@
 package com.wcsm.confectionaryadmin.ui.navigation
 
-import android.annotation.SuppressLint
-import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AddCircle
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.Scaffold
@@ -14,18 +11,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomBottomAppBar
 import com.wcsm.confectionaryadmin.ui.components.CustomFloatActionButton
-import com.wcsm.confectionaryadmin.ui.viewmodel.MainViewModel
 
 @Composable
-fun NavigationHolder(
-    mainViewModel: MainViewModel = viewModel()
-) {
+fun NavigationHolder() {
     val navHostController = rememberNavController()
 
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
@@ -61,7 +54,6 @@ fun NavigationHolder(
         ) {
             BottomNavGraph(
                 navController = navHostController,
-                mainViewModel = mainViewModel
             )
         }
     } else {
@@ -79,7 +71,6 @@ fun NavigationHolder(
         ) { paddingValues ->
             BottomNavGraph(
                 navController = navHostController,
-                mainViewModel = mainViewModel,
                 paddingValues = paddingValues
             )
         }

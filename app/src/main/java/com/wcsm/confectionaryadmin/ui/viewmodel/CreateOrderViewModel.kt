@@ -37,7 +37,7 @@ class CreateOrderViewModel @Inject constructor(
                 customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,
                 description = orderState.value.orderDescription,
-                price = orderState.value.price,
+                price = orderState.value.price.toDouble(),
                 status = orderState.value.status,
                 orderDate = convertStringToDateMillis(
                     dateString = "${orderState.value.orderDate} $currentHourAndMinute"
@@ -66,6 +66,7 @@ class CreateOrderViewModel @Inject constructor(
         val customer = orderState.value.customer
         val orderName = orderState.value.orderName
         val orderDescription = orderState.value.orderDescription
+        val price = orderState.value.price
         val orderDate = orderState.value.orderDate
         val deliverDate = orderState.value.deliverDate
 
@@ -75,7 +76,10 @@ class CreateOrderViewModel @Inject constructor(
             false
         } else if(!validateOrderDescription(orderDescription)) {
             false
-        } else if(!validateDateFields(orderDate, deliverDate)) {
+        } else if(!validateValue(price)) {
+            false
+        }
+        else if(!validateDateFields(orderDate, deliverDate)) {
             false
         }
         else {
@@ -105,6 +109,51 @@ class CreateOrderViewModel @Inject constructor(
             )
             false
         } else {
+            true
+        }
+    }
+
+    private fun validateValue(value: String): Boolean {
+        val newState = _orderState.value.copy(
+            priceErrorMessage = null,
+        )
+        updateCreateOrderState(newState)
+
+        var result: Double? = null
+        val decimals = listOf("01", "02", "03", "04", "05", "06", "07", "08", "09")
+
+        if(value == "0") {
+            result = 0.0
+        } else if(value in decimals) {
+            result = "0.$value".toDouble()
+        }
+
+        if(value.isNotBlank() && value.toDoubleOrNull() != null) {
+            try {
+                val numericValue = value.replace(Regex("[^\\d]"), "")
+
+                val integerPart = numericValue.substring(0, numericValue.length - 2).toInt()
+                val decimalPart = numericValue.substring(numericValue.length - 2).toInt()
+
+                result = integerPart + decimalPart.toDouble() / 100
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        return if(result == null) {
+            updateCreateOrderState(
+                orderState.value.copy(
+                    priceErrorMessage = "Valor inválido."
+                )
+            )
+            false
+        } else {
+            updateCreateOrderState(
+                orderState.value.copy(
+                    price = result.toString()
+                )
+            )
             true
         }
     }
