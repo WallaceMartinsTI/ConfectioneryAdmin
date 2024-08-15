@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -104,11 +105,13 @@ fun CustomersScreen(
                 trailingIcon = if(searchInput.isNotEmpty()) Icons.Default.Clear else null,
                 value = searchInput,
                 onLeadingIconClick = {
-                    if(searchInput.isNotEmpty()) { focusManager.clearFocus() }
+                    if(searchInput.isNotEmpty()) {
+                        searchInput = ""
+                        focusManager.clearFocus()
+                    }
                 },
                 onTrailingIconClick = {
                     searchInput = ""
-                    focusRequester.requestFocus()
                 },
                 onValueChange = {
                     searchInput = it
@@ -118,7 +121,7 @@ fun CustomersScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            Divider(
+            HorizontalDivider(
                 modifier = Modifier.width(300.dp),
                 color = Color.White
             )
@@ -128,7 +131,14 @@ fun CustomersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                items(customers) {
+                val customersToShow = if(searchInput.isEmpty()) {
+                    customers
+                } else {
+                    customers.filter {
+                        it.name.lowercase().contains(searchInput.lowercase())
+                    }
+                }
+                items(customersToShow) {
                     MinimizedCustomerCard(
                         customer = it,
                         expandIcon = true
