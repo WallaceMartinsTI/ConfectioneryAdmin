@@ -19,6 +19,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Note
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.AttachMoney
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.CheckCircle
@@ -26,8 +28,6 @@ import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material.icons.filled.Note
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAddAlt
 import androidx.compose.material3.Button
@@ -61,12 +61,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Screen
@@ -78,7 +76,6 @@ import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
-import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
@@ -232,8 +229,7 @@ fun CreateOrderScreen(
         ) {
             Column(
                 modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(12.dp)
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 ScreenDescription(
                     description = stringResource(id = R.string.create_order_screen_description),
@@ -286,9 +282,11 @@ fun CreateOrderScreen(
                         keyboardType = KeyboardType.Text,
                         imeAction = ImeAction.Next,
                         errorMessage = orderState.orderNameErrorMessage,
+                        charactereLimit = 40,
+                        charactereCounter = orderState.orderName.isNotEmpty(),
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Notes,
+                                imageVector = Icons.AutoMirrored.Filled.Notes,
                                 contentDescription = null
                             )
                         },
@@ -329,7 +327,7 @@ fun CreateOrderScreen(
                         keyboardType = KeyboardType.Decimal,
                         imeAction = ImeAction.Next,
                         singleLine = true,
-                        errorMessage = null,
+                        errorMessage = orderState.priceErrorMessage,
                         visualTransformation = CurrencyVisualTransformation(),
                         leadingIcon = {
                             Icon(
@@ -368,10 +366,12 @@ fun CreateOrderScreen(
                         imeAction = ImeAction.Next,
                         singleLine = false,
                         maxLines = 8,
+                        charactereLimit = 100,
+                        charactereCounter = orderState.orderDescription.isNotEmpty(),
                         errorMessage = orderState.orderDescriptionErrorMessage,
                         leadingIcon = {
                             Icon(
-                                imageVector = Icons.Default.Note,
+                                imageVector = Icons.AutoMirrored.Filled.Note,
                                 contentDescription = null
                             )
                         },

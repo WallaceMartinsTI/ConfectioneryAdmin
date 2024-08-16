@@ -101,7 +101,6 @@ fun CreateCustomerScreen(
         if(newCustomerCreate) {
             createCustomerViewModel.updateNewCustomerCreated(false)
             customersViewModel.getAllCustomers()
-            Log.i("#-# TESTE #-#", "newCustomer foi criado, vai navegar")
             navController.navigate(Screen.Customers.route)
         }
     }

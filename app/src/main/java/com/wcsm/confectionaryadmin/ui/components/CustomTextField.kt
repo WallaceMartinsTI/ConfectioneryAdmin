@@ -3,6 +3,7 @@ package com.wcsm.confectionaryadmin.ui.components
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -51,6 +52,8 @@ fun CustomTextField(
     readOnly: Boolean = false,
     maxLines: Int = if (singleLine) 1 else Int.MAX_VALUE,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    charactereCounter: Boolean? = false,
+    charactereLimit: Int? = null,
     errorMessage: String?,
     leadingIcon: @Composable() (() -> Unit)? = null,
     trailingIcon: @Composable() (() -> Unit)? = null,
@@ -73,7 +76,15 @@ fun CustomTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange = { newValue -> onValueChange(newValue) },
+        onValueChange = { newValue ->
+            if(charactereCounter != null && charactereLimit != null) {
+                if(value.length < charactereLimit) {
+                    onValueChange(newValue)
+                }
+            } else {
+                onValueChange(newValue)
+            }
+        },
         modifier = modifier.width(width),
         label = {
             Text(
@@ -109,6 +120,20 @@ fun CustomTextField(
         visualTransformation = visualTransformation,
         isError = isError,
     )
+    if(charactereCounter != null && charactereCounter) {
+        Row(
+            modifier = Modifier.width(width),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "${value.length} / $charactereLimit",
+                modifier = Modifier.padding(end = 8.dp),
+                fontFamily = InterFontFamily,
+                fontSize = 14.sp
+            )
+        }
+    }
     errorMessage?.let {
         CustomErrorMessage(
             errorMessage = errorMessage,
@@ -135,6 +160,8 @@ private fun CustomTextFieldPreview() {
                 label = "EMAIL",
                 placeholder = "Digite seu email",
                 imeAction = ImeAction.Next,
+                charactereCounter = true,
+                charactereLimit = 10,
                 errorMessage = null,
                 value = email,
                 onValueChange = { newValue -> email = newValue  }
@@ -144,6 +171,8 @@ private fun CustomTextFieldPreview() {
                 label = "SENHA",
                 placeholder = "Digite sua senha",
                 imeAction = ImeAction.Done,
+                charactereCounter = true,
+                charactereLimit = 5,
                 errorMessage = "Você deve digitar sua senha.",
                 value = password,
                 onValueChange = { newValue -> password = newValue  }

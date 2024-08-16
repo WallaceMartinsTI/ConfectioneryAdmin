@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.CreateOrderState
@@ -118,6 +119,15 @@ class CreateOrderViewModel @Inject constructor(
             priceErrorMessage = null,
         )
         updateCreateOrderState(newState)
+
+        if(value.length > 9) { // Limited of: 0100000 -> R$100.000,00
+            updateCreateOrderState(
+                orderState.value.copy(
+                    priceErrorMessage = "Valor muito alto. Limite: R$100.000,00."
+                )
+            )
+            return false
+        }
 
         var result: Double? = null
         val decimals = listOf("01", "02", "03", "04", "05", "06", "07", "08", "09")

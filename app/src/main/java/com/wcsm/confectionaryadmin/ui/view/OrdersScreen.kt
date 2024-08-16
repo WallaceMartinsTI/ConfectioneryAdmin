@@ -23,6 +23,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -135,7 +136,11 @@ fun OrdersScreen(
 
     var ordersList by remember { mutableStateOf(ordersWithCustomer) }
 
-    LaunchedEffect(filterResult) {
+    LaunchedEffect(ordersWithCustomer) {
+        ordersList = ordersWithCustomer
+    }
+
+    LaunchedEffect(filterResult, invertedList) {
         when(filterType) {
             FilterType.DATE -> {
                 filterTextToShow = "Data: $filterResult"
@@ -166,6 +171,13 @@ fun OrdersScreen(
             else -> {
                 ordersList = if(invertedList) ordersWithCustomer.reversed() else ordersWithCustomer
             }
+        }
+    }
+
+    DisposableEffect(Unit) {
+        onDispose {
+            ordersViewModel.updateFilterResult(newResult = "")
+            ordersViewModel.updateFilterType(filterType = null)
         }
     }
 
@@ -290,7 +302,7 @@ fun OrdersScreen(
                 }
             }
         }
-        
+
         if(showChangeOrderStatusDialog && orderToChangeStatus != null) {
             Dialog(onDismissRequest = {
                 showChangeOrderStatusDialog = false

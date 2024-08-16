@@ -66,36 +66,6 @@ fun OrderCard(
     onChangeStatus: () -> Unit,
     onExpandChange: (Boolean) -> Unit
 ) {
-    /*var formattedStatus = ""
-    var statusColor = Color.Black
-
-    when(order.status) {
-        OrderStatus.QUOTATION -> {
-            formattedStatus = "Orçamento"
-            statusColor = QuotationStatus
-        }
-        OrderStatus.CONFIRMED -> {
-            formattedStatus = "Confirmado"
-            statusColor = ConfirmedStatus
-        }
-        OrderStatus.IN_PRODUCTION -> {
-            formattedStatus = "Em Produção"
-            statusColor = InProductionStatus
-        }
-        OrderStatus.FINISHED -> {
-            formattedStatus = "Finalizado"
-            statusColor = FinishedStatus
-        }
-        OrderStatus.DELIVERED -> {
-            formattedStatus = "Entregue"
-            statusColor = DeliveredStatus
-        }
-        OrderStatus.CANCELLED -> {
-            formattedStatus = "Cancelado"
-            statusColor = CancelledStatus
-        }
-    }*/
-
     val blockedOrderStatus = listOf(OrderStatus.DELIVERED, OrderStatus.CANCELLED)
 
     if(isExpanded) {
