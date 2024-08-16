@@ -26,7 +26,7 @@ import com.wcsm.confectionaryadmin.ui.theme.Primary
 
 @Composable
 fun OrdersFilterContainer(
-    text: String?,
+    text: String,
     modifier: Modifier = Modifier,
     onClickFilterContainer: () -> Unit
 ) {
@@ -34,8 +34,8 @@ fun OrdersFilterContainer(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
             .background(Color.White)
-            .padding(horizontal = 16.dp, vertical = 4.dp)
             .clickable { onClickFilterContainer() }
+            .padding(horizontal = 16.dp, vertical = 4.dp)
             .then(modifier),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -48,7 +48,7 @@ fun OrdersFilterContainer(
         Spacer(modifier = Modifier.width(8.dp))
 
         Text(
-            text = text ?: stringResource(id = R.string.filter_field_description),
+            text = text.ifEmpty { stringResource(id = R.string.filter_field_description) },
             color = GrayColor
         )
     }
@@ -58,6 +58,6 @@ fun OrdersFilterContainer(
 @Composable
 private fun OrdersFilterContainerPreview() {
     ConfectionaryAdminTheme {
-        OrdersFilterContainer(text = null) {}
+        OrdersFilterContainer(text = "") {}
     }
 }

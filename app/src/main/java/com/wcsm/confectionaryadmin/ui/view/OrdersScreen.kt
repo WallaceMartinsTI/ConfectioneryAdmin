@@ -10,38 +10,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.text.selection.TextSelectionColors
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowDown
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.KeyboardArrowUp
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -50,44 +34,36 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Order
-import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.types.FilterType
+import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog
-import com.wcsm.confectionaryadmin.ui.components.CustomRadioButton
 import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
 import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterDialog
-import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
-import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
-import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
+import com.wcsm.confectionaryadmin.ui.util.convertDateMonthYearStringToLong
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
-import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
-import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
 import com.wcsm.confectionaryadmin.ui.util.getNextStatus
+import com.wcsm.confectionaryadmin.ui.util.getYearAndMonthFromTimeInMillis
+import com.wcsm.confectionaryadmin.ui.util.toStatusString
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 val ordersMock = listOf(
@@ -140,6 +116,8 @@ fun OrdersScreen(
 ) {
     val ordersWithCustomer by ordersViewModel.ordersWithCustomer.collectAsState()
     val orderToChangeStatus by ordersViewModel.orderToChangeStatus.collectAsState()
+    val filterType by ordersViewModel.filterType.collectAsState()
+    val orderDateType by ordersViewModel.orderDateType.collectAsState()
 
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
 
@@ -153,6 +131,43 @@ fun OrdersScreen(
     val customBlur = if(showFilterDialog) 8.dp else 0.dp
 
     val filterResult by ordersViewModel.filterResult.collectAsState()
+    var filterTextToShow by remember { mutableStateOf("") }
+
+    var ordersList by remember { mutableStateOf(ordersWithCustomer) }
+
+    LaunchedEffect(filterResult) {
+        when(filterType) {
+            FilterType.DATE -> {
+                filterTextToShow = "Data: $filterResult"
+
+                val result = convertDateMonthYearStringToLong(filterResult)
+                val (filterYear, filterMonth) = getYearAndMonthFromTimeInMillis(result)
+
+                ordersList = ordersWithCustomer.filter {
+                    val (orderYear, orderMonth) = if(orderDateType == OrderDateType.ORDER_DATE) {
+                        getYearAndMonthFromTimeInMillis(it.order.orderDate)
+                    } else {
+                        getYearAndMonthFromTimeInMillis(it.order.deliverDate)
+                    }
+
+                    orderYear == filterYear && orderMonth == filterMonth
+                }
+                ordersList = if(invertedList) ordersList.reversed() else ordersList
+            }
+
+            FilterType.STATUS -> {
+                filterTextToShow = "Status: $filterResult"
+                ordersList = ordersWithCustomer.filter {
+                    it.order.status.toStatusString() == filterResult
+                }
+                ordersList = if(invertedList) ordersList.reversed() else ordersList
+            }
+
+            else -> {
+                ordersList = if(invertedList) ordersWithCustomer.reversed() else ordersWithCustomer
+            }
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -182,7 +197,6 @@ fun OrdersScreen(
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
-
             ) {
                 Icon(
                     imageVector = Icons.Default.ChangeCircle,
@@ -196,9 +210,7 @@ fun OrdersScreen(
                 )
 
                 OrdersFilterContainer(
-                    text = filterResult.ifEmpty {
-                        null
-                    }
+                    text = filterTextToShow
                 ) {
                     showFilterDialog = true
                 }
@@ -210,7 +222,9 @@ fun OrdersScreen(
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
+                            filterTextToShow = ""
                             ordersViewModel.updateFilterResult(newResult = "")
+                            ordersViewModel.updateFilterType(filterType = null)
                         }
                 )
             }
@@ -227,11 +241,6 @@ fun OrdersScreen(
             LazyColumn(
                 contentPadding = paddingValues
             ) {
-                val ordersList = if(invertedList) {
-                    ordersWithCustomer.reversed()
-                } else {
-                    ordersWithCustomer
-                }
                 items(ordersList) {
                     OrderCard(
                         order = it.order,
@@ -241,7 +250,7 @@ fun OrdersScreen(
                             expandedStates[it.order.orderId] = expanded
                         },
                         onEdit = {},
-                        onDelete = { order ->
+                        onDelete = { _ ->
                             orderWithCustomerToBeDeleted = it
                             showDeleteOrderDialog = true
                         },
@@ -274,7 +283,9 @@ fun OrdersScreen(
 
         if(showFilterDialog) {
             Dialog(onDismissRequest = { showFilterDialog = false }) {
-                OrdersFilterDialog(ordersViewModel = ordersViewModel) {
+                OrdersFilterDialog(
+                    ordersViewModel = ordersViewModel,
+                ) {
                     showFilterDialog = false
                 }
             }

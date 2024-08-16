@@ -2,10 +2,8 @@ package com.wcsm.confectionaryadmin.ui.util
 
 import android.content.Context
 import android.os.Build
-import android.os.Bundle
 import android.widget.Toast
-import com.wcsm.confectionaryadmin.data.model.OrderStatus
-import java.io.Serializable
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.LocalTime
@@ -45,13 +43,34 @@ fun convertStringToDateMillis(dateString: String): Long {
     return date?.time ?: 1577847600000 // 01/01/2020 00:00
 }
 
+fun convertDateMonthYearStringToLong(dateString: String): Long {
+    val splitedDate = dateString.split("/")
+    val monthIndex = when (splitedDate[0]) {
+        "Janeiro" -> 1
+        "Fevereiro" -> 2
+        "Março" -> 3
+        "Abril" -> 4
+        "Maio" -> 5
+        "Junho" -> 6
+        "Julho" -> 7
+        "Agosto" -> 8
+        "Setembro" -> 9
+        "Outubro" -> 10
+        "Novembro" -> 11
+        else -> 12
+    }
+    val formattedMonth = if (monthIndex < 10) "0$monthIndex" else monthIndex
+    val formattedDate = "01/$formattedMonth/${splitedDate[1]} 00:00"
+    return convertStringToDateMillis(formattedDate)
+}
+
 fun convertMillisToString(millis: Long): String {
     val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
     val date = Date(millis)
     return dateFormat.format(date)
 }
 
-fun getStatusFromString(status: String): OrderStatus {
+/*fun getStatusFromString(status: String): OrderStatus {
     return when (status) {
         "Orçamento" -> OrderStatus.QUOTATION
         "Confirmado" -> OrderStatus.CONFIRMED
@@ -60,7 +79,7 @@ fun getStatusFromString(status: String): OrderStatus {
         "Entregue" -> OrderStatus.DELIVERED
         else -> OrderStatus.CANCELLED
     }
-}
+}*/
 
 fun getStringStatusFromStatus(status: OrderStatus): String {
     return when (status) {
@@ -85,6 +104,16 @@ fun getCurrentHourAndMinutes(): String {
         val currentMinute = calendar.get(Calendar.MINUTE)
         "$currentHour:$currentMinute"
     }
+}
+
+fun getYearAndMonthFromTimeInMillis(timeInMillis: Long): Pair<Int, Int> {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = timeInMillis
+
+    val year = calendar.get(Calendar.YEAR)
+    val month = calendar.get(Calendar.MONTH) + 1
+
+    return Pair(year, month)
 }
 
 fun getNextStatus(orderStatus: OrderStatus): OrderStatus {

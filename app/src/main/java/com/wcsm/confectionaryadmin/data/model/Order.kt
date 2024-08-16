@@ -1,11 +1,10 @@
 package com.wcsm.confectionaryadmin.data.model
 
 import androidx.room.ColumnInfo
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import androidx.room.Relation
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 
 @Entity(
     tableName = "orders",

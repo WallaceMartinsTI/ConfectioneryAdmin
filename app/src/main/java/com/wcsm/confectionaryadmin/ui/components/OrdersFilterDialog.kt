@@ -47,6 +47,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
@@ -61,7 +62,7 @@ fun OrdersFilterDialog(
     ordersViewModel: OrdersViewModel,
     onDissmissDialog: () -> Unit
 ) {
-    var dialogSelected by remember { mutableStateOf("") }
+    var dialogSelected by remember { mutableStateOf<FilterType?>(null) }
 
     var showDatePickerDialog by remember { mutableStateOf(false) }
     var selectedDate by remember { mutableStateOf("") }
@@ -73,8 +74,8 @@ fun OrdersFilterDialog(
 
     LaunchedEffect(selectedDate, selectedStatus) {
         filterResult = when {
-            selectedDate.isNotEmpty() -> "Data: $selectedDate"
-            selectedStatus != "Selecione um status" -> "Status: $selectedStatus"
+            selectedDate.isNotEmpty() -> selectedDate
+            selectedStatus != "Selecione um status" -> selectedStatus
             else -> "Selecione um filtro"
         }
     }
@@ -119,9 +120,9 @@ fun OrdersFilterDialog(
         ) {
             CustomRadioButton(
                 text = stringResource(id = R.string.date),
-                isSelected = dialogSelected == "DATA"
+                isSelected = dialogSelected == FilterType.DATE
             ) {
-                dialogSelected = "DATA"
+                dialogSelected = FilterType.DATE
                 showDatePickerDialog = true
                 filterResult = "Selecione um filtro"
                 selectedStatus = "Selecione um status"
@@ -131,22 +132,23 @@ fun OrdersFilterDialog(
 
             CustomRadioButton(
                 text = stringResource(id = R.string.textfield_label_status),
-                isSelected = dialogSelected == "STATUS"
+                isSelected = dialogSelected == FilterType.STATUS
             ) {
-                dialogSelected = "STATUS"
+                dialogSelected = FilterType.STATUS
                 filterResult = "Selecione um filtro"
                 selectedDate = ""
             }
 
-            if(dialogSelected == "DATA" && showDatePickerDialog) {
+            if(dialogSelected == FilterType.DATE && showDatePickerDialog) {
                 MonthYearPickerDialog(
+                    ordersViewModel = ordersViewModel,
                     onDissmissDialog = { showDatePickerDialog = false }
                 ) { month, year ->
                     selectedDate = "$month/$year"
                 }
             }
 
-            if(dialogSelected == "STATUS") {
+            if(dialogSelected == FilterType.STATUS) {
                 val colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = TextFieldBackground,
                     unfocusedContainerColor = TextFieldBackground,
@@ -163,7 +165,7 @@ fun OrdersFilterDialog(
 
                 Box {
                     ExposedDropdownMenuBox(
-                        expanded = dialogSelected == "STATUS" && statusDropdownExpanded,
+                        expanded = dialogSelected == FilterType.STATUS && statusDropdownExpanded,
                         onExpandedChange = {
                             statusDropdownExpanded = !statusDropdownExpanded
                         }
@@ -268,11 +270,13 @@ fun OrdersFilterDialog(
                 width = 200.dp,
                 modifier = Modifier.padding(top = 8.dp)
             ) {
+                if(dialogSelected != null) {
+                    ordersViewModel.updateFilterType(dialogSelected!!)
+                }
                 ordersViewModel.updateFilterResult(newResult = filterResult)
                 onDissmissDialog()
             }
         }
-
     }
 }
 
@@ -280,6 +284,7 @@ fun OrdersFilterDialog(
 @Composable
 private fun OrdersFilterDialogPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
     ConfectionaryAdminTheme {
-        OrdersFilterDialog(ordersViewModel = ordersViewModel) {}
+        OrdersFilterDialog(
+            ordersViewModel = ordersViewModel) {}
     }
 }

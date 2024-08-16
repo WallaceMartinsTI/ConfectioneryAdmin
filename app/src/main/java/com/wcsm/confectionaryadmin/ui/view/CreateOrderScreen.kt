@@ -83,9 +83,9 @@ import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.util.CurrencyVisualTransformation
-import com.wcsm.confectionaryadmin.ui.util.getStatusFromString
 import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
+import com.wcsm.confectionaryadmin.ui.util.toOrderStatus
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateOrderViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
@@ -624,7 +624,7 @@ fun CreateOrderScreen(
                                         onClick = {
                                             createOrderViewModel.updateCreateOrderState(
                                                 orderState.copy(
-                                                    status = getStatusFromString(it)
+                                                    status = it.toOrderStatus()
                                                 )
                                             )
                                             statusDropdownExpanded = false

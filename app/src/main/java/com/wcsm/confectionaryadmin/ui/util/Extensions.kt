@@ -1,7 +1,7 @@
 package com.wcsm.confectionaryadmin.ui.util
 
 import androidx.compose.ui.graphics.Color
-import com.wcsm.confectionaryadmin.data.model.OrderStatus
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
 import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
 import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
@@ -29,6 +29,18 @@ fun Long.toBrazillianDateFormat(
 fun Double.toBRL(): String {
     val ptBR = Locale("pt", "BR")
     return NumberFormat.getCurrencyInstance(ptBR).format(this)
+}
+
+fun String.toOrderStatus(): OrderStatus {
+    return when(this) {
+        "Orçamento" -> OrderStatus.QUOTATION
+        "Confirmado" -> OrderStatus.CONFIRMED
+        "Em Produção" -> OrderStatus.IN_PRODUCTION
+        "Finalizado" -> OrderStatus.FINISHED
+        "Entregue" -> OrderStatus.DELIVERED
+        "Cancelado" -> OrderStatus.CANCELLED
+        else -> OrderStatus.QUOTATION
+    }
 }
 
 fun OrderStatus.toStatusString(): String {

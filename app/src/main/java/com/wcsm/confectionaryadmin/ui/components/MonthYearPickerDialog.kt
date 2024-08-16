@@ -1,6 +1,7 @@
 package com.wcsm.confectionaryadmin.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,11 +13,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowLeft
-import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.RadioButtonChecked
+import androidx.compose.material.icons.filled.RadioButtonUnchecked
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -29,11 +33,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
@@ -41,12 +48,16 @@ import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
 import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
 import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
+import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @Composable
 fun MonthYearPickerDialog(
+    ordersViewModel: OrdersViewModel,
     onDissmissDialog: () -> Unit,
     onMonthYearSelected: (month: String, year: Int) -> Unit
 ) {
+    val orderOrDeliverDateSelected by ordersViewModel.orderDateType.collectAsState()
+
     val monthList = listOf(
         stringResource(id = R.string.month_january), stringResource(id = R.string.month_february),
         stringResource(id = R.string.month_march), stringResource(id = R.string.month_april),
@@ -83,6 +94,69 @@ fun MonthYearPickerDialog(
                 fontSize = 24.sp
             )
 
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Data para o filtro:",
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    textDecoration = TextDecoration.Underline
+                )
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(20.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.clickable {
+                            ordersViewModel.updateOrderDateType(OrderDateType.ORDER_DATE)
+                        },
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector =
+                            if(orderOrDeliverDateSelected == OrderDateType.ORDER_DATE)
+                                Icons.Default.RadioButtonChecked
+                            else
+                                Icons.Default.RadioButtonUnchecked,
+                            contentDescription = null,
+                            tint = Primary
+                        )
+
+                        Text(
+                            text = "PEDIDO",
+                            color = Primary,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+
+                    Row(
+                        modifier = Modifier.clickable {
+                            ordersViewModel.updateOrderDateType(OrderDateType.DELIVER_DATE)
+                        },
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
+                        Icon(
+                            imageVector =
+                            if(orderOrDeliverDateSelected == OrderDateType.DELIVER_DATE )
+                                Icons.Default.RadioButtonChecked
+                            else
+                                Icons.Default.RadioButtonUnchecked,
+                            contentDescription = null,
+                            tint = Primary
+                        )
+
+                        Text(
+                            text = "ENTREGA",
+                            color = Primary,
+                            fontFamily = InterFontFamily,
+                            fontWeight = FontWeight.SemiBold,
+                        )
+                    }
+                }
+            }
+
             Spacer(modifier = Modifier.height(16.dp))
 
             Row(
@@ -93,7 +167,7 @@ fun MonthYearPickerDialog(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier
@@ -120,7 +194,7 @@ fun MonthYearPickerDialog(
                 )
 
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier
@@ -146,7 +220,7 @@ fun MonthYearPickerDialog(
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowLeft,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowLeft,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier
@@ -167,7 +241,7 @@ fun MonthYearPickerDialog(
                 )
 
                 Icon(
-                    imageVector = Icons.Default.KeyboardArrowRight,
+                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                     contentDescription = null,
                     tint = Color.White,
                     modifier = Modifier
@@ -207,9 +281,10 @@ fun MonthYearPickerDialog(
 
 @Preview
 @Composable
-fun MonthYearPickerDialogPreview() {
+fun MonthYearPickerDialogPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
     ConfectionaryAdminTheme {
         MonthYearPickerDialog(
+            ordersViewModel = ordersViewModel,
             onDissmissDialog = {},
             onMonthYearSelected = { _, _ -> }
         )

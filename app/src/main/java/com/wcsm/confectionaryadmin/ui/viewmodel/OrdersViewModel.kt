@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.Customer
 import com.wcsm.confectionaryadmin.data.model.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.types.FilterType
+import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -26,6 +28,12 @@ class OrdersViewModel @Inject constructor(
     private val _customerOrders = MutableStateFlow<List<Order>?>(null)
     val customerOrders = _customerOrders.asStateFlow()
 
+    private val _filterType = MutableStateFlow<FilterType?>(null)
+    val filterType = _filterType.asStateFlow()
+
+    private val _orderDateType = MutableStateFlow(OrderDateType.ORDER_DATE)
+    val orderDateType = _orderDateType.asStateFlow()
+
     private val _filterResult = MutableStateFlow("")
     val filterResult = _filterResult.asStateFlow()
 
@@ -35,6 +43,14 @@ class OrdersViewModel @Inject constructor(
 
     fun updateOrderToChangeStatus(order: Order?) {
         _orderToChangeStatus.value = order
+    }
+
+    fun updateFilterType(filterType: FilterType?) {
+        _filterType.value = filterType
+    }
+
+    fun updateOrderDateType(orderDateType: OrderDateType) {
+        _orderDateType.value = orderDateType
     }
 
     fun updateFilterResult(newResult: String) { // "" or Outubro/2024
