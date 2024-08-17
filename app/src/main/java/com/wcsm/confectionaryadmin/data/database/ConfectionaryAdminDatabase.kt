@@ -2,8 +2,8 @@ package com.wcsm.confectionaryadmin.data.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 
 @Database(
     entities = [Order::class, Customer::class],

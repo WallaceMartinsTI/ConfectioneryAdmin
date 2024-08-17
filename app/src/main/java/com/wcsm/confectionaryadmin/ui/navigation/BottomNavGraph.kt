@@ -40,6 +40,7 @@ fun BottomNavGraph(
 
         composable(route = Screen.Orders.route) {
             OrdersScreen(
+                navController = navController,
                 paddingValues = paddingValues,
                 ordersViewModel = ordersViewModel
             )

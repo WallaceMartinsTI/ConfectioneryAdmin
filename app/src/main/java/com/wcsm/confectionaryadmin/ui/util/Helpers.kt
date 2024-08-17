@@ -70,17 +70,6 @@ fun convertMillisToString(millis: Long): String {
     return dateFormat.format(date)
 }
 
-/*fun getStatusFromString(status: String): OrderStatus {
-    return when (status) {
-        "Orçamento" -> OrderStatus.QUOTATION
-        "Confirmado" -> OrderStatus.CONFIRMED
-        "Em Produção" -> OrderStatus.IN_PRODUCTION
-        "Finalizado" -> OrderStatus.FINISHED
-        "Entregue" -> OrderStatus.DELIVERED
-        else -> OrderStatus.CANCELLED
-    }
-}*/
-
 fun getStringStatusFromStatus(status: OrderStatus): String {
     return when (status) {
         OrderStatus.QUOTATION -> "Orçamento"

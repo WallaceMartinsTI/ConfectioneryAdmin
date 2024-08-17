@@ -1,9 +1,7 @@
 package com.wcsm.confectionaryadmin.data.repository
 
-import com.wcsm.confectionaryadmin.data.database.CustomerDao
 import com.wcsm.confectionaryadmin.data.database.OrderDao
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 import javax.inject.Inject
 

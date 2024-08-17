@@ -2,14 +2,12 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -24,6 +22,9 @@ class OrdersViewModel @Inject constructor(
 
     private val _orderToChangeStatus = MutableStateFlow<Order?>(null)
     val orderToChangeStatus = _orderToChangeStatus.asStateFlow()
+
+    private val _orderToBeEditted = MutableStateFlow<OrderWithCustomer?>(null)
+    val orderToBeEditted = _orderToBeEditted.asStateFlow()
 
     private val _customerOrders = MutableStateFlow<List<Order>?>(null)
     val customerOrders = _customerOrders.asStateFlow()
@@ -53,11 +54,15 @@ class OrdersViewModel @Inject constructor(
         _orderDateType.value = orderDateType
     }
 
-    fun updateFilterResult(newResult: String) { // "" or Outubro/2024
+    fun updateFilterResult(newResult: String) {
         _filterResult.value = newResult
     }
 
-    fun updateOrder(order: Order) {
+    fun updateOrderToBeEditted(orderWithCustomer: OrderWithCustomer?) {
+        _orderToBeEditted.value = orderWithCustomer
+    }
+
+    fun updateOrderStatus(order: Order) {
         viewModelScope.launch {
             try {
                 orderRepository.updateOrder(order)

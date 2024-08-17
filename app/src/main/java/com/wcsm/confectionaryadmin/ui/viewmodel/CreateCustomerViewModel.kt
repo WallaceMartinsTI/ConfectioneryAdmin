@@ -2,8 +2,8 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wcsm.confectionaryadmin.data.model.CreateCustomerState
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.states.CreateCustomerState
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -54,6 +54,7 @@ class CreateCustomerViewModel @Inject constructor(
             )
 
             if(isUpdateCustomer) {
+                _customerUpdated.value = false
                 updateUserToDatabase(customer = customer)
             } else {
                 saveUserToDatabase(customer = customer)

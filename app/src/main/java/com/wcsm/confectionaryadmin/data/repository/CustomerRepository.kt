@@ -1,6 +1,6 @@
 package com.wcsm.confectionaryadmin.data.repository
 
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 
 interface CustomerRepository {
 

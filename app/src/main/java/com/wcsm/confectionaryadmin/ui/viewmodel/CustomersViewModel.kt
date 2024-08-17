@@ -2,10 +2,9 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch

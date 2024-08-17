@@ -3,9 +3,9 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.wcsm.confectionaryadmin.data.model.CreateOrderState
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.states.CreateOrderState
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import com.wcsm.confectionaryadmin.ui.util.getCurrentHourAndMinutes
@@ -25,30 +25,53 @@ class CreateOrderViewModel @Inject constructor(
     private val _newOrderCreated = MutableStateFlow(false)
     val newOrderCreated = _newOrderCreated.asStateFlow()
 
+    private val _orderUpdated = MutableStateFlow(false)
+    val orderUpdated = _orderUpdated.asStateFlow()
+
     fun updateCreateOrderState(newState: CreateOrderState) {
         _orderState.value = newState
     }
 
-    fun createNewOrder() {
-        _newOrderCreated.value = false
+    fun updateOrderUpdated(newStatus: Boolean) {
+        _orderUpdated.value = newStatus
+    }
 
+    fun createNewOrder(
+        isUpdateOrder: Boolean = false
+    ) {
         if(isAllFieldValid()) {
-            val currentHourAndMinute = getCurrentHourAndMinutes()
-            val newOrder = Order(
+            val order = Order(
+                orderId = orderState.value.orderId ?: 0,
                 customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,
                 description = orderState.value.orderDescription,
                 price = orderState.value.price.toDouble(),
                 status = orderState.value.status,
                 orderDate = convertStringToDateMillis(
-                    dateString = "${orderState.value.orderDate} $currentHourAndMinute"
+                    dateString = orderState.value.orderDate
                 ),
                 deliverDate = convertStringToDateMillis(
-                    dateString = "${orderState.value.deliverDate} 00:00"
+                    dateString = orderState.value.deliverDate
                 )
             )
 
-            saveOrderToDatabase(order = newOrder)
+            if(isUpdateOrder) {
+                _orderUpdated.value = false
+                updateOrderToDatabase(order = order)
+            } else {
+                saveOrderToDatabase(order = order)
+            }
+        }
+    }
+
+    private fun updateOrderToDatabase(order: Order) {
+        viewModelScope.launch {
+            try {
+                orderRepository.updateOrder(order)
+                _orderUpdated.value = true
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
 
@@ -134,6 +157,12 @@ class CreateOrderViewModel @Inject constructor(
 
         if(value == "0") {
             result = 0.0
+            updateCreateOrderState(
+                orderState.value.copy(
+                    price = result.toString()
+                )
+            )
+            return true
         } else if(value in decimals) {
             result = "0.$value".toDouble()
         }

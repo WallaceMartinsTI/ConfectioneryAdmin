@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -44,10 +43,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog
@@ -112,6 +114,7 @@ val ordersMock = listOf(
 
 @Composable
 fun OrdersScreen(
+    navController: NavController,
     paddingValues: PaddingValues,
     ordersViewModel: OrdersViewModel
 ) {
@@ -261,7 +264,10 @@ fun OrdersScreen(
                         onExpandChange = { expanded ->
                             expandedStates[it.order.orderId] = expanded
                         },
-                        onEdit = {},
+                        onEdit = { _ ->
+                            ordersViewModel.updateOrderToBeEditted(it)
+                            navController.navigate(Screen.CreateOrder.route)
+                        },
                         onDelete = { _ ->
                             orderWithCustomerToBeDeleted = it
                             showDeleteOrderDialog = true
@@ -318,7 +324,7 @@ fun OrdersScreen(
                     val statusChangedOrder = orderToChangeStatus!!.copy(
                         status = getNextStatus(orderToChangeStatus!!.status)
                     )
-                    ordersViewModel.updateOrder(statusChangedOrder)
+                    ordersViewModel.updateOrderStatus(statusChangedOrder)
                     ordersViewModel.updateOrderToChangeStatus(null)
                     showChangeOrderStatusDialog = false
                 }
@@ -333,7 +339,8 @@ private fun OrdersScreenPreview(
     ordersViewModel: OrdersViewModel = hiltViewModel()
 ) {
     ConfectionaryAdminTheme {
+        val navController = rememberNavController()
         val paddingValues = PaddingValues()
-        OrdersScreen(paddingValues, ordersViewModel)
+        OrdersScreen(navController, paddingValues, ordersViewModel)
     }
 }

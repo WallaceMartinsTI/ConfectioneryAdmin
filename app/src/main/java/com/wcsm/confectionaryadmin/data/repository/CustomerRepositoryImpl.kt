@@ -1,7 +1,7 @@
 package com.wcsm.confectionaryadmin.data.repository
 
 import com.wcsm.confectionaryadmin.data.database.CustomerDao
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import javax.inject.Inject
 
 class CustomerRepositoryImpl @Inject constructor(

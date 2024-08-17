@@ -38,7 +38,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor

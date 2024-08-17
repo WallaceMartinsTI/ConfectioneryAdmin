@@ -5,10 +5,8 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import androidx.room.Transaction
 import androidx.room.Update
-import androidx.room.Upsert
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 
 @Dao
 interface CustomerDao {

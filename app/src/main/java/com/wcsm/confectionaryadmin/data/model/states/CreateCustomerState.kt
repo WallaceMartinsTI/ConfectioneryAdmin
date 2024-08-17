@@ -1,4 +1,4 @@
-package com.wcsm.confectionaryadmin.data.model
+package com.wcsm.confectionaryadmin.data.model.states
 
 data class CreateCustomerState(
     val customerId: Int? = null,

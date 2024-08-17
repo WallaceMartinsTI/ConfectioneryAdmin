@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,6 +43,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -56,6 +58,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -66,8 +69,9 @@ import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.states.CreateOrderState
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
@@ -80,7 +84,9 @@ import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.util.CurrencyVisualTransformation
+import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
+import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.util.toOrderStatus
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateOrderViewModel
@@ -95,10 +101,15 @@ fun CreateOrderScreen(
     customersViewModel: CustomersViewModel,
     createOrderViewModel: CreateOrderViewModel = hiltViewModel()
 ) {
+    val context = LocalContext.current
+
     val orderState by createOrderViewModel.orderState.collectAsState()
     val newOrderCreated by createOrderViewModel.newOrderCreated.collectAsState()
+    val orderUpdated by createOrderViewModel.orderUpdated.collectAsState()
 
     val customers by customersViewModel.customers.collectAsState()
+
+    val orderToBeEditted by ordersViewModel.orderToBeEditted.collectAsState()
 
     var value by rememberSaveable { mutableStateOf("0") }
 
@@ -129,10 +140,43 @@ fun CreateOrderScreen(
 
     val customBlur = if (showCustomerChooser) 8.dp else 0.dp
 
+    DisposableEffect(Unit) {
+        onDispose {
+            ordersViewModel.updateOrderToBeEditted(null)
+        }
+    }
+
     LaunchedEffect(newOrderCreated) {
         if(newOrderCreated) {
             ordersViewModel.getAllOrders()
             navController.navigate(Screen.Orders.route)
+        }
+    }
+
+    LaunchedEffect(orderUpdated) {
+        if(orderUpdated) {
+            createOrderViewModel.updateOrderUpdated(false)
+            ordersViewModel.getAllOrders()
+            showToastMessage(context, "Pedido atualizado.")
+        }
+    }
+
+    LaunchedEffect(orderToBeEditted) {
+        if(orderToBeEditted != null) {
+            createOrderViewModel.updateCreateOrderState(
+                orderState.copy(
+                    orderId = orderToBeEditted!!.order.orderId,
+                    customer = orderToBeEditted!!.customer,
+                    orderName = orderToBeEditted!!.order.title,
+                    orderDescription = orderToBeEditted!!.order.description,
+                    //price = orderToBeEditted!!.order.price.toString(),
+                    orderDate = convertMillisToString(orderToBeEditted!!.order.orderDate),
+                    deliverDate = convertMillisToString(orderToBeEditted!!.order.deliverDate),
+                    status = orderToBeEditted!!.order.status
+                )
+            )
+            val orderPrice = orderToBeEditted!!.order.price == 0.0
+            value = if(orderPrice) "0" else orderToBeEditted!!.order.price.toString()
         }
     }
 
@@ -637,15 +681,28 @@ fun CreateOrderScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    PrimaryButton(text = stringResource(id = R.string.btn_text_create_order)) {
-                        if(value.isEmpty()) value = "0"
-                        createOrderViewModel.updateCreateOrderState(
-                            orderState.copy(
-                                price = value
+                    if(orderToBeEditted != null) {
+                        PrimaryButton(text = stringResource(id = R.string.btn_text_save_edit)) {
+                            if(value.isEmpty()) value = "0"
+                            createOrderViewModel.updateCreateOrderState(
+                                orderState.copy(
+                                    price = value
+                                )
                             )
-                        )
-                        createOrderViewModel.createNewOrder()
+                            createOrderViewModel.createNewOrder(isUpdateOrder = true)
+                        }
+                    } else {
+                        PrimaryButton(text = stringResource(id = R.string.btn_text_create_order)) {
+                            if(value.isEmpty()) value = "0"
+                            createOrderViewModel.updateCreateOrderState(
+                                orderState.copy(
+                                    price = value
+                                )
+                            )
+                            createOrderViewModel.createNewOrder()
+                        }
                     }
+
 
                     Spacer(modifier = Modifier.height(24.dp))
                 }

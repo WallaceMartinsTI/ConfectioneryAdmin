@@ -23,7 +23,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.DarkGreen

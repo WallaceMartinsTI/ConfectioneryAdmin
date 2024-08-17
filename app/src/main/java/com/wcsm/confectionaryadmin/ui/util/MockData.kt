@@ -1,7 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.util
 
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.ui.view.ordersMock
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 
 val customersMock = listOf(
     Customer(

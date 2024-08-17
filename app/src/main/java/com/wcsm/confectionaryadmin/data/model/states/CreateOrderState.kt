@@ -1,8 +1,10 @@
-package com.wcsm.confectionaryadmin.data.model
+package com.wcsm.confectionaryadmin.data.model.states
 
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 
 data class CreateOrderState(
+    val orderId: Int? = null,
     val customer: Customer? = null,
     val orderName: String = "",
     val orderDescription: String = "",

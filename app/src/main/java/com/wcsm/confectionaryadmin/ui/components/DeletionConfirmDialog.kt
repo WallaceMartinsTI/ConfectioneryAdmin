@@ -2,7 +2,6 @@ package com.wcsm.confectionaryadmin.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,11 +21,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.wcsm.confectionaryadmin.data.model.Customer
-import com.wcsm.confectionaryadmin.data.model.Order
+import com.wcsm.confectionaryadmin.data.model.entities.Customer
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.GrayColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
 import com.wcsm.confectionaryadmin.ui.theme.LightRed

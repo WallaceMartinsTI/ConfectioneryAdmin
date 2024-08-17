@@ -1,4 +1,4 @@
-package com.wcsm.confectionaryadmin.data.model
+package com.wcsm.confectionaryadmin.data.model.entities
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
