@@ -1,7 +1,10 @@
 package com.wcsm.confectionaryadmin.ui.view
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -13,16 +16,22 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusProperties
 import androidx.compose.ui.focus.focusRequester
@@ -34,14 +43,17 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.AppTitle
+import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
@@ -49,22 +61,33 @@ import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.viewmodel.LoginViewModel
 
 @Composable
-fun LoginScreen(navController: NavController) {
+fun LoginScreen(
+    navController: NavController,
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
+    val loginState by loginViewModel.loginState.collectAsState()
+
+    var showPassword by remember { mutableStateOf(false) }
+
+    var keepUserLogin by remember { mutableStateOf(false) }
+
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(loginState) {
+        if(loginState.isLogged) {
+            navController.navigate(Screen.NavigationHolder.route)
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(AppBackground),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var email by remember { mutableStateOf("") }
-        var password by remember { mutableStateOf("") }
-
-        var showPassword by remember { mutableStateOf(false) }
-
-        val focusRequester = remember { FocusRequester() }
-
         AppTitle(modifier = Modifier.padding(top = 24.dp))
 
         ScreenDescription(
@@ -87,8 +110,10 @@ fun LoginScreen(navController: NavController) {
         CustomTextField(
             label = stringResource(id = R.string.textfield_label_email),
             placeholder = stringResource(id = R.string.textfield_placeholder_email),
-            modifier = Modifier.padding(top = 24.dp).focusRequester(focusRequester),
-            keyboardType = KeyboardType.Password,
+            modifier = Modifier
+                .padding(top = 24.dp)
+                .focusRequester(focusRequester),
+            keyboardType = KeyboardType.Email,
             imeAction = ImeAction.Next,
             leadingIcon = {
                 Icon(
@@ -99,12 +124,16 @@ fun LoginScreen(navController: NavController) {
             trailingIcon = {
                 IconButton(
                     onClick = {
-                        email = ""
+                        loginViewModel.updateLoginState(
+                            loginState.copy(
+                                email = ""
+                            )
+                        )
                         focusRequester.requestFocus()
                     },
                     modifier = Modifier.focusProperties { canFocus = false }
                 ) {
-                    if(email.isNotEmpty()) {
+                    if(loginState.email.isNotEmpty()) {
                         Icon(
                             imageVector = Icons.Default.Clear,
                             contentDescription = null
@@ -112,10 +141,14 @@ fun LoginScreen(navController: NavController) {
                     }
                 }
             },
-            errorMessage = null,
-            value = email,
+            errorMessage = loginState.emailErrorMessage,
+            value = loginState.email,
         ) {
-            email = it
+            loginViewModel.updateLoginState(
+                loginState.copy(
+                    email = it
+                )
+            )
         }
 
         CustomTextField(
@@ -141,25 +174,65 @@ fun LoginScreen(navController: NavController) {
                     )
                 }
             },
-            errorMessage = null,
+            errorMessage = loginState.passwordErrorMessage,
             visualTransformation =
             if(showPassword) VisualTransformation.None else PasswordVisualTransformation(),
-            value = password,
+            value = loginState.password,
         ) {
-            password = it
+            loginViewModel.updateLoginState(
+                loginState.copy(
+                    password = it
+                )
+            )
         }
 
-        Spacer(modifier = Modifier.height(40.dp))
-
-        PrimaryButton(text = stringResource(id = R.string.btn_text_login)) {
-            // Login
-            navController.navigate(Screen.NavigationHolder.route)
+        Row(
+            modifier = Modifier.width(290.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Continuar logado?",
+                color = Primary,
+                fontFamily = InterFontFamily,
+                fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+            Checkbox(
+                checked = keepUserLogin,
+                onCheckedChange = { keepUserLogin = !keepUserLogin },
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Primary,
+                    checkmarkColor = Color.White,
+                    uncheckedColor = Primary,
+                )
+            )
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        HorizontalDivider(
+            color = Color.White,
+            modifier = Modifier
+                .width(290.dp)
+                .padding(top = 8.dp, bottom = 40.dp)
+        )
 
-        PrimaryButton(text = stringResource(id = R.string.btn_text_create_account)) {
-            navController.navigate(Screen.UserRegister.route)
+        Column(
+            modifier = Modifier.width(290.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
+        ) {
+            if(loginState.isLoading) {
+                CustomLoading(size = 80.dp)
+            } else {
+                PrimaryButton(text = stringResource(id = R.string.btn_text_login)) {
+                    loginViewModel.signIn()
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                PrimaryButton(text = stringResource(id = R.string.btn_text_create_account)) {
+                    navController.navigate(Screen.UserRegister.route)
+                }
+            }
         }
 
         Spacer(modifier = Modifier.height(12.dp))
@@ -168,9 +241,9 @@ fun LoginScreen(navController: NavController) {
 
 @Preview
 @Composable
-private fun LoginScreenPreview() {
+private fun LoginScreenPreview(loginViewModel: LoginViewModel = hiltViewModel()) {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
-        LoginScreen(navController)
+        LoginScreen(navController, loginViewModel)
     }
 }

@@ -38,7 +38,7 @@ fun CustomLoading(
 
 @Preview
 @Composable
-fun CustomLoadingPreview() {
+private fun CustomLoadingPreview() {
     ConfectionaryAdminTheme {
         CustomLoading(size = 32.dp)
     }
