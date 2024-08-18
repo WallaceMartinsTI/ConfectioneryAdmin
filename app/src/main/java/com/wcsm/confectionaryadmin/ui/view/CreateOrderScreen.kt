@@ -169,7 +169,6 @@ fun CreateOrderScreen(
                     customer = orderToBeEditted!!.customer,
                     orderName = orderToBeEditted!!.order.title,
                     orderDescription = orderToBeEditted!!.order.description,
-                    //price = orderToBeEditted!!.order.price.toString(),
                     orderDate = convertMillisToString(orderToBeEditted!!.order.orderDate),
                     deliverDate = convertMillisToString(orderToBeEditted!!.order.deliverDate),
                     status = orderToBeEditted!!.order.status
