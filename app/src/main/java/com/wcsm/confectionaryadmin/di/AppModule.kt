@@ -24,6 +24,7 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    // Room
     @Provides
     @Singleton
     fun provideOrderDatabase(
@@ -68,6 +69,7 @@ object AppModule {
         return CustomerRepositoryImpl(customerDao)
     }
 
+    // Firebase
     @Provides
     @Singleton
     fun provideAuth(): FirebaseAuth {
@@ -88,5 +90,8 @@ object AppModule {
     ): UserRepository {
         return UserRepositoryImpl(auth, firestore)
     }
+
+    // Network
+
 
 }

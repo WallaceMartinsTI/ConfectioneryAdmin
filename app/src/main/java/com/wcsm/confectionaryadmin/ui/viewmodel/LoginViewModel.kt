@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
 import com.wcsm.confectionaryadmin.data.model.states.LoginState
+import com.wcsm.confectionaryadmin.data.repository.NetworkRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,15 +16,25 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val userRepository: UserRepository
+    private val userRepository: UserRepository,
+    private val networkRepository: NetworkRepository
 ) : ViewModel() {
     private val TAG = "#FIREBASE_AUTH#USER_LOGIN#"
 
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
+    private val _isConnected = MutableStateFlow(networkRepository.isConnected())
+    val isConnected = _isConnected.asStateFlow()
+
     fun updateLoginState(newState: LoginState) {
         _loginState.value = newState
+    }
+
+    fun checkConnection() {
+        viewModelScope.launch {
+            _isConnected.value = networkRepository.isConnected()
+        }
     }
 
     fun signIn() {

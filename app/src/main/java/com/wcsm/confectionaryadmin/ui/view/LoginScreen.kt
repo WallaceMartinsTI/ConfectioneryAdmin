@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.Password
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.HorizontalDivider
@@ -53,6 +54,7 @@ import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.Screen
 import com.wcsm.confectionaryadmin.ui.components.AppTitle
+import com.wcsm.confectionaryadmin.ui.components.CustomErrorMessage
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
@@ -69,6 +71,9 @@ fun LoginScreen(
     loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     val loginState by loginViewModel.loginState.collectAsState()
+    val isConnectedd by loginViewModel.isConnected.collectAsState()
+
+    var errorMessage by remember { mutableStateOf("") }
 
     var showPassword by remember { mutableStateOf(false) }
 
@@ -224,7 +229,27 @@ fun LoginScreen(
                 CustomLoading(size = 80.dp)
             } else {
                 PrimaryButton(text = stringResource(id = R.string.btn_text_login)) {
-                    loginViewModel.signIn()
+                    errorMessage = ""
+                    loginViewModel.checkConnection()
+                    if(isConnectedd) {
+                        loginViewModel.signIn()
+                    } else {
+                        // SE NAO TIVER USUARIO SALVO
+                        errorMessage = "Sem conexão no momento, tente mais tarde"
+                    }
+                }
+
+                if(errorMessage.isNotEmpty()) {
+                    CustomErrorMessage(
+                        errorMessage = errorMessage,
+                        errorIcon = {
+                            Icon(
+                                imageVector = Icons.Filled.WifiOff,
+                                contentDescription = null,
+                                tint = Color.White
+                            )
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

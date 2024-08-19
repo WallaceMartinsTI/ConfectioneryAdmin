@@ -1,6 +1,7 @@
 package com.wcsm.confectionaryadmin.ui
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.pm.ActivityInfo
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -39,9 +40,15 @@ class MainActivity : ComponentActivity() {
 
                 val navController = rememberNavController()
 
+                val startDestination = if(isFirstTime(this)) {
+                    Screen.Starter.route
+                } else {
+                    Screen.Login.route
+                }
+
                 NavHost(
                     navController = navController,
-                    startDestination = Screen.Starter.route,
+                    startDestination = startDestination,
                     enterTransition = {
                         slideIntoContainer(
                             AnimatedContentTransitionScope.SlideDirection.Left,
@@ -91,5 +98,16 @@ class MainActivity : ComponentActivity() {
         SideEffect {
             systemUiController.setSystemBarsColor(color = color)
         }
+    }
+
+    private fun isFirstTime(context: Context): Boolean {
+        val preferences = context.getSharedPreferences("app_preferences", Context.MODE_PRIVATE)
+        val isFirstTime = preferences.getBoolean("is_first_time", true)
+
+        if (isFirstTime) {
+            preferences.edit().putBoolean("is_first_time", false).apply()
+        }
+
+        return isFirstTime
     }
 }
