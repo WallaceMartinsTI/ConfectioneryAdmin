@@ -44,6 +44,7 @@ android {
     }
     kotlinOptions {
         jvmTarget = "1.8"
+        freeCompilerArgs += "-opt-in=kotlin.io.encoding.ExperimentalEncodingApi"
     }
     buildFeatures {
         compose = true

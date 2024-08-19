@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthInvalidUserException
+import com.wcsm.confectionaryadmin.data.UserPreferences
 import com.wcsm.confectionaryadmin.data.model.states.LoginState
 import com.wcsm.confectionaryadmin.data.repository.NetworkRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
@@ -17,12 +18,16 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val userRepository: UserRepository,
-    private val networkRepository: NetworkRepository
+    private val networkRepository: NetworkRepository,
+    private val userPreferences: UserPreferences
 ) : ViewModel() {
     private val TAG = "#FIREBASE_AUTH#USER_LOGIN#"
 
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
+
+    private val _saveLogin = MutableStateFlow(false)
+    val saveLogin = _saveLogin.asStateFlow()
 
     private val _isConnected = MutableStateFlow(networkRepository.isConnected())
     val isConnected = _isConnected.asStateFlow()
@@ -31,10 +36,33 @@ class LoginViewModel @Inject constructor(
         _loginState.value = newState
     }
 
+    fun updateSaveLogin(status: Boolean) {
+        _saveLogin.value = status
+    }
+
     fun checkConnection() {
         viewModelScope.launch {
             _isConnected.value = networkRepository.isConnected()
         }
+    }
+
+    init {
+        val savedUser = userPreferences.getUser()
+        if (userPreferences.isLoggedIn() && savedUser.first != null && savedUser.second != null) {
+            _loginState.value = _loginState.value.copy(
+                email = savedUser.first!!,
+                password = savedUser.second!!
+            )
+            _saveLogin.value = true
+        }
+    }
+
+    private fun saveLoggedUser(email: String, password: String) {
+        userPreferences.saveUser(email, password)
+    }
+
+    fun clearLoggedUser() {
+        userPreferences.clearUser()
     }
 
     fun signIn() {
@@ -56,6 +84,12 @@ class LoginViewModel @Inject constructor(
             userRepository.signIn(email, password)
                 .addOnSuccessListener {
                     Log.i(TAG, "Usuário LOGADO com SUCESSO!")
+                    if(saveLogin.value) {
+                        saveLoggedUser(
+                            email = loginState.value.email,
+                            password = loginState.value.password
+                        )
+                    }
                     _loginState.value = loginState.value.copy(isLogged = true)
                     _loginState.value = loginState.value.copy(isLoading = false)
                 }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.wcsm.confectionaryadmin.data.UserPreferences
 import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.database.ConfectionaryAdminDatabase
 import com.wcsm.confectionaryadmin.data.database.CustomerDao
@@ -91,7 +92,13 @@ object AppModule {
         return UserRepositoryImpl(auth, firestore)
     }
 
-    // Network
-
+    // UserPreferences
+    @Provides
+    @Singleton
+    fun provideUserPreferences(
+        @ApplicationContext context: Context
+    ): UserPreferences {
+        return UserPreferences(context)
+    }
 
 }

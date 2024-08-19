@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -72,18 +73,23 @@ fun LoginScreen(
 ) {
     val loginState by loginViewModel.loginState.collectAsState()
     val isConnectedd by loginViewModel.isConnected.collectAsState()
+    val saveLogin by loginViewModel.saveLogin.collectAsState()
 
     var errorMessage by remember { mutableStateOf("") }
 
     var showPassword by remember { mutableStateOf(false) }
-
-    var keepUserLogin by remember { mutableStateOf(false) }
 
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(loginState) {
         if(loginState.isLogged) {
             navController.navigate(Screen.NavigationHolder.route)
+        }
+    }
+
+    LaunchedEffect(saveLogin) {
+        if(!saveLogin) {
+            loginViewModel.clearLoggedUser()
         }
     }
 
@@ -203,8 +209,10 @@ fun LoginScreen(
                 modifier = Modifier.padding(start = 8.dp)
             )
             Checkbox(
-                checked = keepUserLogin,
-                onCheckedChange = { keepUserLogin = !keepUserLogin },
+                checked = saveLogin,
+                onCheckedChange = {
+                    loginViewModel.updateSaveLogin(!saveLogin)
+                },
                 colors = CheckboxDefaults.colors(
                     checkedColor = Primary,
                     checkmarkColor = Color.White,
