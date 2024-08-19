@@ -42,7 +42,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomersScreenFilter
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground

@@ -1,7 +1,7 @@
 package com.wcsm.confectionaryadmin.data.repository
 
 import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
 interface OrderRepository {
 
@@ -14,15 +14,5 @@ interface OrderRepository {
     suspend fun updateOrder(order: Order)
 
     suspend fun deleteOrder(order: Order)
-
-    suspend fun getOrdersByOrderDateFilteredByMonthAndYear(
-        startOfMonth: Long,
-        endOfMonth: Long
-    ): List<Order>
-
-    suspend fun getOrdersByDeliverDateFilteredByMonthAndYear(
-        startOfMonth: Long,
-        endOfMonth: Long
-    ): List<Order>
 
 }

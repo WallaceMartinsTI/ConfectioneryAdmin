@@ -3,7 +3,7 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository

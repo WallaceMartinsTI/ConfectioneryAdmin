@@ -48,8 +48,8 @@ import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
-import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog

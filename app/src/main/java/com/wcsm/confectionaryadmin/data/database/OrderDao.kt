@@ -8,7 +8,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.data.model.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
 @Dao
 interface OrderDao {
@@ -28,11 +28,5 @@ interface OrderDao {
 
     @Delete
     suspend fun deleteOrder(order: Order)
-
-    @Query("SELECT * FROM orders WHERE order_date BETWEEN :startOfMonth AND :endOfMonth")
-    suspend fun getOrdersByOrderDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
-
-    @Query("SELECT * FROM orders WHERE deliver_date BETWEEN :startOfMonth AND :endOfMonth")
-    suspend fun getOrdersByDeliverDateFilteredByMonthAndYear(startOfMonth: Long, endOfMonth: Long): List<Order>
 
 }

@@ -10,10 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomBottomAppBar
 import com.wcsm.confectionaryadmin.ui.components.CustomFloatActionButton
 

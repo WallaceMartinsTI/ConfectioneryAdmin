@@ -1,4 +1,4 @@
-package com.wcsm.confectionaryadmin.data.model
+package com.wcsm.confectionaryadmin.data.model.navigation
 
 import androidx.compose.ui.graphics.vector.ImageVector
 

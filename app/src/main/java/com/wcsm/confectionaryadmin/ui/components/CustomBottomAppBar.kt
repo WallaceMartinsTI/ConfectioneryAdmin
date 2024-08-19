@@ -21,8 +21,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.BottomNavItem
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.navigation.BottomNavItem
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.Primary

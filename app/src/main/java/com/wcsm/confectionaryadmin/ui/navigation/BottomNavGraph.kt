@@ -8,7 +8,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.view.CreateCustomerScreen
 import com.wcsm.confectionaryadmin.ui.view.CreateOrderScreen
 import com.wcsm.confectionaryadmin.ui.view.CustomerDetailsScreen

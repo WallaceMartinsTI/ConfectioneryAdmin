@@ -1,4 +1,4 @@
-package com.wcsm.confectionaryadmin.data.model
+package com.wcsm.confectionaryadmin.data.model.navigation
 
 sealed class Screen(val route: String) {
     object NavigationHolder : Screen("navigation_holder")

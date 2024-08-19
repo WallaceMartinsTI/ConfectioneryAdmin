@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -62,7 +61,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.Screen
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
