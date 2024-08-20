@@ -24,11 +24,13 @@ import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -94,6 +96,8 @@ fun MainScreen(
     var isScreenLoading by rememberSaveable { mutableStateOf(true) }
     var isSyncLoading by rememberSaveable { mutableStateOf(false) }
 
+    var showSyncMessage by remember { mutableStateOf(false) }
+
     LaunchedEffect(true) {
         Log.i("#-# TESTE #-#", "Launched Effect TRUE")
         Log.i("#-# TESTE #-#", "INICIO isConnected: $isConnected")
@@ -131,7 +135,10 @@ fun MainScreen(
 
     LaunchedEffect(orderSyncState, customerSyncState) {
         if(orderSyncState.isSincronized && customerSyncState.isSincronized) {
-            showToastMessage(context, "Dados Sincronizados com Sucesso!")
+            if(showSyncMessage) {
+                showToastMessage(context, "Dados Sincronizados com Sucesso!")
+                showSyncMessage = false
+            }
             isSincronized = true
             isSyncLoading = false
         }
@@ -139,6 +146,7 @@ fun MainScreen(
         if(orderSyncState.syncError || customerSyncState.syncError) {
             showToastMessage(context, "Erro ao sincronizar, contate o administrador.")
             isSyncLoading = false
+            showSyncMessage = false
         }
     }
 
@@ -300,6 +308,7 @@ fun MainScreen(
                             .clickable {
                                 ordersViewModel.checkConnection()
                                 if (isConnected) {
+                                    showSyncMessage = true
                                     isSyncLoading = true
                                     ordersViewModel.checkConnection()
                                     ordersViewModel.sendOrdersToSincronize()
