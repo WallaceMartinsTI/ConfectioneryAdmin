@@ -1,10 +1,13 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.wcsm.confectionaryadmin.data.model.states.CreateCustomerState
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.ui.util.getCurrentDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -13,9 +16,12 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateCustomerViewModel @Inject constructor(
-    private val customerRepository: CustomerRepository
+    private val customerRepository: CustomerRepository,
+    private val auth: FirebaseAuth
 ) : ViewModel() {
-    private val _customerState = MutableStateFlow(CreateCustomerState())
+    private val _customerState = MutableStateFlow(
+        CreateCustomerState(customerSince = "")
+    )
     val customerState = _customerState.asStateFlow()
 
     private val _newCustomerCreated = MutableStateFlow(false)
@@ -39,10 +45,16 @@ class CreateCustomerViewModel @Inject constructor(
     fun saveCustomer(
         isUpdateCustomer: Boolean = false
     ) {
+        val currentUser = auth.currentUser
+        if(currentUser == null) {
+            Log.e("ERROR", "User unidentified")
+            return
+        }
         val customerName = customerState.value.name
         if(validateCustomername(customerName)) {
             val formattedName = formatName(customerName)
             val customer = Customer(
+                userCustomerOwnerId = currentUser.uid,
                 customerId = customerState.value.customerId ?: 0,
                 name = formattedName,
                 email = customerState.value.email.lowercase(),
@@ -50,7 +62,9 @@ class CreateCustomerViewModel @Inject constructor(
                 gender = customerState.value.gender,
                 dateOfBirth = customerState.value.dateOfBirth,
                 address = customerState.value.address,
-                notes = customerState.value.notes
+                notes = customerState.value.notes,
+                ordersQuantity = 0,
+                customerSince = getCurrentDateTimeMillis()
             )
 
             if(isUpdateCustomer) {

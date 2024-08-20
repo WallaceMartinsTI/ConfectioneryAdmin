@@ -135,9 +135,7 @@ class UserRegisterViewModel @Inject constructor(
                         val newUser = User(
                             id = userId,
                             name = name,
-                            email = email,
-                            password = password,
-                            orderWithCustomer = emptyList()
+                            email = email
                         )
                         viewModelScope.launch {
                             saveUserFirestore(newUser)

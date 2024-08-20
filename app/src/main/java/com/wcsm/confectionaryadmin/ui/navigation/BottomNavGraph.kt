@@ -34,7 +34,8 @@ fun BottomNavGraph(
         composable(route = Screen.Main.route) {
             MainScreen(
                 paddingValues = paddingValues,
-                ordersViewModel = ordersViewModel
+                ordersViewModel = ordersViewModel,
+                customersViewModel = customersViewModel
             )
         }
 

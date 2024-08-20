@@ -17,11 +17,8 @@ interface CustomerDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateCustomer(customer: Customer)
 
-    @Query("SELECT * FROM customers ORDER BY name")
-    suspend fun getAllCustomers(): List<Customer>
-
-    @Query("SELECT * FROM customers WHERE customer_id = :customerOwnerId")
-    suspend fun getCustomerOwner(customerOwnerId: Int): Customer
+    @Query("SELECT * FROM customers WHERE user_customer_owner_id = :userOwnerId ORDER BY name")
+    suspend fun getAllCustomers(userOwnerId: String): List<Customer>
 
     @Delete
     suspend fun deleteCustomer(customer: Customer)

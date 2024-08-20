@@ -3,12 +3,12 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.wcsm.confectionaryadmin.data.model.states.CreateOrderState
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
-import com.wcsm.confectionaryadmin.ui.util.getCurrentHourAndMinutes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CreateOrderViewModel @Inject constructor(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val auth: FirebaseAuth
 )  : ViewModel() {
     private val _orderState = MutableStateFlow(CreateOrderState())
     val orderState = _orderState.asStateFlow()
@@ -39,8 +40,15 @@ class CreateOrderViewModel @Inject constructor(
     fun createNewOrder(
         isUpdateOrder: Boolean = false
     ) {
+        val currentUser = auth.currentUser
+        if(currentUser == null) {
+            Log.e("ERROR", "User unidentified")
+            return
+        }
+
         if(isAllFieldValid()) {
             val order = Order(
+                userOrderOwnerId = currentUser.uid,
                 orderId = orderState.value.orderId ?: 0,
                 customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,

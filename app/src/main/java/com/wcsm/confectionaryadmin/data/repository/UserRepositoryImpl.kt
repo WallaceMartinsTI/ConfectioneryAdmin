@@ -1,10 +1,12 @@
 package com.wcsm.confectionaryadmin.data.repository
 
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
+import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.model.entities.User
 
 class UserRepositoryImpl(

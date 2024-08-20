@@ -85,6 +85,7 @@ fun CreateCustomerScreen(
 ) {
     val customerState by createCustomerViewModel.customerState.collectAsState()
     val newCustomerCreate by createCustomerViewModel.newCustomerCreated.collectAsState()
+    val customerSyncState by customersViewModel.customerSyncState.collectAsState()
 
     var showDatePickerDialog by rememberSaveable { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -100,6 +101,11 @@ fun CreateCustomerScreen(
         if(newCustomerCreate) {
             createCustomerViewModel.updateNewCustomerCreated(false)
             customersViewModel.getAllCustomers()
+            customersViewModel.updateCustomerSyncState(
+                customerSyncState.copy(
+                    isSincronized = false
+                )
+            )
             navController.navigate(Screen.Customers.route)
         }
     }

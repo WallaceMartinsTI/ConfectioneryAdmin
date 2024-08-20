@@ -33,9 +33,9 @@ import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
 import com.wcsm.confectionaryadmin.ui.util.getStatusColor
+import com.wcsm.confectionaryadmin.ui.util.ordersMock
 import com.wcsm.confectionaryadmin.ui.util.toBRL
 import com.wcsm.confectionaryadmin.ui.util.toStatusString
-import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
 fun DeletionConfirmDialog(

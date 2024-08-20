@@ -13,18 +13,18 @@ import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 @Dao
 interface OrderDao {
 
-    @Transaction
-    @Query("SELECT * FROM orders")
-    suspend fun getOrdersWithCustomers(): List<OrderWithCustomer>
-
-    @Query("SELECT * FROM orders WHERE customer_owner_id = :customerOwnerId")
-    suspend fun getOrderByCustomerOwner(customerOwnerId: Int): List<Order>
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrder(order: Order)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateOrder(order: Order)
+
+    @Transaction
+    @Query("SELECT * FROM orders WHERE user_order_owner_id = :userOwnerId")
+    suspend fun getOrdersWithCustomers(userOwnerId: String): List<OrderWithCustomer>
+
+    @Query("SELECT * FROM orders WHERE user_order_owner_id = :userOwnerId AND customer_owner_id = :customerOwnerId")
+    suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: Int): List<Order>
 
     @Delete
     suspend fun deleteOrder(order: Order)

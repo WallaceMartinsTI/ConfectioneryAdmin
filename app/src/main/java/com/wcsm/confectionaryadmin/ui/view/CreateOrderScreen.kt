@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -63,13 +64,17 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
+import com.wcsm.confectionaryadmin.ui.components.CustomActionButton
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
@@ -78,6 +83,7 @@ import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
+import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
@@ -108,6 +114,7 @@ fun CreateOrderScreen(
     val customers by customersViewModel.customers.collectAsState()
 
     val orderToBeEditted by ordersViewModel.orderToBeEditted.collectAsState()
+    val orderSyncState by ordersViewModel.orderSyncState.collectAsState()
 
     var value by rememberSaveable { mutableStateOf("0") }
 
@@ -147,6 +154,11 @@ fun CreateOrderScreen(
     LaunchedEffect(newOrderCreated) {
         if(newOrderCreated) {
             ordersViewModel.getAllOrders()
+            ordersViewModel.updateOrderSyncState(
+                orderSyncState.copy(
+                    isSincronized = false
+                )
+            )
             navController.navigate(Screen.Orders.route)
         }
     }
@@ -155,6 +167,11 @@ fun CreateOrderScreen(
         if(orderUpdated) {
             createOrderViewModel.updateOrderUpdated(false)
             ordersViewModel.getAllOrders()
+            ordersViewModel.updateOrderSyncState(
+                orderSyncState.copy(
+                    isSincronized = false
+                )
+            )
             showToastMessage(context, "Pedido atualizado.")
         }
     }
@@ -708,6 +725,7 @@ fun CreateOrderScreen(
             if (showCustomerChooser) {
                 ChooseCustomerForOrder(
                     customers = customers,
+                    onCreateCustomerClick = { navController.navigate(Screen.CreateCustomers.route) },
                     onDissmiss = { showCustomerChooser = false }
                 ) {
                     createOrderViewModel.updateCreateOrderState(
@@ -752,36 +770,65 @@ private fun ChooseCustomerForOrderButton(
 @Composable
 fun ChooseCustomerForOrder(
     customers: List<Customer>,
+    onCreateCustomerClick: () -> Unit,
     onDissmiss: () -> Unit,
     onClick: (customer: Customer) -> Unit
 ) {
     Dialog(onDismissRequest = { onDissmiss() }) {
-        LazyColumn(
-            modifier = Modifier
-                .clip(RoundedCornerShape(15.dp))
-                .background(brush = AppBackground)
-                .padding(12.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(customers) {
-                MinimizedCustomerCard(
-                    customer = it,
-                ) {
-                    onClick(it)
+        if(customers.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(brush = AppBackground)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "Nenhum cliente cadastrado.",
+                    fontFamily = InterFontFamily,
+                    fontWeight = FontWeight.SemiBold,
+                    fontSize = 20.sp
+                )
+
+                Spacer(modifier = Modifier.height(12.dp))
+
+                PrimaryButton(text = "CADASTRAR CLIENTE") {
+                    onCreateCustomerClick()
+                    onDissmiss()
+                }
+            }
+        } else {
+            LazyColumn(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(15.dp))
+                    .background(brush = AppBackground)
+                    .padding(12.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(customers) {
+                    MinimizedCustomerCard(
+                        customer = it,
+                    ) {
+                        onClick(it)
+                    }
                 }
             }
         }
     }
 }
 
-/*
 @Preview
 @Composable
-private fun CreateOrderScreenPreview(customersViewModel: CustomersViewModel = hiltViewModel()) {
+private fun CreateOrderScreenPreview(
+    customersViewModel: CustomersViewModel = hiltViewModel(),
+    ordersViewModel: OrdersViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
         val navController = rememberNavController()
         CreateOrderScreen(
             navController = navController,
+            ordersViewModel = ordersViewModel,
             customersViewModel = customersViewModel
         )
     }
@@ -793,4 +840,4 @@ private fun ChooseCustomerForOrderButtonPreview() {
     ConfectionaryAdminTheme {
         ChooseCustomerForOrderButton {}
     }
-}*/
+}

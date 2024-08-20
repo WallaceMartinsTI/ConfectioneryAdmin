@@ -32,8 +32,8 @@ import com.wcsm.confectionaryadmin.ui.theme.LightRed
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.util.getNextStatus
 import com.wcsm.confectionaryadmin.ui.util.getStatusColor
+import com.wcsm.confectionaryadmin.ui.util.ordersMock
 import com.wcsm.confectionaryadmin.ui.util.toStatusString
-import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
 fun ChangeStatusDialog(

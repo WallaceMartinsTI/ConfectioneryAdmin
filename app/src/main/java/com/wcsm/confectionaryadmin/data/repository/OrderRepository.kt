@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.data.repository
 
+import com.google.android.gms.tasks.Task
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
@@ -14,5 +15,7 @@ interface OrderRepository {
     suspend fun updateOrder(order: Order)
 
     suspend fun deleteOrder(order: Order)
+
+    suspend fun sendOrdersToSincronize(orders: List<Order>): Task<Void>
 
 }

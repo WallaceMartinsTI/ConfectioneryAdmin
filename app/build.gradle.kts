@@ -77,6 +77,9 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    // Work Manager
+    implementation(libs.androidx.work.runtime)
+
     // System UI Controller
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 

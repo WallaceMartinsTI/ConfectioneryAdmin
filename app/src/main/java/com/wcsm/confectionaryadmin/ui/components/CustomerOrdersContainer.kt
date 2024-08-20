@@ -37,12 +37,13 @@ import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.util.customersMock
-import com.wcsm.confectionaryadmin.ui.view.ordersMock
+import com.wcsm.confectionaryadmin.ui.util.ordersMock
 
 @Composable
 fun CustomerOrdersContainer(
     customer: Customer,
     orders: List<Order>,
+    isCustomerDetailsScreen: Boolean = false,
     onDissmiss: () -> Unit
 ) {
     val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
@@ -100,6 +101,7 @@ fun CustomerOrdersContainer(
                 OrderCard(
                     order = it,
                     isExpanded = expandedStates[it.orderId] ?: false,
+                    isCustomerDetailsScreen = isCustomerDetailsScreen,
                     onEdit = {},
                     onDelete = {},
                     onChangeStatus = {}

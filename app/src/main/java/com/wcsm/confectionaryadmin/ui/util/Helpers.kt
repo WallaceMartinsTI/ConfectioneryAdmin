@@ -81,18 +81,12 @@ fun getStringStatusFromStatus(status: OrderStatus): String {
     }
 }
 
-fun getCurrentHourAndMinutes(): String {
-    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-        val currentTime = LocalTime.now()
-        val currentHour = currentTime.hour
-        val currentMinute = currentTime.minute
-        "$currentHour:$currentMinute"
-    } else {
-        val calendar = Calendar.getInstance()
-        val currentHour = calendar.get(Calendar.HOUR_OF_DAY)
-        val currentMinute = calendar.get(Calendar.MINUTE)
-        "$currentHour:$currentMinute"
-    }
+fun getCurrentDateTimeMillis(): Long {
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+    val currentDateTime = Date()
+    val formattedDate = dateFormat.format(currentDateTime)
+    val date = dateFormat.parse(formattedDate)
+    return date?.time ?: 1577847600000
 }
 
 fun getYearAndMonthFromTimeInMillis(timeInMillis: Long): Pair<Int, Int> {

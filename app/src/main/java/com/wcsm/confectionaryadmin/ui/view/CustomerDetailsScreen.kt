@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.Male
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Phone
+import androidx.compose.material.icons.filled.Storage
+import androidx.compose.material.icons.filled.Timer
 import androidx.compose.material.icons.filled.Transgender
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -74,6 +76,7 @@ import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.entities.Order
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomerOrdersContainer
@@ -87,6 +90,7 @@ import com.wcsm.confectionaryadmin.ui.theme.LightRed
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
 import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
+import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateCustomerViewModel
@@ -110,6 +114,7 @@ fun CustomerDetailsScreen(
 
     val customerState by createCustomerViewModel.customerState.collectAsState()
     val customerUpdated by createCustomerViewModel.customerUpdated.collectAsState()
+    val customerSyncState by customersViewModel.customerSyncState.collectAsState()
 
     var customer: Customer? by rememberSaveable { mutableStateOf(null) }
     var orders: List<Order>? by rememberSaveable { mutableStateOf(null) }
@@ -126,6 +131,8 @@ fun CustomerDetailsScreen(
     var dateOfBirth by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
+    var ordersQuantity by rememberSaveable { mutableStateOf(0) }
+    var customerSince by rememberSaveable { mutableStateOf("") }
 
     var showDatePickerDialog by remember { mutableStateOf(false) }
     val datePickerState = rememberDatePickerState()
@@ -153,6 +160,11 @@ fun CustomerDetailsScreen(
         if(customerUpdated) {
             createCustomerViewModel.updateCustomerUpdated(false)
             customersViewModel.getAllCustomers()
+            customersViewModel.updateCustomerSyncState(
+                customerSyncState.copy(
+                    isSincronized = false
+                )
+            )
             showToastMessage(context, "Cliente atualizado.")
         }
     }
@@ -160,6 +172,11 @@ fun CustomerDetailsScreen(
     LaunchedEffect(isCustomerDeleted) {
         if(isCustomerDeleted) {
             ordersViewModel.getAllOrders()
+            customersViewModel.updateCustomerSyncState(
+                customerSyncState.copy(
+                    isSincronized = false
+                )
+            )
             navController.popBackStack()
         }
     }
@@ -177,6 +194,8 @@ fun CustomerDetailsScreen(
             dateOfBirth = customer!!.dateOfBirth ?: ""
             address = customer!!.address ?: ""
             notes = customer!!.notes ?: ""
+            ordersQuantity = orders!!.filter { it.status == OrderStatus.DELIVERED }.size
+            customerSince = convertMillisToString(customer!!.customerSince)
 
             delay(1000)
             isCustomerDetailsScreenLoading = false
@@ -519,6 +538,52 @@ fun CustomerDetailsScreen(
                             notes = it
                         }
 
+                        CustomTextField(
+                            label = stringResource(id = R.string.textfield_label_orders),
+                            placeholder = "",
+                            readOnly = true,
+                            errorMessage = null,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Storage,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
+                                )
+                            },
+                            value = ordersQuantity.toString()
+                        ) {
+                            if(it.all { it.isDigit() }) {
+                                if(ordersQuantity >= 0) {
+                                    ordersQuantity = it.toInt()
+                                }
+                            }
+                        }
+
+                        CustomTextField(
+                            label = stringResource(id = R.string.textfield_label_customer_since),
+                            placeholder = "",
+                            readOnly = true,
+                            errorMessage = null,
+                            leadingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Timer,
+                                    contentDescription = null
+                                )
+                            },
+                            trailingIcon = {
+                                Icon(
+                                    imageVector = Icons.Default.Edit,
+                                    contentDescription = null
+                                )
+                            },
+                            value = customerSince
+                        ) { }
+
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     Spacer(modifier = Modifier.height(8.dp))
@@ -533,7 +598,9 @@ fun CustomerDetailsScreen(
                                 gender = gender,
                                 dateOfBirth = dateOfBirth,
                                 address = address,
-                                notes = notes
+                                notes = notes,
+                                ordersQuantity = ordersQuantity,
+                                customerSince = customerSince
                             )
                         )
 
@@ -575,7 +642,8 @@ fun CustomerDetailsScreen(
                     Dialog(onDismissRequest = { isCustomerOrdersOpen = false }) {
                         CustomerOrdersContainer(
                             customer = customer!!,
-                            orders = orders!!
+                            orders = orders!!,
+                            isCustomerDetailsScreen = true
                         ) {
                             isCustomerOrdersOpen = false
                         }

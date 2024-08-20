@@ -61,6 +61,8 @@
     <string name="textfield_label_order_request_date">DATA DO PEDIDO</string>
     <string name="textfield_label_order_deliver_date">DATA PARA ENTREGA</string>
     <string name="textfield_label_status">STATUS</string>
+    <string name="textfield_label_orders">PEDIDOS</string>
+    <string name="textfield_label_customer_since">CLIENTE DESDE</string>
 
     <!-- TextField Placeholders -->
     <string name="textfield_placeholder_name">Digite seu nome</string>

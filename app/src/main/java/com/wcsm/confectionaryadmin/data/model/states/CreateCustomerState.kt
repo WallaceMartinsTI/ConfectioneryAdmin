@@ -9,5 +9,7 @@ data class CreateCustomerState(
     val dateOfBirth: String = "",
     val address: String = "",
     val notes: String = "",
-    val nameErrorMessage: String? = null
+    val nameErrorMessage: String? = null,
+    val ordersQuantity: Int = 0,
+    val customerSince: String
 )

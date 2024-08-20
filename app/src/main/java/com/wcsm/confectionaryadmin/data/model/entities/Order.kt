@@ -20,6 +20,7 @@ import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 data class Order(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "order_id") val orderId: Int = 0,
+    @ColumnInfo(name = "user_order_owner_id") val userOrderOwnerId: String,
     @ColumnInfo(name = "customer_owner_id") val customerOwnerId: Int,
     val title: String,
     val description: String,

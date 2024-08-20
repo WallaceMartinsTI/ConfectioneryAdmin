@@ -52,14 +52,15 @@ import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
 import com.wcsm.confectionaryadmin.ui.util.getStatusColor
+import com.wcsm.confectionaryadmin.ui.util.ordersMock
 import com.wcsm.confectionaryadmin.ui.util.toBRL
 import com.wcsm.confectionaryadmin.ui.util.toStatusString
-import com.wcsm.confectionaryadmin.ui.view.ordersMock
 
 @Composable
 fun OrderCard(
     order: Order,
     isExpanded: Boolean,
+    isCustomerDetailsScreen: Boolean = false,
     customerOwnerName: String? = null,
     onEdit: (order: Order) -> Unit,
     onDelete: (order: Order) -> Unit,
@@ -192,69 +193,71 @@ fun OrderCard(
                 }
             }
 
-            HorizontalDivider(color = Color.White)
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = 4.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                CustomActionButton(
-                    text = stringResource(id = R.string.btn_text_edit),
-                    color = InProductionStatus,
-                    icon = Icons.Default.Edit
-                ) {
-                    onEdit(order)
-                }
-
-                Spacer(modifier = Modifier.width(8.dp))
-
-                CustomActionButton(
-                    text = stringResource(id = R.string.btn_text_delete),
-                    color = LightRed,
-                    icon = Icons.Default.Delete
-                ) {
-                    onDelete(order)
-                }
-            }
-
-            if(order.status !in blockedOrderStatus) {
-                HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp), color = Color.White)
+            if(!isCustomerDetailsScreen) {
+                HorizontalDivider(color = Color.White)
 
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(vertical = 4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.Center
                 ) {
+                    CustomActionButton(
+                        text = stringResource(id = R.string.btn_text_edit),
+                        color = InProductionStatus,
+                        icon = Icons.Default.Edit
+                    ) {
+                        onEdit(order)
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    CustomActionButton(
+                        text = stringResource(id = R.string.btn_text_delete),
+                        color = LightRed,
+                        icon = Icons.Default.Delete
+                    ) {
+                        onDelete(order)
+                    }
+                }
+
+                if(order.status !in blockedOrderStatus) {
+                    HorizontalDivider(modifier = Modifier.padding(bottom = 8.dp), color = Color.White)
+
                     Row(
                         modifier = Modifier
-                            .clip(RoundedCornerShape(15.dp))
-                            .background(brush = AppTitleGradient)
-                            .border(1.dp, Color.White, RoundedCornerShape(15.dp))
-                            .padding(vertical = 4.dp, horizontal = 12.dp)
-                            .clickable {
-                                onChangeStatus()
-                            },
-                        verticalAlignment = Alignment.CenterVertically
+                            .fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = stringResource(id = R.string.next_status_text),
-                            color = Color.White,
-                            fontFamily = InterFontFamily,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 24.sp,
-                            modifier = Modifier.padding(end = 8.dp)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(15.dp))
+                                .background(brush = AppTitleGradient)
+                                .border(1.dp, Color.White, RoundedCornerShape(15.dp))
+                                .padding(vertical = 4.dp, horizontal = 12.dp)
+                                .clickable {
+                                    onChangeStatus()
+                                },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Text(
+                                text = stringResource(id = R.string.next_status_text),
+                                color = Color.White,
+                                fontFamily = InterFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 24.sp,
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
 
-                        Icon(
-                            painter = painterResource(id = R.drawable.next_custom_icon),
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier.size(40.dp)
-                        )
+                            Icon(
+                                painter = painterResource(id = R.drawable.next_custom_icon),
+                                contentDescription = null,
+                                tint = Color.White,
+                                modifier = Modifier.size(40.dp)
+                            )
+                        }
                     }
                 }
             }

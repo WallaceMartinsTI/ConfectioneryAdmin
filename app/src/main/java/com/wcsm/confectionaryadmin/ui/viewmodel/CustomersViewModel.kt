@@ -1,9 +1,12 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
+import com.wcsm.confectionaryadmin.data.model.states.CustomerSyncState
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -20,6 +23,9 @@ class CustomersViewModel @Inject constructor(
     private val _selectedCustomer = MutableStateFlow<Customer?>(null)
     val selectedCustomer = _selectedCustomer.asStateFlow()
 
+    private val _customerSyncState = MutableStateFlow(CustomerSyncState())
+    val customerSyncState = _customerSyncState.asStateFlow()
+
     private val _isCustomerDeleted = MutableStateFlow(false)
     val isCustomerDeleted = _isCustomerDeleted.asStateFlow()
 
@@ -29,6 +35,10 @@ class CustomersViewModel @Inject constructor(
 
     fun updateSelectedCustomer(customer: Customer?) {
         _selectedCustomer.value = customer
+    }
+
+    fun updateCustomerSyncState(newState: CustomerSyncState) {
+        _customerSyncState.value = newState
     }
 
     fun deleteCustomer(customer: Customer) {
@@ -52,6 +62,32 @@ class CustomersViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+        }
+    }
+
+    fun sendCustomersToSincronize() {
+        val newState = CustomerSyncState(
+            isSincronized = false,
+            syncError = false
+        )
+        updateCustomerSyncState(newState)
+
+        viewModelScope.launch {
+            customerRepository.sendCustomersToSincronize(customers.value)
+                .addOnSuccessListener {
+                    updateCustomerSyncState(
+                        newState.copy(
+                            isSincronized = true
+                        )
+                    )
+                }
+                .addOnFailureListener {
+                    updateCustomerSyncState(
+                        newState.copy(
+                            syncError = true
+                        )
+                    )
+                }
         }
     }
 }

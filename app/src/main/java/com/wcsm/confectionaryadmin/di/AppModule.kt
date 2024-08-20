@@ -57,17 +57,21 @@ object AppModule {
     @Provides
     @Singleton
     fun provideOrderRepository(
-        orderDao: OrderDao
+        orderDao: OrderDao,
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore
     ): OrderRepository {
-        return OrderRepositoryImpl(orderDao)
+        return OrderRepositoryImpl(orderDao, auth, firestore)
     }
 
     @Provides
     @Singleton
     fun provideCustomerRepository(
-        customerDao: CustomerDao
+        customerDao: CustomerDao,
+        auth: FirebaseAuth,
+        firestore: FirebaseFirestore
     ): CustomerRepository {
-        return CustomerRepositoryImpl(customerDao)
+        return CustomerRepositoryImpl(customerDao, auth, firestore)
     }
 
     // Firebase
