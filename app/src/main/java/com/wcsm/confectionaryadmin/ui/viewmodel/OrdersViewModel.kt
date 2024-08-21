@@ -74,6 +74,11 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 orderRepository.updateOrder(order)
+                updateOrderSyncState(
+                    orderSyncState.value.copy(
+                        isSincronized = false
+                    )
+                )
                 getAllOrders()
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -85,6 +90,11 @@ class OrdersViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 orderRepository.deleteOrder(order)
+                updateOrderSyncState(
+                    orderSyncState.value.copy(
+                        isSincronized = false
+                    )
+                )
                 getAllOrders()
             } catch (e: Exception) {
                 e.printStackTrace()
