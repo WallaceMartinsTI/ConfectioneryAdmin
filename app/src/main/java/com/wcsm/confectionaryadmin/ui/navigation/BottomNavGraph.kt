@@ -17,6 +17,7 @@ import com.wcsm.confectionaryadmin.ui.view.InfoScreen
 import com.wcsm.confectionaryadmin.ui.view.MainScreen
 import com.wcsm.confectionaryadmin.ui.view.OrdersScreen
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.LoginViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @Composable
@@ -24,7 +25,8 @@ fun BottomNavGraph(
     navController: NavHostController,
     paddingValues: PaddingValues = PaddingValues(),
     ordersViewModel: OrdersViewModel = hiltViewModel(),
-    customersViewModel: CustomersViewModel = hiltViewModel()
+    customersViewModel: CustomersViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel()
 ) {
     NavHost(
         navController = navController,
@@ -36,7 +38,8 @@ fun BottomNavGraph(
             MainScreen(
                 paddingValues = paddingValues,
                 ordersViewModel = ordersViewModel,
-                customersViewModel = customersViewModel
+                customersViewModel = customersViewModel,
+                loginViewModel = loginViewModel
             )
         }
 
@@ -60,7 +63,8 @@ fun BottomNavGraph(
             InfoScreen(
                 paddingValues = paddingValues,
                 customersViewModel = customersViewModel,
-                ordersViewModel = ordersViewModel
+                ordersViewModel = ordersViewModel,
+                loginViewModel = loginViewModel
             )
         }
 

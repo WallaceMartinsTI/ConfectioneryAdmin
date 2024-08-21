@@ -40,11 +40,9 @@ class OrderRepositoryImpl @Inject constructor(
     }
 
     override suspend fun sendOrdersToSincronize(orders: List<Order>): Task<Void> {
-        Log.i("#-# TESTE #-#", "repository - ordersWithCustomer: $orders")
         val newOrder = hashMapOf(
             "orders" to orders
         )
-        Log.i("#-# TESTE #-#", "repository - orders: $newOrder")
 
         return firestore
                 .collection("orders")

@@ -32,6 +32,16 @@ class LoginViewModel @Inject constructor(
     private val _isConnected = MutableStateFlow(networkRepository.isConnected())
     val isConnected = _isConnected.asStateFlow()
 
+    private val _showConfirmSyncUpDialog = MutableStateFlow<Boolean?>(null)
+    val showConfirmSyncUpDialog = _showConfirmSyncUpDialog.asStateFlow()
+
+    private val _showConfirmSyncDownDialog = MutableStateFlow<Boolean?>(null)
+    val showConfirmSyncDownDialog = _showConfirmSyncDownDialog.asStateFlow()
+
+    init {
+        checkConnection()
+    }
+
     fun updateLoginState(newState: LoginState) {
         _loginState.value = newState
     }
@@ -43,6 +53,36 @@ class LoginViewModel @Inject constructor(
     fun checkConnection() {
         viewModelScope.launch {
             _isConnected.value = networkRepository.isConnected()
+        }
+    }
+
+    fun checkShowSyncUpConfirmDialog() {
+        val currentUser = userRepository.getCurrentUser()
+        if(currentUser != null) {
+            val result = userPreferences.getSyncUpConfirmDialogPreference(currentUser.uid)
+            _showConfirmSyncUpDialog.value = result
+        }
+    }
+
+    fun changeSyncUpConfirmDialogPreference(status: Boolean) {
+        val currentUser = userRepository.getCurrentUser()
+        if(currentUser != null) {
+            userPreferences.saveSyncUpConfirmDialogPreference(currentUser.uid, status)
+        }
+    }
+
+    fun checkShowSyncDownConfirmDialog() {
+        val currentUser = userRepository.getCurrentUser()
+        if(currentUser != null) {
+            val result = userPreferences.getSyncDownConfirmDialogPreference(currentUser.uid)
+            _showConfirmSyncDownDialog.value = result
+        }
+    }
+
+    fun changeSyncDownConfirmDialogPreference(status: Boolean) {
+        val currentUser = userRepository.getCurrentUser()
+        if(currentUser != null) {
+            userPreferences.saveSyncDownConfirmDialogPreference(currentUser.uid, status)
         }
     }
 
@@ -73,7 +113,7 @@ class LoginViewModel @Inject constructor(
         updateLoginState(newState)
 
         val email = loginState.value.email
-        val password = loginState.value.password
+        val password = "123456" //loginState.value.password
         if(!validateUserEmail(email) || !validateUserPassword(password)) {
             return
         }

@@ -28,6 +28,10 @@ class InfoViewModel @Inject constructor(
     private val _isSyncSuccess = MutableStateFlow(false)
     val isSyncSuccess = _isSyncSuccess.asStateFlow()
 
+    init {
+        Log.i("#-# TESTE #-#", "InfoViewModel INIT")
+    }
+
     fun fetchAllUserData() {
         _isSyncSuccess.value = false
         _isSyncLoading.value = true

@@ -1,30 +1,22 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
-import com.wcsm.confectionaryadmin.data.model.states.CustomerSyncState
 import com.wcsm.confectionaryadmin.data.model.states.OrderSyncState
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
-import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
-import com.wcsm.confectionaryadmin.data.repository.NetworkRepository
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
-    private val orderRepository: OrderRepository,
-    private val networkRepository: NetworkRepository
+    private val orderRepository: OrderRepository
 ) : ViewModel() {
     private val _ordersWithCustomer = MutableStateFlow<List<OrderWithCustomer>>(emptyList())
     val ordersWithCustomer = _ordersWithCustomer.asStateFlow()
@@ -50,17 +42,8 @@ class OrdersViewModel @Inject constructor(
     private val _filterResult = MutableStateFlow("")
     val filterResult = _filterResult.asStateFlow()
 
-    private val _isConnected = MutableStateFlow(networkRepository.isConnected())
-    val isConnected = _isConnected.asStateFlow()
-
     init {
         getAllOrders()
-    }
-
-    fun checkConnection() {
-        viewModelScope.launch {
-            _isConnected.value = networkRepository.isConnected()
-        }
     }
 
     fun updateOrderToChangeStatus(order: Order?) {
@@ -128,7 +111,6 @@ class OrdersViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
-            Log.i("#-# TESTE #-#", "getAllOrders RODOU")
         }
     }
 

@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,7 +24,6 @@ import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material.icons.filled.OpenInBrowser
-import androidx.compose.material.icons.filled.Web
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -53,21 +51,20 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
+import com.wcsm.confectionaryadmin.ui.components.SyncDialog
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
-import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.theme.Primary
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.InfoViewModel
+import com.wcsm.confectionaryadmin.ui.viewmodel.LoginViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @Composable
@@ -75,11 +72,15 @@ fun InfoScreen(
     paddingValues: PaddingValues,
     customersViewModel: CustomersViewModel,
     ordersViewModel: OrdersViewModel,
+    loginViewModel: LoginViewModel,
     infoViewModel: InfoViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
     val isSyncSuccess by infoViewModel.isSyncSuccess.collectAsState()
     val isSyncLoading by infoViewModel.isSyncLoading.collectAsState()
+
+    val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
+    val isConnected by loginViewModel.isConnected.collectAsState()
 
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
@@ -89,11 +90,29 @@ fun InfoScreen(
 
     var syncText by rememberSaveable { mutableStateOf("") }
 
+    var isSincronized by rememberSaveable { mutableStateOf(false) }
+
+    var showSyncDownConfirmDialog by remember { mutableStateOf(false) }
+
+
+    LaunchedEffect(true) {
+        loginViewModel.checkConnection()
+    }
+
+    LaunchedEffect(confirmSyncDownDialogPreference) {
+        loginViewModel.checkShowSyncDownConfirmDialog()
+    }
+
+    LaunchedEffect(ordersViewModel.ordersWithCustomer, customersViewModel.customers) {
+        isSincronized = false
+    }
+
     LaunchedEffect(isSyncSuccess) {
         if(isSyncSuccess) {
             showToastMessage(context, "Dados buscados da nuvem com sucesso!")
             customersViewModel.getAllCustomers()
             ordersViewModel.getAllOrders()
+            isSincronized = true
         }
     }
 
@@ -171,12 +190,44 @@ fun InfoScreen(
                     Spacer(modifier = Modifier.height(8.dp))
 
                     PrimaryButton(
-                        text = syncText,
+                        text = if(isSincronized) "ATUALIZADO" else syncText,
                         textColor = Color.White,
                         icon = Icons.Default.CloudSync
                     ) {
-                        if(!isSyncLoading) {
+                        loginViewModel.checkConnection()
+
+                        if(!isSincronized) {
+                            loginViewModel.checkShowSyncDownConfirmDialog()
+
+                            if(confirmSyncDownDialogPreference != true) {
+                                showSyncDownConfirmDialog = true
+                            } else {
+                                if (isConnected) {
+                                    loginViewModel.checkConnection()
+                                    infoViewModel.fetchAllUserData()
+                                } else {
+                                    showToastMessage(context, "Sem conexão no momento")
+                                }
+                            }
+
+                        }
+                    }
+                }
+
+                if(showSyncDownConfirmDialog) {
+                    SyncDialog(
+                        isSendingFromRoomToFirestore = false,
+                        onDontShowAgain = {
+                            loginViewModel.changeSyncDownConfirmDialogPreference(it)
+                        },
+                        onDissmiss = { showSyncDownConfirmDialog = false }
+                    ) {
+                        loginViewModel.checkConnection()
+                        if (isConnected) {
+                            loginViewModel.checkConnection()
                             infoViewModel.fetchAllUserData()
+                        } else {
+                            showToastMessage(context, "Sem conexão no momento")
                         }
                     }
                 }

@@ -8,6 +8,8 @@ import com.wcsm.confectionaryadmin.data.model.entities.User
 
 interface UserRepository {
 
+    fun getCurrentUser(): FirebaseUser?
+
     suspend fun createUserWithEmailAndPassword(email: String, password: String): Task<AuthResult>
 
     suspend fun saveUserFirestore(user: User): Task<Void>

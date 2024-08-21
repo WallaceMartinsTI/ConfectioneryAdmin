@@ -143,7 +143,7 @@ fun CustomerDetailsScreen(
 
     var isCustomerOrdersOpen by remember { mutableStateOf(false) }
 
-    val customBlur = if(isCustomerOrdersOpen) 8.dp else 0.dp
+    //val customBlur = if(isCustomerOrdersOpen) 8.dp else 0.dp
 
     val customerIcon = when(customer?.gender) {
         "Masculino" -> painterResource(id = R.drawable.male)
@@ -230,8 +230,8 @@ fun CustomerDetailsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(brush = InvertedAppBackground)
-                        .blur(customBlur),
+                        .background(brush = InvertedAppBackground),
+                        //.blur(customBlur),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
