@@ -105,7 +105,6 @@ fun MainScreen(
     }
 
     LaunchedEffect(confirmSyncUpDialogPreference) {
-        Log.i("#-# TESTE #-#", "confirmSyncUpDialogPreference: $confirmSyncUpDialogPreference")
         loginViewModel.checkShowSyncUpConfirmDialog()
     }
 
@@ -144,6 +143,7 @@ fun MainScreen(
                 showSyncMessage = false
             }
             isSincronized = true
+            Log.i("#-# SYNC #-#", "Data sent from Room to Firestore successfully")
             isSyncLoading = false
         }
 

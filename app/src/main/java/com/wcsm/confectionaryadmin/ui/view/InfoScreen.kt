@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -113,6 +114,7 @@ fun InfoScreen(
             customersViewModel.getAllCustomers()
             ordersViewModel.getAllOrders()
             isSincronized = true
+            Log.i("#-# SYNC #-#", "Data fetched from Firestore to Room successfully")
         }
     }
 
