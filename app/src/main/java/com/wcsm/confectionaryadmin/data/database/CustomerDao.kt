@@ -11,8 +11,11 @@ import com.wcsm.confectionaryadmin.data.model.entities.Customer
 @Dao
 interface CustomerDao {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCustomer(customer: Customer)
+
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertCustomers(customers: List<Customer>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateCustomer(customer: Customer)

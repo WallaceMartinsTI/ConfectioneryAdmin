@@ -87,6 +87,7 @@
     <string name="bottom_nav_home">Home</string>
     <string name="bottom_nav_orders">Pedidos</string>
     <string name="bottom_nav_customers">Clientes</string>
+    <string name="bottom_nav_info">Info</string>
 
     <!-- Gender Options -->
     <string name="gender_male">Masculino</string>
@@ -107,6 +108,14 @@
     <string name="month_october">Outubro</string>
     <string name="month_november">Novembro</string>
     <string name="month_december">Dezembro</string>
+
+    <!-- Info Screen -->
+    <string name="screen_title_info_screen">INFORMAÇÕES</string>
+    <string name="info_screen_about_app">Sobre o Aplicativo</string>
+    <string name="info_screen_about_app_description">No Confectionary Admin, você pode gerenciar pedidos de forma eficiente e aproveitar um sistema de fidelidade para seus clientes. O aplicativo oferece uma lista completa dos seus clientes, incluindo detalhes dos pedidos, quantidade total de pedidos, e muito mais, facilitando o acompanhamento e a organização do seu negócio.</string>
+    <string name="info_screen_already_used_our_app">Já utilizou o App?</string>
+    <string name="info_screen_already_used_description">Se já utilizou o aplicativo e tem dados salvos na nuvem, clique no botão abaixo para trazer seus dados novamente.</string>
+    <string name="info_screen_about_me">Desenvolvedor</string>
 
     <!-- Others -->
     <string name="choose_an_option_below">Escolha uma das opções\nabaixo:</string>

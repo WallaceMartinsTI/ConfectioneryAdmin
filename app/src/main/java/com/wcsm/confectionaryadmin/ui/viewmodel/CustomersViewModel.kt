@@ -62,6 +62,7 @@ class CustomersViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            Log.i("#-# TESTE #-#", "getAllCustomers RODOU")
         }
     }
 

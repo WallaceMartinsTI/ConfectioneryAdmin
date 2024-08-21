@@ -15,4 +15,8 @@ interface CustomerRepository {
     suspend fun deleteCustomer(customer: Customer)
 
     suspend fun sendCustomersToSincronize(customers: List<Customer>): Task<Void>
+
+    suspend fun getCustomersFromFirestore(): List<Customer>
+
+    suspend fun saveCustomersToLocalDatabase(customers: List<Customer>)
 }

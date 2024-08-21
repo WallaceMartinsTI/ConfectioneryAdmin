@@ -3,6 +3,7 @@ package com.wcsm.confectionaryadmin.ui.components
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
@@ -47,6 +48,11 @@ fun CustomBottomAppBar(
             route = Screen.Customers.route,
             icon = Icons.Default.Person
         ),
+        BottomNavItem(
+            title = stringResource(id = R.string.bottom_nav_info),
+            route = Screen.Info.route,
+            icon = Icons.Default.Info
+        )
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

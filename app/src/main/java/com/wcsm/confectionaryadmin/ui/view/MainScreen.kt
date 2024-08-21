@@ -1,11 +1,9 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -19,12 +17,12 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.CloudSync
 import androidx.compose.material.icons.filled.NotificationImportant
 import androidx.compose.material.icons.filled.Sync
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -43,11 +41,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
@@ -56,7 +51,6 @@ import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
-import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
 import com.wcsm.confectionaryadmin.ui.theme.DarkGreen
 import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
@@ -99,10 +93,7 @@ fun MainScreen(
     var showSyncMessage by remember { mutableStateOf(false) }
 
     LaunchedEffect(true) {
-        Log.i("#-# TESTE #-#", "Launched Effect TRUE")
-        Log.i("#-# TESTE #-#", "INICIO isConnected: $isConnected")
         ordersViewModel.checkConnection()
-        Log.i("#-# TESTE #-#", "FIM isConnected: $isConnected")
     }
 
     LaunchedEffect(orders) {
@@ -294,7 +285,7 @@ fun MainScreen(
                     }
 
                     Text(
-                        text = "Antes de sair do aplicativo, certifique-se de sincronizar os dados, para que fiquem salvos na nuvem.",
+                        text = "Sempre mantenha o app atualizado, para que os dados fiquem salvos na nuvem.",
                         color = Primary,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.SemiBold,
@@ -306,15 +297,17 @@ fun MainScreen(
                         modifier = Modifier
                             .clip(RoundedCornerShape(15.dp))
                             .clickable {
-                                ordersViewModel.checkConnection()
-                                if (isConnected) {
-                                    showSyncMessage = true
-                                    isSyncLoading = true
+                                if(!isSincronized) {
                                     ordersViewModel.checkConnection()
-                                    ordersViewModel.sendOrdersToSincronize()
-                                    customersViewModel.sendCustomersToSincronize()
-                                } else {
-                                    showToastMessage(context, "Sem conexão no momento")
+                                    if (isConnected) {
+                                        showSyncMessage = true
+                                        isSyncLoading = true
+                                        ordersViewModel.checkConnection()
+                                        ordersViewModel.sendOrdersToSincronize()
+                                        customersViewModel.sendCustomersToSincronize()
+                                    } else {
+                                        showToastMessage(context, "Sem conexão no momento")
+                                    }
                                 }
                             }
                             .border(1.dp, Primary, RoundedCornerShape(15.dp))
@@ -335,7 +328,7 @@ fun MainScreen(
                         Spacer(modifier = Modifier.width(8.dp))
                         if(!isSincronized) {
                             Icon(
-                                imageVector = Icons.Default.Sync,
+                                imageVector = Icons.Default.CloudSync,
                                 contentDescription = null,
                                 tint = Color.White
                             )

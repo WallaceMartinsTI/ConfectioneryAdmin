@@ -3,6 +3,7 @@ package com.wcsm.confectionaryadmin.ui.navigation
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.PlaylistAdd
 import androidx.compose.material.icons.filled.PersonAddAlt1
 import androidx.compose.material.icons.filled.PlaylistAdd
 import androidx.compose.material3.Scaffold
@@ -28,7 +29,7 @@ fun NavigationHolder() {
 
     when(currentDestination?.route) {
         Screen.Orders.route -> {
-            icon = Icons.Default.PlaylistAdd
+            icon = Icons.AutoMirrored.Filled.PlaylistAdd
             onClick = {
                 navHostController.navigate(Screen.CreateOrder.route)
             }

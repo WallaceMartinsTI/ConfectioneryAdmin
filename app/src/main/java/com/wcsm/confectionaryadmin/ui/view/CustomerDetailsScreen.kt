@@ -131,6 +131,7 @@ fun CustomerDetailsScreen(
     var dateOfBirth by rememberSaveable { mutableStateOf("") }
     var address by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
+
     var ordersQuantity by rememberSaveable { mutableStateOf(0) }
     var customerSince by rememberSaveable { mutableStateOf("") }
 

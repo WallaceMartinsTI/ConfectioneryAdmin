@@ -128,6 +128,7 @@ class OrdersViewModel @Inject constructor(
             } catch (e: Exception) {
                 e.printStackTrace()
             }
+            Log.i("#-# TESTE #-#", "getAllOrders RODOU")
         }
     }
 

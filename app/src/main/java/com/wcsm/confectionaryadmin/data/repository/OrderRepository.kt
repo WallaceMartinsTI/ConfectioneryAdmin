@@ -18,4 +18,8 @@ interface OrderRepository {
 
     suspend fun sendOrdersToSincronize(orders: List<Order>): Task<Void>
 
+    suspend fun getOrdersFromFirestore(): List<Order>
+
+    suspend fun saveOrdersToLocalDatabase(orders: List<Order>)
+
 }

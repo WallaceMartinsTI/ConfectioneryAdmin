@@ -8,6 +8,8 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
+import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
+import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
@@ -51,6 +53,38 @@ class OrderRepositoryImpl @Inject constructor(
                 .addOnSuccessListener { Log.d("#-# TESTE #-#", "DocumentSnapshot successfully written!") }
                 .addOnFailureListener { e -> Log.w("#-# TESTE #-#", "Error writing document", e) }
 
+    }
+
+    override suspend fun getOrdersFromFirestore(): List<Order> {
+        return try {
+            val snapshot = firestore
+                .collection("orders")
+                .document(currentUser!!.uid)
+                .get()
+                .await()
+            val data = snapshot.data?.get("orders") as? List<Map<String, Any>> ?: emptyList()
+
+            data.map { map ->
+                Order(
+                    orderId = (map["orderId"] as? Long)?.toInt() ?: 0,
+                    userOrderOwnerId = map["userOrderOwnerId"] as? String ?: "",
+                    customerOwnerId = (map["customerOwnerId"] as? Long)?.toInt() ?: 0,
+                    title = map["title"] as? String ?: "",
+                    description = map["description"] as? String ?: "",
+                    price = map["price"] as? Double ?: 0.0,
+                    status = OrderStatus.valueOf(map["status"] as? String ?: "PENDING"),
+                    orderDate = (map["orderDate"] as? Long) ?: 0L,
+                    deliverDate = (map["deliverDate"] as? Long) ?: 0L
+                )
+            }
+        } catch (e: Exception) {
+            Log.e("SyncError", "Error getting orders from Firestore", e)
+            emptyList()
+        }
+    }
+
+    override suspend fun saveOrdersToLocalDatabase(orders: List<Order>) {
+        orderDao.insertOrders(orders)
     }
 
 }
