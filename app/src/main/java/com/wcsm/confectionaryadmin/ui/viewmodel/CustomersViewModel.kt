@@ -46,13 +46,11 @@ class CustomersViewModel @Inject constructor(
     }
 
     fun deleteCustomer(customer: Customer) {
-        Log.i("#-# TESTE #-#", "CustomersViewModel - deleteCustomer")
         viewModelScope.launch {
             try {
                 customerRepository.deleteCustomer(customer)
                 getAllCustomers()
                 _isCustomerDeleted.value = true
-                Log.i("#-# TESTE #-#", "customer DELETADO")
             } catch (e: Exception) {
                 e.printStackTrace()
                 _isCustomerDeleted.value = false

@@ -107,7 +107,6 @@ fun CustomerDetailsScreen(
     customersViewModel: CustomersViewModel,
     createCustomerViewModel: CreateCustomerViewModel = hiltViewModel()
 ) {
-    Log.i("#-# TESTE #-#", "CustomerDetailScreen")
     val context = LocalContext.current
 
     val selectedCustomer by customersViewModel.selectedCustomer.collectAsState()
@@ -145,8 +144,6 @@ fun CustomerDetailsScreen(
 
     var isCustomerOrdersOpen by remember { mutableStateOf(false) }
 
-    //val customBlur = if(isCustomerOrdersOpen) 8.dp else 0.dp
-
     val customerIcon = when(customer?.gender) {
         "Masculino" -> painterResource(id = R.drawable.male)
         "Feminino" -> painterResource(id = R.drawable.female)
@@ -177,7 +174,6 @@ fun CustomerDetailsScreen(
     }
 
     LaunchedEffect(isCustomerDeleted) {
-        Log.i("#-# TESTE #-#", "CustomerDetailScreen ENTROU LaunchedEffect(isCustomerDeleted)")
         if(isCustomerDeleted) {
             ordersViewModel.getAllOrders()
             customersViewModel.updateCustomerSyncState(
@@ -185,7 +181,6 @@ fun CustomerDetailsScreen(
                     isSincronized = false
                 )
             )
-            Log.i("#-# TESTE #-#", "CustomerDetailScreen vai dar o popBackStack()")
             customersViewModel.updateCustomerDeletes(false)
             navController.popBackStack()
         }

@@ -13,6 +13,12 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.security.SecureRandom
+import javax.crypto.Cipher
+import javax.crypto.KeyGenerator
+import javax.crypto.SecretKey
+import javax.crypto.spec.IvParameterSpec
+import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 
 @HiltViewModel
@@ -54,6 +60,18 @@ class LoginViewModel @Inject constructor(
         viewModelScope.launch {
             _isConnected.value = networkRepository.isConnected()
         }
+    }
+
+    fun teste() {
+        Log.i("#-# TESTE #-#", "Chamou TESTE")
+        val text = "wallace159santos@hotmail.com"
+        val secretKey = generateKey()
+        val (encryptedText, iv) = encrypt(text, secretKey)
+        val decryptText = decrypt(encryptedText, secretKey, iv)
+        Log.i("#-# TESTE #-#", "key: $secretKey")
+        Log.i("#-# TESTE #-#", "encryptedText: ${encryptedText.joinToString()}")
+        Log.i("#-# TESTE #-#", "iv: ${iv.joinToString()}")
+        Log.i("#-# TESTE #-#", "decryptText: $decryptText")
     }
 
     fun checkShowSyncUpConfirmDialog() {
@@ -178,5 +196,31 @@ class LoginViewModel @Inject constructor(
         } else {
             true
         }
+    }
+
+    private fun encrypt(text: String, secretKey: SecretKey): Pair<ByteArray, ByteArray> {
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        val iv = generateIv()
+        cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
+        val encryptedText = cipher.doFinal(text.toByteArray())
+        return Pair(encryptedText, iv) // Retorna o texto criptografado e o IV usado
+    }
+
+    private fun decrypt(encryptedData: ByteArray, secretKey: SecretKey, iv: ByteArray): String {
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
+        return String(cipher.doFinal(encryptedData))
+    }
+
+    private fun generateKey(): SecretKey {
+        val keyGen = KeyGenerator.getInstance("AES")
+        keyGen.init(128)
+        return keyGen.generateKey()
+    }
+
+    private fun generateIv(): ByteArray {
+        val iv = ByteArray(16) // Tamanho do bloco para AES é 16 bytes
+        SecureRandom().nextBytes(iv)
+        return iv
     }
 }

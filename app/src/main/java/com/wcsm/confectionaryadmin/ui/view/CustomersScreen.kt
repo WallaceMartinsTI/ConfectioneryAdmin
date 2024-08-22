@@ -67,7 +67,6 @@ fun CustomersScreen(
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(selectedCustomer) {
-        Log.i("#-# TESTE #-#", "CustomersScreen - selectedCustomer: $selectedCustomer")
         if(selectedCustomer != null) {
             customersViewModel.updateSelectedCustomer(
                 customer = selectedCustomer!!
