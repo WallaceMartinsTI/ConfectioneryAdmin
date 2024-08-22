@@ -77,9 +77,6 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    // Work Manager
-    implementation(libs.androidx.work.runtime)
-
     // System UI Controller
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.27.0")
 
@@ -91,6 +88,9 @@ dependencies {
 
     // Gson
     implementation("com.google.code.gson:gson:2.11.0")
+
+    // Jetpack Security
+    implementation("androidx.security:security-crypto:1.1.0-alpha03")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.1.2"))

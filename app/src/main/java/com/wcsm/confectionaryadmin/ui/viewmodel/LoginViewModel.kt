@@ -62,18 +62,6 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    fun teste() {
-        Log.i("#-# TESTE #-#", "Chamou TESTE")
-        val text = "wallace159santos@hotmail.com"
-        val secretKey = generateKey()
-        val (encryptedText, iv) = encrypt(text, secretKey)
-        val decryptText = decrypt(encryptedText, secretKey, iv)
-        Log.i("#-# TESTE #-#", "key: $secretKey")
-        Log.i("#-# TESTE #-#", "encryptedText: ${encryptedText.joinToString()}")
-        Log.i("#-# TESTE #-#", "iv: ${iv.joinToString()}")
-        Log.i("#-# TESTE #-#", "decryptText: $decryptText")
-    }
-
     fun checkShowSyncUpConfirmDialog() {
         val currentUser = userRepository.getCurrentUser()
         if(currentUser != null) {
@@ -131,7 +119,7 @@ class LoginViewModel @Inject constructor(
         updateLoginState(newState)
 
         val email = loginState.value.email
-        val password = "123456" //loginState.value.password
+        val password = loginState.value.password
         if(!validateUserEmail(email) || !validateUserPassword(password)) {
             return
         }
@@ -196,31 +184,5 @@ class LoginViewModel @Inject constructor(
         } else {
             true
         }
-    }
-
-    private fun encrypt(text: String, secretKey: SecretKey): Pair<ByteArray, ByteArray> {
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        val iv = generateIv()
-        cipher.init(Cipher.ENCRYPT_MODE, secretKey, IvParameterSpec(iv))
-        val encryptedText = cipher.doFinal(text.toByteArray())
-        return Pair(encryptedText, iv) // Retorna o texto criptografado e o IV usado
-    }
-
-    private fun decrypt(encryptedData: ByteArray, secretKey: SecretKey, iv: ByteArray): String {
-        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-        cipher.init(Cipher.DECRYPT_MODE, secretKey, IvParameterSpec(iv))
-        return String(cipher.doFinal(encryptedData))
-    }
-
-    private fun generateKey(): SecretKey {
-        val keyGen = KeyGenerator.getInstance("AES")
-        keyGen.init(128)
-        return keyGen.generateKey()
-    }
-
-    private fun generateIv(): ByteArray {
-        val iv = ByteArray(16) // Tamanho do bloco para AES é 16 bytes
-        SecureRandom().nextBytes(iv)
-        return iv
     }
 }

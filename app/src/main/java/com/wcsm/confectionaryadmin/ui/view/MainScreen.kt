@@ -313,8 +313,7 @@ fun MainScreen(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(15.dp))
                                 .clickable {
-                                    loginViewModel.teste()
-                                    /*loginViewModel.checkConnection()
+                                    loginViewModel.checkConnection()
 
                                     if (!isSincronized) {
                                         loginViewModel.checkShowSyncUpConfirmDialog()
@@ -332,7 +331,7 @@ fun MainScreen(
                                                 showToastMessage(context, "Sem conexão no momento")
                                             }
                                         }
-                                    }*/
+                                    }
                                 }
                                 .border(1.dp, Primary, RoundedCornerShape(15.dp))
                                 .background(brush = AppTitleGradient)
