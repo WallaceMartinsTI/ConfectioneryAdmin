@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -66,6 +67,7 @@ fun CustomersScreen(
     val focusManager = LocalFocusManager.current
 
     LaunchedEffect(selectedCustomer) {
+        Log.i("#-# TESTE #-#", "CustomersScreen - selectedCustomer: $selectedCustomer")
         if(selectedCustomer != null) {
             customersViewModel.updateSelectedCustomer(
                 customer = selectedCustomer!!

@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -106,6 +107,7 @@ fun CustomerDetailsScreen(
     customersViewModel: CustomersViewModel,
     createCustomerViewModel: CreateCustomerViewModel = hiltViewModel()
 ) {
+    Log.i("#-# TESTE #-#", "CustomerDetailScreen")
     val context = LocalContext.current
 
     val selectedCustomer by customersViewModel.selectedCustomer.collectAsState()
@@ -152,7 +154,11 @@ fun CustomerDetailsScreen(
     }
 
     LaunchedEffect(selectedCustomer) {
+        Log.i("#-# TESTE #-#", "CustomerDetailScreen ENTROU LaunchedEffect(selectedCustomer)")
+        Log.i("#-# TESTE #-#", "selectedCustomer: $selectedCustomer")
         if(selectedCustomer != null) {
+            Log.i("#-# TESTE #-#", "Entrou: selectedCustomer != null")
+            Log.i("#-# TESTE #-#", "selectedCustomer: $selectedCustomer")
             ordersViewModel.getOrdersByCustomer(selectedCustomer!!.customerId)
         }
     }
@@ -171,6 +177,7 @@ fun CustomerDetailsScreen(
     }
 
     LaunchedEffect(isCustomerDeleted) {
+        Log.i("#-# TESTE #-#", "CustomerDetailScreen ENTROU LaunchedEffect(isCustomerDeleted)")
         if(isCustomerDeleted) {
             ordersViewModel.getAllOrders()
             customersViewModel.updateCustomerSyncState(
@@ -178,6 +185,8 @@ fun CustomerDetailsScreen(
                     isSincronized = false
                 )
             )
+            Log.i("#-# TESTE #-#", "CustomerDetailScreen vai dar o popBackStack()")
+            customersViewModel.updateCustomerDeletes(false)
             navController.popBackStack()
         }
     }
@@ -231,7 +240,6 @@ fun CustomerDetailsScreen(
                     modifier = Modifier
                         .fillMaxSize()
                         .background(brush = InvertedAppBackground),
-                        //.blur(customBlur),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(

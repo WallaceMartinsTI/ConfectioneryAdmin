@@ -41,12 +41,18 @@ class CustomersViewModel @Inject constructor(
         _customerSyncState.value = newState
     }
 
+    fun updateCustomerDeletes(status: Boolean) {
+        _isCustomerDeleted.value = status
+    }
+
     fun deleteCustomer(customer: Customer) {
+        Log.i("#-# TESTE #-#", "CustomersViewModel - deleteCustomer")
         viewModelScope.launch {
             try {
                 customerRepository.deleteCustomer(customer)
                 getAllCustomers()
                 _isCustomerDeleted.value = true
+                Log.i("#-# TESTE #-#", "customer DELETADO")
             } catch (e: Exception) {
                 e.printStackTrace()
                 _isCustomerDeleted.value = false
