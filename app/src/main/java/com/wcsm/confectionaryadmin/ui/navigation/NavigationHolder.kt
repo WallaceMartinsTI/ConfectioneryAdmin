@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
@@ -18,7 +19,7 @@ import com.wcsm.confectionaryadmin.ui.components.CustomBottomAppBar
 import com.wcsm.confectionaryadmin.ui.components.CustomFloatActionButton
 
 @Composable
-fun NavigationHolder() {
+fun NavigationHolder(externalNavController: NavController) {
     val navHostController = rememberNavController()
 
     val navBackStackEntry by navHostController.currentBackStackEntryAsState()
@@ -54,6 +55,7 @@ fun NavigationHolder() {
         ) {
             BottomNavGraph(
                 navController = navHostController,
+                externalNavController = externalNavController
             )
         }
     } else {
@@ -71,7 +73,8 @@ fun NavigationHolder() {
         ) { paddingValues ->
             BottomNavGraph(
                 navController = navHostController,
-                paddingValues = paddingValues
+                paddingValues = paddingValues,
+                externalNavController = externalNavController
             )
         }
     }

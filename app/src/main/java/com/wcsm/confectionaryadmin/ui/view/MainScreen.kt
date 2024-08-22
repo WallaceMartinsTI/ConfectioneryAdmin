@@ -1,6 +1,8 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.app.Activity
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -42,18 +44,24 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomStatus
 import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
+import com.wcsm.confectionaryadmin.ui.components.LogoutDialog
 import com.wcsm.confectionaryadmin.ui.components.SyncDialog
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
 import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
+import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
 import com.wcsm.confectionaryadmin.ui.theme.DarkGreen
 import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
@@ -70,6 +78,7 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 @Composable
 fun MainScreen(
     paddingValues: PaddingValues,
+    externalNavController: NavController,
     ordersViewModel: OrdersViewModel,
     customersViewModel: CustomersViewModel,
     loginViewModel: LoginViewModel
@@ -79,6 +88,7 @@ fun MainScreen(
     val orders by ordersViewModel.ordersWithCustomer.collectAsState()
 
     val isConnected by loginViewModel.isConnected.collectAsState()
+    val isSignout by loginViewModel.isSignout.collectAsState()
 
     val orderSyncState by ordersViewModel.orderSyncState.collectAsState()
     val customerSyncState by customersViewModel.customerSyncState.collectAsState()
@@ -100,8 +110,20 @@ fun MainScreen(
 
     var showSyncUpConfirmDialog by remember { mutableStateOf(false) }
 
+    var showBackHandlerDialog by remember { mutableStateOf(false) }
+
+    BackHandler {
+        showBackHandlerDialog = true
+    }
+
     LaunchedEffect(true) {
         loginViewModel.checkConnection()
+    }
+
+    LaunchedEffect(isSignout) {
+        if(isSignout) {
+            externalNavController.navigate(Screen.Login.route)
+        }
     }
 
     LaunchedEffect(confirmSyncUpDialogPreference) {
@@ -382,18 +404,35 @@ fun MainScreen(
                 }
             }
         }
+
+        if(showBackHandlerDialog) {
+            val activity = context as? Activity
+            LogoutDialog(
+                onExitApp = { activity?.finish() },
+                onLogout = { loginViewModel.signOut() }
+            ) {
+                showBackHandlerDialog = false
+            }
+        }
     }
 }
 
-/*
 @Preview(showBackground = true)
 @Composable
-private fun MainScreenPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
+private fun MainScreenPreview(
+    ordersViewModel: OrdersViewModel = hiltViewModel(),
+    customersViewModel: CustomersViewModel = hiltViewModel(),
+    loginViewModel: LoginViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
         val paddingValues = PaddingValues()
+        val navController = rememberNavController()
         MainScreen(
             paddingValues = paddingValues,
-            ordersViewModel = ordersViewModel
+            externalNavController = navController,
+            ordersViewModel = ordersViewModel,
+            customersViewModel = customersViewModel,
+            loginViewModel = loginViewModel
         )
     }
-}*/
+}

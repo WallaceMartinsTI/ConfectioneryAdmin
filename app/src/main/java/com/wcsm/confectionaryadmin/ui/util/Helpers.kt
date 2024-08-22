@@ -89,6 +89,16 @@ fun getCurrentDateTimeMillis(): Long {
     return date?.time ?: 1577847600000
 }
 
+fun formatNameCapitalizeFirstChar(name: String): String {
+    return name
+        .split(" ")
+        .joinToString(" ") {
+            it.lowercase().replaceFirstChar {
+                    char -> char.uppercase()
+            }
+        }
+}
+
 fun getYearAndMonthFromTimeInMillis(timeInMillis: Long): Pair<Int, Int> {
     val calendar = Calendar.getInstance()
     calendar.timeInMillis = timeInMillis

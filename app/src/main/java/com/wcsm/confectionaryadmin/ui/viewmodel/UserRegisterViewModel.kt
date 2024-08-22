@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.wcsm.confectionaryadmin.data.model.entities.User
 import com.wcsm.confectionaryadmin.data.model.states.UserRegisterState
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.formatNameCapitalizeFirstChar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -37,10 +38,10 @@ class UserRegisterViewModel @Inject constructor(
         )
         updateUserRegisterState(newState)
 
-        val name = userRegisterState.value.name
-        val email = userRegisterState.value.email
-        val password = userRegisterState.value.password
-        val confirmPassword = userRegisterState.value.confirmPassword
+        val name = formatNameCapitalizeFirstChar(userRegisterState.value.name.trim())
+        val email = userRegisterState.value.email.trim().lowercase()
+        val password = userRegisterState.value.password.trim()
+        val confirmPassword = userRegisterState.value.confirmPassword.trim()
 
         if(isAllFieldsValid(name, email, password, confirmPassword)) {
             registerUserFirebase(name, email, password)

@@ -44,6 +44,9 @@ class LoginViewModel @Inject constructor(
     private val _showConfirmSyncDownDialog = MutableStateFlow<Boolean?>(null)
     val showConfirmSyncDownDialog = _showConfirmSyncDownDialog.asStateFlow()
 
+    private val _isSignout = MutableStateFlow(false)
+    val isSignout = _isSignout.asStateFlow()
+
     init {
         checkConnection()
     }
@@ -118,8 +121,8 @@ class LoginViewModel @Inject constructor(
         )
         updateLoginState(newState)
 
-        val email = loginState.value.email
-        val password = loginState.value.password
+        val email = loginState.value.email.trim().lowercase()
+        val password = loginState.value.password.trim()
         if(!validateUserEmail(email) || !validateUserPassword(password)) {
             return
         }
@@ -166,6 +169,11 @@ class LoginViewModel @Inject constructor(
                     )
                 }
         }
+    }
+
+    fun signOut() {
+        userRepository.signOut()
+        _isSignout.value = true
     }
 
     private fun validateUserEmail(email: String): Boolean {

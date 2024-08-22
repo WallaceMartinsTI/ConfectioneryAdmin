@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -23,10 +24,11 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 @Composable
 fun BottomNavGraph(
     navController: NavHostController,
+    externalNavController: NavController,
     paddingValues: PaddingValues = PaddingValues(),
     ordersViewModel: OrdersViewModel = hiltViewModel(),
     customersViewModel: CustomersViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel = hiltViewModel()
+    loginViewModel: LoginViewModel = hiltViewModel(),
 ) {
     NavHost(
         navController = navController,
@@ -39,7 +41,8 @@ fun BottomNavGraph(
                 paddingValues = paddingValues,
                 ordersViewModel = ordersViewModel,
                 customersViewModel = customersViewModel,
-                loginViewModel = loginViewModel
+                loginViewModel = loginViewModel,
+                externalNavController = externalNavController
             )
         }
 

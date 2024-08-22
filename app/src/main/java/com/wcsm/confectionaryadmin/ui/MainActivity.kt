@@ -85,7 +85,7 @@ class MainActivity : ComponentActivity() {
                     }
 
                     composable(route = Screen.NavigationHolder.route) {
-                        NavigationHolder()
+                        NavigationHolder(externalNavController = navController)
                     }
                 }
             }

@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.wcsm.confectionaryadmin.data.model.states.CreateCustomerState
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.ui.util.formatNameCapitalizeFirstChar
 import com.wcsm.confectionaryadmin.ui.util.getCurrentDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,12 +53,12 @@ class CreateCustomerViewModel @Inject constructor(
         }
         val customerName = customerState.value.name
         if(validateCustomername(customerName)) {
-            val formattedName = formatName(customerName)
+            val formattedName = formatNameCapitalizeFirstChar(customerName.trim())
             val customer = Customer(
                 userCustomerOwnerId = currentUser.uid,
                 customerId = customerState.value.customerId ?: 0,
                 name = formattedName,
-                email = customerState.value.email.lowercase(),
+                email = customerState.value.email.trim().lowercase(),
                 phone = customerState.value.phone,
                 gender = customerState.value.gender,
                 dateOfBirth = customerState.value.dateOfBirth,
@@ -74,16 +75,6 @@ class CreateCustomerViewModel @Inject constructor(
                 saveUserToDatabase(customer = customer)
             }
         }
-    }
-
-    private fun formatName(name: String): String {
-        return name
-            .split(" ")
-            .joinToString(" ") {
-                it.lowercase().replaceFirstChar {
-                    char -> char.uppercase()
-                }
-            }
     }
 
     private fun updateUserToDatabase(customer: Customer) {

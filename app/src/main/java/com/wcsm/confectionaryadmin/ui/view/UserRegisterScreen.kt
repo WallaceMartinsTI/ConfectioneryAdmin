@@ -23,6 +23,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -66,8 +67,11 @@ fun UserRegisterScreen(
 
     val focusRequester = remember { List(2) { FocusRequester() } }
 
+    var isRegisterLoading by rememberSaveable { mutableStateOf(false) }
+
     LaunchedEffect(userRegisterState) {
         if(userRegisterState.isRegistered) {
+            isRegisterLoading = false
             navController.navigate(Screen.Login.route)
         }
     }
@@ -267,7 +271,10 @@ fun UserRegisterScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            PrimaryButton(text = stringResource(id = R.string.btn_text_user_register)) {
+            PrimaryButton(
+                text = if(isRegisterLoading) "AGUARDE..." else stringResource(id = R.string.btn_text_user_register)
+            ) {
+                isRegisterLoading = true
                 userRegisterViewModel.registerNewUser()
             }
 

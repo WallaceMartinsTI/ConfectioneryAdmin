@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.data.repository
 
+import android.util.Log
 import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
@@ -32,6 +33,13 @@ class UserRepositoryImpl(
 
     override suspend fun signIn(email: String, password: String): Task<AuthResult> {
         return auth.signInWithEmailAndPassword(email, password)
+    }
+
+    override fun signOut() {
+        val currentUser = getCurrentUser()
+        Log.i("#-# TESTE #-#", "Antes do signOut - currentUser: $currentUser")
+        auth.signOut()
+        Log.i("#-# TESTE #-#", "Depois do signOut - currentUser: $currentUser")
     }
 
     override suspend fun deleteUserFirebaseAuth(user: FirebaseUser): Task<Unit> {
