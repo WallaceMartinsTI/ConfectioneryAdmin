@@ -61,17 +61,15 @@ fun UserRegisterScreen(
     userRegisterViewModel: UserRegisterViewModel = hiltViewModel()
 ) {
     val userRegisterState by userRegisterViewModel.userRegisterState.collectAsState()
+    val isRegisterLoading by userRegisterViewModel.isRegisterLoading.collectAsState()
 
     var showPassword by remember { mutableStateOf(false) }
     var showConfirmPassword by remember { mutableStateOf(false) }
 
     val focusRequester = remember { List(2) { FocusRequester() } }
 
-    var isRegisterLoading by rememberSaveable { mutableStateOf(false) }
-
     LaunchedEffect(userRegisterState) {
         if(userRegisterState.isRegistered) {
-            isRegisterLoading = false
             navController.navigate(Screen.Login.route)
         }
     }
@@ -274,8 +272,9 @@ fun UserRegisterScreen(
             PrimaryButton(
                 text = if(isRegisterLoading) "AGUARDE..." else stringResource(id = R.string.btn_text_user_register)
             ) {
-                isRegisterLoading = true
-                userRegisterViewModel.registerNewUser()
+                if(!isRegisterLoading) {
+                    userRegisterViewModel.registerNewUser()
+                }
             }
 
             Spacer(modifier = Modifier.height(12.dp))

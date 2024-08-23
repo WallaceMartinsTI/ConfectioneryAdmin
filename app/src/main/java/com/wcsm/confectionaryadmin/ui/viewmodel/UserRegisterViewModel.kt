@@ -6,11 +6,15 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
 import com.google.firebase.auth.FirebaseAuthUserCollisionException
 import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.wcsm.confectionaryadmin.data.model.entities.User
+import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
 import com.wcsm.confectionaryadmin.data.model.states.UserRegisterState
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.AUTH_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.FIRESTORE_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
 import com.wcsm.confectionaryadmin.ui.util.formatNameCapitalizeFirstChar
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -20,16 +24,22 @@ import javax.inject.Inject
 class UserRegisterViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
-    private val TAG = "#FIREBASE_AUTH#USER_REGISTER#"
-
     private val _userRegisterState = MutableStateFlow(UserRegisterState())
     val userRegisterState = _userRegisterState.asStateFlow()
+
+    private val _isRegisterLoading = MutableStateFlow(false)
+    val isRegisterLoading = _isRegisterLoading.asStateFlow()
 
     fun updateUserRegisterState(newState: UserRegisterState) {
         _userRegisterState.value = newState
     }
 
+    fun updateIsRegisterLoading(status: Boolean) {
+        _isRegisterLoading.value = status
+    }
+
     fun registerNewUser() {
+        updateIsRegisterLoading(true)
         val newState = _userRegisterState.value.copy(
             nameErrorMessage = null,
             emailErrorMessage = null,
@@ -38,13 +48,21 @@ class UserRegisterViewModel @Inject constructor(
         )
         updateUserRegisterState(newState)
 
-        val name = formatNameCapitalizeFirstChar(userRegisterState.value.name.trim())
-        val email = userRegisterState.value.email.trim().lowercase()
-        val password = userRegisterState.value.password.trim()
-        val confirmPassword = userRegisterState.value.confirmPassword.trim()
+        try {
+            val name = formatNameCapitalizeFirstChar(userRegisterState.value.name.trim())
+            val email = userRegisterState.value.email.trim().lowercase()
+            val password = userRegisterState.value.password.trim()
+            val confirmPassword = userRegisterState.value.confirmPassword.trim()
 
-        if(isAllFieldsValid(name, email, password, confirmPassword)) {
-            registerUserFirebase(name, email, password)
+            if(isAllFieldsValid(name, email, password, confirmPassword)) {
+                Log.i(AUTH_TAG, "New user object created!")
+                registerUserFirebase(name, email, password)
+            } else {
+                updateIsRegisterLoading(false)
+            }
+        } catch (e: Exception) {
+            Log.e(ROOM_TAG, "Error creating a new user object.", e)
+            updateIsRegisterLoading(false)
         }
     }
 
@@ -128,23 +146,24 @@ class UserRegisterViewModel @Inject constructor(
         _userRegisterState.value = _userRegisterState.value.copy(isLoading = true)
 
         viewModelScope.launch {
+            delay(2000)
             userRepository.createUserWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
-                    Log.i(TAG, "Usuário CRIADO com SUCESSO!")
+                    Log.i(AUTH_TAG, "New user created successfully!")
                     val userId = it.user?.uid
                     if(userId != null) {
-                        val newUser = User(
+                        val newFirestoreUser = FirestoreUser(
                             id = userId,
                             name = name,
                             email = email
                         )
                         viewModelScope.launch {
-                            saveUserFirestore(newUser)
+                            saveUserFirestore(newFirestoreUser)
                         }
                     }
                 }
                 .addOnFailureListener {
-                    Log.i(TAG, "ERRO ao CRIAR USUÁRIO.")
+                    Log.i(AUTH_TAG, "Error creating a new user.")
                     var emailErrorMessage = ""
                     var passwordErrorMessage = ""
                     var confirmPasswordErrorMessage = ""
@@ -173,17 +192,18 @@ class UserRegisterViewModel @Inject constructor(
                         )
                     )
                 }
+            updateIsRegisterLoading(false)
         }
     }
 
-    private suspend fun saveUserFirestore(newUser: User) {
-        userRepository.saveUserFirestore(newUser)
+    private suspend fun saveUserFirestore(newFirestoreUser: FirestoreUser) {
+        userRepository.saveUserFirestore(newFirestoreUser)
             .addOnSuccessListener {
-                Log.i(TAG, "Usuário SALVO no FIRESTORE com SUCESSO!")
+                Log.i(FIRESTORE_TAG, "New user saved in firestore successfully!")
                 _userRegisterState.value = _userRegisterState.value.copy(isRegistered = true)
             }
             .addOnFailureListener {
-                Log.i(TAG, "ERRO ao SALVAR USUÁRIO no FIRESTORE.")
+                Log.i(FIRESTORE_TAG, "Error saving new user in firestore.")
                 try {
                     throw it
                 } catch (e: Exception) {

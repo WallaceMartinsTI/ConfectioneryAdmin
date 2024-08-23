@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -47,9 +48,10 @@ class CreateOrderViewModel @Inject constructor(
         }
 
         if(isAllFieldValid()) {
+            val newOrderId = "${currentUser.uid}-${UUID.randomUUID()}"
             val order = Order(
                 userOrderOwnerId = currentUser.uid,
-                orderId = orderState.value.orderId ?: 0,
+                orderId = orderState.value.orderId ?: newOrderId,
                 customerOwnerId = orderState.value.customer!!.customerId,
                 title = orderState.value.orderName,
                 description = orderState.value.orderDescription,

@@ -124,7 +124,7 @@ fun CustomerDetailsScreen(
 
     var isCustomerDetailsScreenLoading by rememberSaveable { mutableStateOf(true) }
 
-    var customerId by rememberSaveable { mutableStateOf<Int?>(null) }
+    var customerId by rememberSaveable { mutableStateOf<String?>(null) }
     var name by rememberSaveable { mutableStateOf("") }
     var email by rememberSaveable { mutableStateOf("") }
     var phone by rememberSaveable { mutableStateOf("") }

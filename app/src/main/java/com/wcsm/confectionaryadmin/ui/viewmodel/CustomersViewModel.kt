@@ -3,9 +3,11 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.states.CustomerSyncState
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.data.repository.UserRepository
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,7 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CustomersViewModel @Inject constructor(
-    private val customerRepository: CustomerRepository
+    private val customerRepository: CustomerRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _customers = MutableStateFlow<List<Customer>>(emptyList())
     val customers = _customers.asStateFlow()
@@ -29,8 +32,13 @@ class CustomersViewModel @Inject constructor(
     private val _isCustomerDeleted = MutableStateFlow(false)
     val isCustomerDeleted = _isCustomerDeleted.asStateFlow()
 
+    private var _currentUser: FirebaseUser? = null
+
     init {
-        getAllCustomers()
+        viewModelScope.launch {
+            _currentUser = userRepository.getCurrentUser()
+            getAllCustomers()
+        }
     }
 
     fun updateSelectedCustomer(customer: Customer?) {
@@ -59,12 +67,14 @@ class CustomersViewModel @Inject constructor(
     }
 
     fun getAllCustomers() {
-        viewModelScope.launch {
-            try {
-                val customers = customerRepository.getAllCustomers()
-                _customers.value = customers
-            } catch (e: Exception) {
-                e.printStackTrace()
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                try {
+                    val customers = customerRepository.getAllCustomers(_currentUser!!.uid)
+                    _customers.value = customers
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
@@ -76,22 +86,27 @@ class CustomersViewModel @Inject constructor(
         )
         updateCustomerSyncState(newState)
 
-        viewModelScope.launch {
-            customerRepository.sendCustomersToSincronize(customers.value)
-                .addOnSuccessListener {
-                    updateCustomerSyncState(
-                        newState.copy(
-                            isSincronized = true
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                customerRepository.sendCustomersToSincronize(
+                    userOwnerId = _currentUser!!.uid,
+                    customers = customers.value
+                )
+                    .addOnSuccessListener {
+                        updateCustomerSyncState(
+                            newState.copy(
+                                isSincronized = true
+                            )
                         )
-                    )
-                }
-                .addOnFailureListener {
-                    updateCustomerSyncState(
-                        newState.copy(
-                            syncError = true
+                    }
+                    .addOnFailureListener {
+                        updateCustomerSyncState(
+                            newState.copy(
+                                syncError = true
+                            )
                         )
-                    )
-                }
+                    }
+            }
         }
     }
 }

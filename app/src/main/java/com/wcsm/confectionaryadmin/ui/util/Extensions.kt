@@ -1,6 +1,8 @@
 package com.wcsm.confectionaryadmin.ui.util
 
 import androidx.compose.ui.graphics.Color
+import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
+import com.wcsm.confectionaryadmin.data.model.entities.User
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
 import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
@@ -74,4 +76,15 @@ fun OrderStatus.getNextStatus(): OrderStatus {
         OrderStatus.DELIVERED -> OrderStatus.CANCELLED
         OrderStatus.CANCELLED -> OrderStatus.QUOTATION
     }
+}
+
+fun FirestoreUser.toUser(): User {
+    return User(
+        id = id,
+        name = name,
+        email = email,
+        customers = customers.toString().padStart(2, '0'),
+        orders = orders.toString().padStart(2, '0'),
+        userSince = getDateFromFirestoreTimestamp(createAt)
+    )
 }

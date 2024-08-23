@@ -13,10 +13,8 @@ import javax.inject.Inject
 
 class CustomerRepositoryImpl @Inject constructor(
     private val customerDao: CustomerDao,
-    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : CustomerRepository {
-    private val currentUser = auth.currentUser
     override suspend fun insertCustomer(customer: Customer) {
         return customerDao.insertCustomer(customer)
     }
@@ -25,36 +23,36 @@ class CustomerRepositoryImpl @Inject constructor(
         return customerDao.updateCustomer(customer)
     }
 
-    override suspend fun getAllCustomers(): List<Customer> {
-        return customerDao.getAllCustomers(currentUser!!.uid)
+    override suspend fun getAllCustomers(userOwnerId: String): List<Customer> {
+        return customerDao.getAllCustomers(userOwnerId)
     }
 
     override suspend fun deleteCustomer(customer: Customer) {
         customerDao.deleteCustomer(customer)
     }
 
-    override suspend fun sendCustomersToSincronize(customers: List<Customer>): Task<Void> {
+    override suspend fun sendCustomersToSincronize(userOwnerId: String, customers: List<Customer>): Task<Void> {
         val newCustomer = hashMapOf(
             "customers" to customers
         )
         return firestore
             .collection("customers")
-            .document(currentUser!!.uid)
+            .document(userOwnerId)
             .set(newCustomer)
     }
 
-    override suspend fun getCustomersFromFirestore(): List<Customer> {
+    override suspend fun getCustomersFromFirestore(userOwnerId: String): List<Customer> {
         return try {
             val snapshot = firestore
                 .collection("customers")
-                .document(currentUser!!.uid)
+                .document(userOwnerId)
                 .get()
                 .await()
             val data = snapshot.data?.get("customers") as? List<Map<String, Any>> ?: emptyList()
 
             data.map { map ->
                 Customer(
-                    customerId = (map["customerId"] as Long).toInt(),
+                    customerId = map["customerId"] as? String ?: "",
                     userCustomerOwnerId = map["userCustomerOwnerId"] as? String ?: "",
                     name = map["name"] as? String ?: "",
                     email = map["email"] as? String ?: "",
@@ -75,5 +73,9 @@ class CustomerRepositoryImpl @Inject constructor(
 
     override suspend fun saveCustomersToLocalDatabase(customers: List<Customer>) {
         customerDao.insertCustomers(customers)
+    }
+
+    override suspend fun getUserCustomersQuantity(userOwnerId: String): Int {
+        return customerDao.getCustomersQuantity(userOwnerId)
     }
 }

@@ -5,15 +5,18 @@ import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.AuthResult
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.wcsm.confectionaryadmin.data.model.entities.User
+import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
 
 class UserRepositoryImpl(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : UserRepository {
 
-    override fun getCurrentUser(): FirebaseUser? {
+    override suspend fun getCurrentUser(): FirebaseUser? {
+        Log.i("#-# TESTE #-#", "UserRepository - getCurrentUser")
+        Log.i("#-# TESTE #-#", "auth.currentUser.uid: ${auth.currentUser?.uid}")
         return auth.currentUser
     }
 
@@ -24,11 +27,11 @@ class UserRepositoryImpl(
         return auth.createUserWithEmailAndPassword(email, password)
     }
 
-    override suspend fun saveUserFirestore(user: User): Task<Void> {
+    override suspend fun saveUserFirestore(firestoreUser: FirestoreUser): Task<Void> {
         return firestore
             .collection("users")
-            .document(user.id)
-            .set(user)
+            .document(firestoreUser.id)
+            .set(firestoreUser)
     }
 
     override suspend fun signIn(email: String, password: String): Task<AuthResult> {
@@ -36,10 +39,14 @@ class UserRepositoryImpl(
     }
 
     override fun signOut() {
-        val currentUser = getCurrentUser()
-        Log.i("#-# TESTE #-#", "Antes do signOut - currentUser: $currentUser")
         auth.signOut()
-        Log.i("#-# TESTE #-#", "Depois do signOut - currentUser: $currentUser")
+    }
+
+    override suspend fun getUserData(userId: String): Task<DocumentSnapshot> {
+        return firestore
+            .collection("users")
+            .document(userId)
+            .get()
     }
 
     override suspend fun deleteUserFirebaseAuth(user: FirebaseUser): Task<Unit> {

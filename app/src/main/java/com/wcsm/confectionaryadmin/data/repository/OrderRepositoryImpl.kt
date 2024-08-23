@@ -14,17 +14,14 @@ import javax.inject.Inject
 
 class OrderRepositoryImpl @Inject constructor(
     private val orderDao: OrderDao,
-    private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : OrderRepository {
-    private val currentUser = auth.currentUser
-
-    override suspend fun getOrdersWithCustomers(): List<OrderWithCustomer> {
-        return orderDao.getOrdersWithCustomers(currentUser!!.uid)
+    override suspend fun getOrdersWithCustomers(userOwnerId: String): List<OrderWithCustomer> {
+        return orderDao.getOrdersWithCustomers(userOwnerId)
     }
 
-    override suspend fun getOrderByCustomerOwner(customerOwnerId: Int): List<Order> {
-        return orderDao.getOrderByCustomerOwner(currentUser!!.uid, customerOwnerId)
+    override suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: String): List<Order> {
+        return orderDao.getOrderByCustomerOwner(userOwnerId, customerOwnerId)
     }
 
     override suspend fun insertOrder(order: Order) {
@@ -39,34 +36,38 @@ class OrderRepositoryImpl @Inject constructor(
         orderDao.deleteOrder(order)
     }
 
-    override suspend fun sendOrdersToSincronize(orders: List<Order>): Task<Void> {
+    override suspend fun getUserOrdersQuantity(userOwnerId: String): Int {
+        return orderDao.getOrdersQuantity(userOwnerId)
+    }
+
+    override suspend fun sendOrdersToSincronize(userOwnerId: String, orders: List<Order>): Task<Void> {
         val newOrder = hashMapOf(
             "orders" to orders
         )
 
         return firestore
                 .collection("orders")
-                .document(currentUser!!.uid)
+                .document(userOwnerId)
                 .set(newOrder)
                 .addOnSuccessListener { Log.d("#-# TESTE #-#", "DocumentSnapshot successfully written!") }
                 .addOnFailureListener { e -> Log.w("#-# TESTE #-#", "Error writing document", e) }
 
     }
 
-    override suspend fun getOrdersFromFirestore(): List<Order> {
+    override suspend fun getOrdersFromFirestore(userOwnerId: String): List<Order> {
         return try {
             val snapshot = firestore
                 .collection("orders")
-                .document(currentUser!!.uid)
+                .document(userOwnerId)
                 .get()
                 .await()
             val data = snapshot.data?.get("orders") as? List<Map<String, Any>> ?: emptyList()
 
             data.map { map ->
                 Order(
-                    orderId = (map["orderId"] as? Long)?.toInt() ?: 0,
+                    orderId = map["orderId"] as? String ?: "",
                     userOrderOwnerId = map["userOrderOwnerId"] as? String ?: "",
-                    customerOwnerId = (map["customerOwnerId"] as? Long)?.toInt() ?: 0,
+                    customerOwnerId = map["customerOwnerId"] as? String ?: "",
                     title = map["title"] as? String ?: "",
                     description = map["description"] as? String ?: "",
                     price = map["price"] as? Double ?: 0.0,

@@ -49,6 +49,15 @@ class LoginViewModel @Inject constructor(
 
     init {
         checkConnection()
+
+        val savedUser = userPreferences.getUser()
+        if (userPreferences.isLoggedIn() && savedUser.first != null && savedUser.second != null) {
+            _loginState.value = _loginState.value.copy(
+                email = savedUser.first!!,
+                password = savedUser.second!!
+            )
+            _saveLogin.value = true
+        }
     }
 
     fun updateLoginState(newState: LoginState) {
@@ -66,43 +75,40 @@ class LoginViewModel @Inject constructor(
     }
 
     fun checkShowSyncUpConfirmDialog() {
-        val currentUser = userRepository.getCurrentUser()
-        if(currentUser != null) {
-            val result = userPreferences.getSyncUpConfirmDialogPreference(currentUser.uid)
-            _showConfirmSyncUpDialog.value = result
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if (currentUser != null) {
+                val result = userPreferences.getSyncUpConfirmDialogPreference(currentUser.uid)
+                _showConfirmSyncUpDialog.value = result
+            }
         }
     }
 
     fun changeSyncUpConfirmDialogPreference(status: Boolean) {
-        val currentUser = userRepository.getCurrentUser()
-        if(currentUser != null) {
-            userPreferences.saveSyncUpConfirmDialogPreference(currentUser.uid, status)
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if (currentUser != null) {
+                userPreferences.saveSyncUpConfirmDialogPreference(currentUser.uid, status)
+            }
         }
     }
 
     fun checkShowSyncDownConfirmDialog() {
-        val currentUser = userRepository.getCurrentUser()
-        if(currentUser != null) {
-            val result = userPreferences.getSyncDownConfirmDialogPreference(currentUser.uid)
-            _showConfirmSyncDownDialog.value = result
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if (currentUser != null) {
+                val result = userPreferences.getSyncDownConfirmDialogPreference(currentUser.uid)
+                _showConfirmSyncDownDialog.value = result
+            }
         }
     }
 
     fun changeSyncDownConfirmDialogPreference(status: Boolean) {
-        val currentUser = userRepository.getCurrentUser()
-        if(currentUser != null) {
-            userPreferences.saveSyncDownConfirmDialogPreference(currentUser.uid, status)
-        }
-    }
-
-    init {
-        val savedUser = userPreferences.getUser()
-        if (userPreferences.isLoggedIn() && savedUser.first != null && savedUser.second != null) {
-            _loginState.value = _loginState.value.copy(
-                email = savedUser.first!!,
-                password = savedUser.second!!
-            )
-            _saveLogin.value = true
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if (currentUser != null) {
+                userPreferences.saveSyncDownConfirmDialogPreference(currentUser.uid, status)
+            }
         }
     }
 

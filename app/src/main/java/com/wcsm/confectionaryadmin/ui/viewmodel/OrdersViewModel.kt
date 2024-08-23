@@ -1,13 +1,16 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseUser
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.model.states.OrderSyncState
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
+import com.wcsm.confectionaryadmin.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class OrdersViewModel @Inject constructor(
-    private val orderRepository: OrderRepository
+    private val orderRepository: OrderRepository,
+    private val userRepository: UserRepository
 ) : ViewModel() {
     private val _ordersWithCustomer = MutableStateFlow<List<OrderWithCustomer>>(emptyList())
     val ordersWithCustomer = _ordersWithCustomer.asStateFlow()
@@ -42,8 +46,13 @@ class OrdersViewModel @Inject constructor(
     private val _filterResult = MutableStateFlow("")
     val filterResult = _filterResult.asStateFlow()
 
+    private var _currentUser: FirebaseUser? = null
+
     init {
-        getAllOrders()
+        viewModelScope.launch {
+            _currentUser = userRepository.getCurrentUser()
+            getAllOrders()
+        }
     }
 
     fun updateOrderToChangeStatus(order: Order?) {
@@ -102,54 +111,74 @@ class OrdersViewModel @Inject constructor(
         }
     }
 
-    fun getOrdersByCustomer(customerOwnerId: Int) {
-        viewModelScope.launch {
-            try {
-                val orders = orderRepository.getOrderByCustomerOwner(customerOwnerId)
-                _customerOrders.value = orders.reversed()
-            } catch (e: Exception) {
-                e.printStackTrace()
+    fun getOrdersByCustomer(customerOwnerId: String) {
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                try {
+                    val orders = orderRepository.getOrderByCustomerOwner(
+                        userOwnerId = _currentUser!!.uid,
+                        customerOwnerId = customerOwnerId
+                    )
+                    _customerOrders.value = orders.reversed()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
     }
 
     fun getAllOrders() {
-        viewModelScope.launch {
-            try {
-                val ordersWithCustomer = orderRepository.getOrdersWithCustomers()
-                _ordersWithCustomer.value = ordersWithCustomer.reversed()
-            } catch (e: Exception) {
-                e.printStackTrace()
+        Log.i("#-# TESTE #-#", "OrdersViewModel - getAllOrders")
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                try {
+                    val ordersWithCustomer = orderRepository.getOrdersWithCustomers(
+                        userOwnerId = _currentUser!!.uid
+                    )
+                    Log.i("#-# TESTE #-#", "ordersWithCustomer: $ordersWithCustomer")
+                    _ordersWithCustomer.value = ordersWithCustomer.reversed()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
             }
         }
+        Log.i("#-# TESTE #-#", "=========================================")
     }
 
     fun sendOrdersToSincronize() {
+        Log.i("#-# TESTE #-#", "OrdersViewModel - getAllOrders")
         val newState = OrderSyncState(
             isSincronized = false,
             syncError = false
         )
         updateOrderSyncState(newState)
 
-        viewModelScope.launch {
-            val orders = ordersWithCustomer.value.map {
-                it.order
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                val orders = ordersWithCustomer.value.map {
+                    it.order
+                }
+                Log.i("#-# TESTE #-#", "orders: $orders")
+                orderRepository.sendOrdersToSincronize(
+                    userOwnerId = _currentUser!!.uid,
+                    orders = orders
+                )
+                    .addOnSuccessListener {
+                        updateOrderSyncState(
+                            newState.copy(
+                                isSincronized = true
+                            )
+                        )
+                    }
+                    .addOnFailureListener {
+                        updateOrderSyncState(
+                            newState.copy(
+                                syncError = true
+                            )
+                        )
+                    }
             }
-            orderRepository.sendOrdersToSincronize(orders)
-                .addOnSuccessListener {
-                    updateOrderSyncState(
-                        newState.copy(
-                            isSincronized = true
-                        )
-                    )
-                }
-                .addOnFailureListener {
-                    updateOrderSyncState(
-                        newState.copy(
-                            syncError = true
-                        )
-                    )
-                }
         }
+        Log.i("#-# TESTE #-#", "=========================================")
     }
 }

@@ -13,6 +13,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import java.util.UUID
 import javax.inject.Inject
 
 @HiltViewModel
@@ -46,35 +47,42 @@ class CreateCustomerViewModel @Inject constructor(
     fun saveCustomer(
         isUpdateCustomer: Boolean = false
     ) {
-        val currentUser = auth.currentUser
-        if(currentUser == null) {
-            Log.e("ERROR", "User unidentified")
-            return
-        }
-        val customerName = customerState.value.name
-        if(validateCustomername(customerName)) {
-            val formattedName = formatNameCapitalizeFirstChar(customerName.trim())
-            val customer = Customer(
-                userCustomerOwnerId = currentUser.uid,
-                customerId = customerState.value.customerId ?: 0,
-                name = formattedName,
-                email = customerState.value.email.trim().lowercase(),
-                phone = customerState.value.phone,
-                gender = customerState.value.gender,
-                dateOfBirth = customerState.value.dateOfBirth,
-                address = customerState.value.address,
-                notes = customerState.value.notes,
-                ordersQuantity = 0,
-                customerSince = getCurrentDateTimeMillis()
-            )
-
-            if(isUpdateCustomer) {
-                _customerUpdated.value = false
-                updateUserToDatabase(customer = customer)
-            } else {
-                saveUserToDatabase(customer = customer)
+        try {
+            val currentUser = auth.currentUser
+            if(currentUser == null) {
+                Log.e("ERROR", "User unidentified")
+                return
             }
+            val customerName = customerState.value.name
+            if(validateCustomername(customerName)) {
+                val newCustomerId = "${currentUser.uid}-${UUID.randomUUID()}"
+                val formattedName = formatNameCapitalizeFirstChar(customerName.trim())
+                val customer = Customer(
+                    userCustomerOwnerId = currentUser.uid,
+                    customerId = customerState.value.customerId ?: newCustomerId,
+                    name = formattedName,
+                    email = customerState.value.email.trim().lowercase(),
+                    phone = customerState.value.phone,
+                    gender = customerState.value.gender,
+                    dateOfBirth = customerState.value.dateOfBirth,
+                    address = customerState.value.address,
+                    notes = customerState.value.notes,
+                    ordersQuantity = 0,
+                    customerSince = getCurrentDateTimeMillis()
+                )
+
+                Log.i("#-# ROOM #-#", "New customer is valid!")
+                if(isUpdateCustomer) {
+                    _customerUpdated.value = false
+                    updateUserToDatabase(customer = customer)
+                } else {
+                    saveUserToDatabase(customer = customer)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e("#-# ROOM #-#", "Error when create a new customer.", e)
         }
+
     }
 
     private fun updateUserToDatabase(customer: Customer) {

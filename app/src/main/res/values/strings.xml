@@ -111,6 +111,7 @@
 
     <!-- Info Screen -->
     <string name="screen_title_info_screen">INFORMAÇÕES</string>
+    <string name="info_screen_user_info">Suas Informações</string>
     <string name="info_screen_about_app">Sobre o Aplicativo</string>
     <string name="info_screen_about_app_description">No Confectionary Admin, você pode gerenciar pedidos de forma eficiente e aproveitar um sistema de fidelidade para seus clientes. O aplicativo oferece uma lista completa dos seus clientes, incluindo detalhes dos pedidos, quantidade total de pedidos, e muito mais, facilitando o acompanhamento e a organização do seu negócio.</string>
     <string name="info_screen_already_used_our_app">Já utilizou o App?</string>

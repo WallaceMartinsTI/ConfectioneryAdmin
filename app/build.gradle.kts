@@ -86,9 +86,6 @@ dependencies {
     // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
-    // Gson
-    implementation("com.google.code.gson:gson:2.11.0")
-
     // Jetpack Security
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
 

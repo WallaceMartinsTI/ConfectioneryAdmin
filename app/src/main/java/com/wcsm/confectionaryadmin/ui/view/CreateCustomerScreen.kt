@@ -24,6 +24,7 @@ import androidx.compose.material.icons.filled.KeyboardArrowUp
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material.icons.filled.Male
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Transgender
 import androidx.compose.material3.Button
@@ -403,7 +404,7 @@ fun CreateCustomerScreen(
                             val genderIcon = when(it) {
                                 stringResource(id = R.string.gender_male) -> Icons.Default.Male
                                 stringResource(id = R.string.gender_female) -> Icons.Default.Female
-                                else -> Icons.Default.Transgender
+                                else -> Icons.Default.PersonOutline
                             }
 
                             DropdownMenuItem(

@@ -46,7 +46,7 @@ fun CustomerOrdersContainer(
     isCustomerDetailsScreen: Boolean = false,
     onDissmiss: () -> Unit
 ) {
-    val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
+    val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))

@@ -6,9 +6,9 @@ import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
 interface OrderRepository {
 
-    suspend fun getOrdersWithCustomers(): List<OrderWithCustomer>
+    suspend fun getOrdersWithCustomers(userOwnerId: String): List<OrderWithCustomer>
 
-    suspend fun getOrderByCustomerOwner(customerOwnerId: Int): List<Order>
+    suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: String): List<Order>
 
     suspend fun insertOrder(order: Order)
 
@@ -16,9 +16,11 @@ interface OrderRepository {
 
     suspend fun deleteOrder(order: Order)
 
-    suspend fun sendOrdersToSincronize(orders: List<Order>): Task<Void>
+    suspend fun getUserOrdersQuantity(userOwnerId: String): Int
 
-    suspend fun getOrdersFromFirestore(): List<Order>
+    suspend fun sendOrdersToSincronize(userOwnerId: String, orders: List<Order>): Task<Void>
+
+    suspend fun getOrdersFromFirestore(userOwnerId: String): List<Order>
 
     suspend fun saveOrdersToLocalDatabase(orders: List<Order>)
 

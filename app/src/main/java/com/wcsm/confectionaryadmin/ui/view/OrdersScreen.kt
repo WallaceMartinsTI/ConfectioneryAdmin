@@ -18,6 +18,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.Clear
+import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -82,7 +83,7 @@ fun OrdersScreen(
     val filterType by ordersViewModel.filterType.collectAsState()
     val orderDateType by ordersViewModel.orderDateType.collectAsState()
 
-    val expandedStates = remember { mutableStateMapOf<Int, Boolean>() }
+    val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
     var invertedList by rememberSaveable { mutableStateOf(false) }
 

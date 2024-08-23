@@ -3,6 +3,7 @@ package com.wcsm.confectionaryadmin.ui.util
 import android.content.Context
 import android.os.Build
 import android.widget.Toast
+import com.google.firebase.Timestamp
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -94,7 +95,7 @@ fun formatNameCapitalizeFirstChar(name: String): String {
         .split(" ")
         .joinToString(" ") {
             it.lowercase().replaceFirstChar {
-                    char -> char.uppercase()
+                char -> char.uppercase()
             }
         }
 }
@@ -122,4 +123,10 @@ fun getNextStatus(orderStatus: OrderStatus): OrderStatus {
 
 fun showToastMessage(context: Context, message: String) {
     Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+}
+
+fun getDateFromFirestoreTimestamp(timestamp: Timestamp): String {
+    val date: Date = timestamp.toDate()
+    val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    return dateFormat.format(date)
 }

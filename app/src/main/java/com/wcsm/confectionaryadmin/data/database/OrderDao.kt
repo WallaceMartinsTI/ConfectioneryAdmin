@@ -16,18 +16,21 @@ interface OrderDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertOrder(order: Order)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertOrders(orders: List<Order>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
     suspend fun updateOrder(order: Order)
+
+    @Query("SELECT COUNT(*) FROM orders WHERE user_order_owner_id = :userOwnerId")
+    suspend fun getOrdersQuantity(userOwnerId: String): Int
 
     @Transaction
     @Query("SELECT * FROM orders WHERE user_order_owner_id = :userOwnerId")
     suspend fun getOrdersWithCustomers(userOwnerId: String): List<OrderWithCustomer>
 
     @Query("SELECT * FROM orders WHERE user_order_owner_id = :userOwnerId AND customer_owner_id = :customerOwnerId")
-    suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: Int): List<Order>
+    suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: String): List<Order>
 
     @Delete
     suspend fun deleteOrder(order: Order)

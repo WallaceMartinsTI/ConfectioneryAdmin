@@ -14,7 +14,7 @@ interface CustomerDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCustomer(customer: Customer)
 
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertCustomers(customers: List<Customer>)
 
     @Update(onConflict = OnConflictStrategy.REPLACE)
@@ -25,5 +25,8 @@ interface CustomerDao {
 
     @Delete
     suspend fun deleteCustomer(customer: Customer)
+
+    @Query("SELECT COUNT(*) FROM customers WHERE user_customer_owner_id = :userOwnerId")
+    suspend fun getCustomersQuantity(userOwnerId: String): Int
 
 }

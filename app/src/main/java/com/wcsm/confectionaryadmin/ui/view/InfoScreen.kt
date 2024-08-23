@@ -32,6 +32,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -49,13 +50,17 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.SyncDialog
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -83,6 +88,8 @@ fun InfoScreen(
     val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
     val isConnected by loginViewModel.isConnected.collectAsState()
 
+    val fetchedUser by infoViewModel.fetchedUser.collectAsState()
+
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
 
@@ -95,9 +102,34 @@ fun InfoScreen(
 
     var showSyncDownConfirmDialog by remember { mutableStateOf(false) }
 
+    var isUserDataLoading by rememberSaveable { mutableStateOf(true) }
 
-    LaunchedEffect(true) {
+    var userName by rememberSaveable { mutableStateOf("") }
+    var userCustomers by rememberSaveable { mutableStateOf("") }
+    var userOrders by rememberSaveable { mutableStateOf("") }
+    var userSince by rememberSaveable { mutableStateOf("") }
+
+    LaunchedEffect(Unit) {
         loginViewModel.checkConnection()
+
+        if(isConnected) {
+            infoViewModel.fetchUserData()
+        }
+    }
+
+    LaunchedEffect(fetchedUser) {
+        Log.i("#-# TESTE #-#", "fetchedUser: $fetchedUser")
+        if(fetchedUser != null) {
+            val name = fetchedUser!!.name
+            val customers = fetchedUser!!.customers
+            val orders = fetchedUser!!.orders
+            val since = fetchedUser!!.userSince
+            userName = createAnnotatedString("Nome: ",name).toString()
+            userCustomers = createAnnotatedString("Clientes: ", customers).toString()
+            userOrders = createAnnotatedString("Pedidos: ", orders).toString()
+            userSince = createAnnotatedString("Conta criada em: ", since).toString()
+            isUserDataLoading = false
+        }
     }
 
     LaunchedEffect(confirmSyncDownDialogPreference) {
@@ -156,6 +188,51 @@ fun InfoScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 CustomTitle(
+                    text = stringResource(id = R.string.info_screen_user_info)
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                CustomContainer {
+                    if(isUserDataLoading) {
+                        CustomLoading(size = 40.dp)
+                    } else {
+                        Column {
+                            Text(
+                                text = userName,
+                                color = Primary,
+                                fontFamily = InterFontFamily,
+                                fontWeight = FontWeight.Bold
+
+                            )
+                            Text(
+                                text = userCustomers,
+                                color = Primary,
+                                fontFamily = InterFontFamily,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = userOrders,
+                                color = Primary,
+                                fontFamily = InterFontFamily,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = userSince,
+                                color = Primary,
+                                fontFamily = InterFontFamily,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
+
+            Column(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                CustomTitle(
                     text = stringResource(id = R.string.info_screen_about_app)
                 )
 
@@ -206,7 +283,7 @@ fun InfoScreen(
                             } else {
                                 if (isConnected) {
                                     loginViewModel.checkConnection()
-                                    infoViewModel.fetchAllUserData()
+                                    infoViewModel.fetchUserCustomersAndOrders()
                                 } else {
                                     showToastMessage(context, "Sem conexão no momento")
                                 }
@@ -227,7 +304,7 @@ fun InfoScreen(
                         loginViewModel.checkConnection()
                         if (isConnected) {
                             loginViewModel.checkConnection()
-                            infoViewModel.fetchAllUserData()
+                            infoViewModel.fetchUserCustomersAndOrders()
                         } else {
                             showToastMessage(context, "Sem conexão no momento")
                         }
@@ -299,6 +376,17 @@ fun InfoScreen(
 }
 
 @Composable
+private fun CustomTitle(text: String) {
+    Text(
+        text = text,
+        color = Primary,
+        fontFamily = InterFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 24.sp
+    )
+}
+
+@Composable
 private fun CustomContainer(
     modifier: Modifier = Modifier,
     content: @Composable () -> Unit
@@ -312,17 +400,6 @@ private fun CustomContainer(
     ) {
         content()
     }
-}
-
-@Composable
-private fun CustomTitle(text: String) {
-    Text(
-        text = text,
-        color = Primary,
-        fontFamily = InterFontFamily,
-        fontWeight = FontWeight.SemiBold,
-        fontSize = 24.sp
-    )
 }
 
 @Composable
@@ -369,5 +446,16 @@ fun ContactContainer(
             contentDescription = null,
             tint = Primary
         )
+    }
+}
+
+private fun createAnnotatedString(title: String, content: String): AnnotatedString {
+    return buildAnnotatedString {
+        append(title)
+        withStyle(
+            style = SpanStyle(color = Color.White, fontWeight = FontWeight.Normal)
+        ) {
+            append(content)
+        }
     }
 }

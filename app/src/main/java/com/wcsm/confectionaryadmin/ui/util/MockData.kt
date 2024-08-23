@@ -6,7 +6,7 @@ import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 
 val customersMock = listOf(
     Customer(
-        customerId = 0,
+        customerId = "0",
         name = "Carlos Maia",
         email = "carlos.maia@hotmail.com",
         phone = "31997862543",
@@ -19,7 +19,7 @@ val customersMock = listOf(
         customerSince = getCurrentDateTimeMillis()
     ),
     Customer(
-        customerId = 1,
+        customerId = "1",
         name = "Isabella Silva",
         email = "isabella.silva@gmail.com",
         phone = "31976357843",
@@ -32,7 +32,7 @@ val customersMock = listOf(
         customerSince = getCurrentDateTimeMillis()
     ),
     Customer(
-        customerId = 2,
+        customerId = "2",
         name = "Ana Maria",
         email = "ana.maria@hotmail.com",
         phone = "31976487624",
@@ -45,7 +45,7 @@ val customersMock = listOf(
         customerSince = getCurrentDateTimeMillis()
     ),
     Customer(
-        customerId = 3,
+        customerId = "3",
         name = "Julesca Matil",
         email = "julesca.metil@gmail.com",
         phone = "31974826374",
@@ -58,7 +58,7 @@ val customersMock = listOf(
         customerSince = getCurrentDateTimeMillis()
     ),
     Customer(
-        customerId = 4,
+        customerId = "4",
         name = "João Silva",
         email = "joao.silva@hotmail.com",
         phone = "31978652738",
@@ -74,8 +74,8 @@ val customersMock = listOf(
 
 val ordersMock = listOf(
     Order(
-        orderId = 0,
-        customerOwnerId = 0,
+        orderId = "0",
+        customerOwnerId = "0",
         title = "Bolo decenouro para o cliente com cobertura pr",
         description = "Recheio de chocolate e mousse de morango",
         price = 120.50,
@@ -85,8 +85,8 @@ val ordersMock = listOf(
         userOrderOwnerId = "0"
     ),
     Order(
-        orderId = 1,
-        customerOwnerId = 1,
+        orderId = "1",
+        customerOwnerId = "1",
         title = "Doce Brigadeiro 100u",
         description = "100 unidades de Brigadeiros skajdhiashdisahudiuhasiudhas suadhiashd idsahduias uiash iusah iduashi sadasdasd",
         price = 115.00,
@@ -96,8 +96,8 @@ val ordersMock = listOf(
         userOrderOwnerId = "1"
     ),
     Order(
-        orderId = 2,
-        customerOwnerId = 2,
+        orderId = "2",
+        customerOwnerId = "2",
         title = "Bolo de Aniversário",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,
@@ -107,8 +107,8 @@ val ordersMock = listOf(
         userOrderOwnerId = "2"
     ),
     Order(
-        orderId = 3,
-        customerOwnerId = 3,
+        orderId = "3",
+        customerOwnerId = "3",
         title = "Bolo de Aniversário com nome meio grande vamos ver",
         description = "Massa de Chocolate e recheio de prestígio",
         price = 95.25,

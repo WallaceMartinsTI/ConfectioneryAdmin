@@ -10,13 +10,15 @@ interface CustomerRepository {
 
     suspend fun updateCustomer(customer: Customer)
 
-    suspend fun getAllCustomers(): List<Customer>
+    suspend fun getAllCustomers(userOwnerId: String): List<Customer>
 
     suspend fun deleteCustomer(customer: Customer)
 
-    suspend fun sendCustomersToSincronize(customers: List<Customer>): Task<Void>
+    suspend fun sendCustomersToSincronize(userOwnerId: String, customers: List<Customer>): Task<Void>
 
-    suspend fun getCustomersFromFirestore(): List<Customer>
+    suspend fun getCustomersFromFirestore(userOwnerId: String): List<Customer>
 
     suspend fun saveCustomersToLocalDatabase(customers: List<Customer>)
+
+    suspend fun getUserCustomersQuantity(userOwnerId: String): Int
 }
