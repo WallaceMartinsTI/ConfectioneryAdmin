@@ -42,6 +42,7 @@
     <string name="btn_text_save_edit">SALVAR ALTERAÇÕES</string>
     <string name="btn_text_edit">EDITAR</string>
     <string name="btn_text_delete">DELETAR</string>
+    <string name="btn_text_delete_user">DELETAR USUÁRIO</string>
 
     <!-- TextField Labels -->
     <string name="textfield_label_name">NOME</string>

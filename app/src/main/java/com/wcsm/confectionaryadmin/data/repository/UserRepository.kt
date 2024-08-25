@@ -20,7 +20,7 @@ interface UserRepository {
 
     suspend fun signIn(email: String, password: String): Task<AuthResult>
 
-    suspend fun deleteUserFirebaseAuth(user: FirebaseUser): Task<Unit>
+    suspend fun deleteUserAuth(user: FirebaseUser): Task<Unit>
 
     suspend fun deleteUserFirestore(user: FirebaseUser): Task<Void>
 

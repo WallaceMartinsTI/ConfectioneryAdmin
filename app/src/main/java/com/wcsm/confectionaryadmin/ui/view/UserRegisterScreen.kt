@@ -23,7 +23,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,6 +44,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
+import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
@@ -61,7 +61,6 @@ fun UserRegisterScreen(
     userRegisterViewModel: UserRegisterViewModel = hiltViewModel()
 ) {
     val userRegisterState by userRegisterViewModel.userRegisterState.collectAsState()
-    val isRegisterLoading by userRegisterViewModel.isRegisterLoading.collectAsState()
 
     var showPassword by remember { mutableStateOf(false) }
     var showConfirmPassword by remember { mutableStateOf(false) }
@@ -69,7 +68,7 @@ fun UserRegisterScreen(
     val focusRequester = remember { List(2) { FocusRequester() } }
 
     LaunchedEffect(userRegisterState) {
-        if(userRegisterState.isRegistered) {
+        if (userRegisterState.isRegistered) {
             navController.navigate(Screen.Login.route)
         }
     }
@@ -83,12 +82,12 @@ fun UserRegisterScreen(
                 navController.popBackStack()
             }
         }
-    ) {
+    ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(AppBackground)
-                .padding(it),
+                .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             ScreenDescription(
@@ -123,24 +122,24 @@ fun UserRegisterScreen(
                     )
                 },
                 trailingIcon = {
-                   IconButton(
-                       onClick = {
-                           userRegisterViewModel.updateUserRegisterState(
-                               userRegisterState.copy(
-                                   name = ""
-                               )
-                           )
-                           focusRequester[0].requestFocus()
-                       },
-                       modifier = Modifier.focusProperties { canFocus = false }
-                   ) {
-                       if(userRegisterState.name.isNotEmpty()) {
-                           Icon(
-                               imageVector = Icons.Default.Clear,
-                               contentDescription = null
-                           )
-                       }
-                   }
+                    IconButton(
+                        onClick = {
+                            userRegisterViewModel.updateUserRegisterState(
+                                userRegisterState.copy(
+                                    name = ""
+                                )
+                            )
+                            focusRequester[0].requestFocus()
+                        },
+                        modifier = Modifier.focusProperties { canFocus = false }
+                    ) {
+                        if (userRegisterState.name.isNotEmpty()) {
+                            Icon(
+                                imageVector = Icons.Default.Clear,
+                                contentDescription = null
+                            )
+                        }
+                    }
                 },
                 value = userRegisterState.name
             ) {
@@ -178,7 +177,7 @@ fun UserRegisterScreen(
                         },
                         modifier = Modifier.focusProperties { canFocus = false }
                     ) {
-                        if(userRegisterState.email.isNotEmpty()) {
+                        if (userRegisterState.email.isNotEmpty()) {
                             Icon(
                                 imageVector = Icons.Default.Clear,
                                 contentDescription = null
@@ -214,13 +213,13 @@ fun UserRegisterScreen(
                         modifier = Modifier.focusProperties { canFocus = false }
                     ) {
                         Icon(
-                            imageVector = if(showPassword) Icons.Default.Visibility
+                            imageVector = if (showPassword) Icons.Default.Visibility
                             else Icons.Default.VisibilityOff,
                             contentDescription = null
                         )
                     }
                 },
-                visualTransformation = if(showPassword) VisualTransformation.None
+                visualTransformation = if (showPassword) VisualTransformation.None
                 else PasswordVisualTransformation(),
                 value = userRegisterState.password,
             ) {
@@ -250,13 +249,13 @@ fun UserRegisterScreen(
                         modifier = Modifier.focusProperties { canFocus = false }
                     ) {
                         Icon(
-                            imageVector = if(showConfirmPassword) Icons.Default.Visibility
+                            imageVector = if (showConfirmPassword) Icons.Default.Visibility
                             else Icons.Default.VisibilityOff,
                             contentDescription = null
                         )
                     }
                 },
-                visualTransformation = if(showConfirmPassword) VisualTransformation.None
+                visualTransformation = if (showConfirmPassword) VisualTransformation.None
                 else PasswordVisualTransformation(),
                 value = userRegisterState.confirmPassword,
             ) {
@@ -269,10 +268,17 @@ fun UserRegisterScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            PrimaryButton(
-                text = if(isRegisterLoading) "AGUARDE..." else stringResource(id = R.string.btn_text_user_register)
-            ) {
-                if(!isRegisterLoading) {
+            if(userRegisterState.isLoading) {
+                CustomLoading(size = 80.dp)
+            } else {
+                PrimaryButton(
+                    text = stringResource(id = R.string.btn_text_user_register)
+                ) {
+                    userRegisterViewModel.updateUserRegisterState(
+                        userRegisterState.copy(
+                            isLoading = true
+                        )
+                    )
                     userRegisterViewModel.registerNewUser()
                 }
             }

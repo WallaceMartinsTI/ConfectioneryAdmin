@@ -13,10 +13,7 @@ class UserRepositoryImpl(
     private val auth: FirebaseAuth,
     private val firestore: FirebaseFirestore
 ) : UserRepository {
-
     override suspend fun getCurrentUser(): FirebaseUser? {
-        Log.i("#-# TESTE #-#", "UserRepository - getCurrentUser")
-        Log.i("#-# TESTE #-#", "auth.currentUser.uid: ${auth.currentUser?.uid}")
         return auth.currentUser
     }
 
@@ -49,7 +46,7 @@ class UserRepositoryImpl(
             .get()
     }
 
-    override suspend fun deleteUserFirebaseAuth(user: FirebaseUser): Task<Unit> {
+    override suspend fun deleteUserAuth(user: FirebaseUser): Task<Unit> {
         val userDocRef = firestore.collection("users").document(user.uid)
 
         return firestore.runTransaction { transaction ->

@@ -81,6 +81,7 @@ import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomerOrdersContainer
+import com.wcsm.confectionaryadmin.ui.components.DeleteButton
 import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -622,7 +623,7 @@ fun CustomerDetailsScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    CustomDeleteButton(text = stringResource(id = R.string.btn_text_delete_customer)) {
+                    DeleteButton(text = stringResource(id = R.string.btn_text_delete_customer)) {
                         showDeleteCustomerDialog = true
                     }
 
@@ -658,38 +659,6 @@ fun CustomerDetailsScreen(
     }
 }
 
-@Composable
-private fun CustomDeleteButton(
-    text: String,
-    modifier: Modifier = Modifier,
-    width: Dp = 290.dp,
-    onClick: () -> Unit,
-) {
-    Row(
-        modifier = modifier
-            .width(width)
-            .clip(RoundedCornerShape(15.dp))
-            .background(LightRed)
-            .border(
-                width = 1.dp,
-                color = Primary,
-                shape = RoundedCornerShape(15.dp)
-            )
-            .height(50.dp)
-            .clickable { onClick() },
-        horizontalArrangement = Arrangement.Center,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Text(
-            text = text,
-            color = Color.White,
-            fontFamily = InterFontFamily,
-            fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
-        )
-    }
-}
-
 @Preview
 @Composable
 fun CustomerDetailsScreenPreview(
@@ -703,13 +672,5 @@ fun CustomerDetailsScreenPreview(
             ordersViewModel = ordersViewModel,
             customersViewModel = customersViewModel
         )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun CustomDeleteButtonPreview() {
-    ConfectionaryAdminTheme {
-        CustomDeleteButton("DEKETAR") {}
     }
 }

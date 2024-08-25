@@ -12,7 +12,9 @@ import com.wcsm.confectionaryadmin.data.model.entities.User
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.AUTH_TAG
 import com.wcsm.confectionaryadmin.ui.util.Constants.FIRESTORE_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.SYNC_TAG
 import com.wcsm.confectionaryadmin.ui.util.toUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -41,10 +43,12 @@ class InfoViewModel @Inject constructor(
     private val _fetchedFirestoreUser = MutableStateFlow<User?>(null)
     val fetchedUser = _fetchedFirestoreUser.asStateFlow()
 
+    private val _isUserDeleted = MutableStateFlow(false)
+    val isUserDeleted = _isUserDeleted.asStateFlow()
+
     private var _currentUser: FirebaseUser? = null
 
     init {
-        Log.i("#-# TESTE #-#", "InfoViewModel INIT")
         viewModelScope.launch {
             _currentUser = userRepository.getCurrentUser()
         }
@@ -90,18 +94,42 @@ class InfoViewModel @Inject constructor(
 
                 fetchOrdersFromFirestore()
 
-                Log.i("#-# SYNC #-#", "All user data fetched successfully!")
-                Log.i("#-# SYNC #-#", "Now, trying to save in local Room database...")
+                Log.i(SYNC_TAG, "All user data fetched successfully!")
+                Log.i(SYNC_TAG, "Now, trying to save in local Room database...")
                 saveFirestoreDataToRoom()
                 fetchUserData()
             } catch (e: Exception) {
-                Log.e("#-# SYNC #-#", "Error fetching all user data.", e)
+                Log.e(SYNC_TAG, "Error fetching all user data.", e)
+            }
+        }
+    }
+
+    fun deleteUser() {
+        _isUserDeleted.value = false
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                userRepository.deleteUserAuth(_currentUser!!)
+                    .addOnSuccessListener {
+                        Log.i(AUTH_TAG, "User auth deleted sucessfully!")
+                        viewModelScope.launch {
+                            userRepository.deleteUserFirestore(_currentUser!!)
+                                .addOnSuccessListener {
+                                    Log.i(FIRESTORE_TAG, "User firestore deleted sucessfully!")
+                                    _isUserDeleted.value = true
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.i(FIRESTORE_TAG, "Error deleting user firestore.")
+                                }
+                        }
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e(AUTH_TAG, "Error deleteding user", e)
+                    }
             }
         }
     }
 
     private suspend fun saveFirestoreDataToRoom() {
-        Log.i("#-# TESTE #-#", "InfoViewModel - saveFirestoreDataToRoom")
         try {
             val customers = _customersFromCloud.value
             val orders = _ordersFromCloud.value

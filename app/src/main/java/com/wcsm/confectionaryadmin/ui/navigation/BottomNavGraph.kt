@@ -65,6 +65,7 @@ fun BottomNavGraph(
         composable(route = Screen.Info.route) {
             InfoScreen(
                 paddingValues = paddingValues,
+                externalNavController = externalNavController,
                 customersViewModel = customersViewModel,
                 ordersViewModel = ordersViewModel,
                 loginViewModel = loginViewModel

@@ -62,8 +62,8 @@ class UserPreferences @Inject constructor(
 
     fun saveUser(email: String, password: String) {
         preferences.edit().apply {
-            putString("email", email)
-            putString("password", password)
+            putString("email", email) // wallace 159santos...
+            putString("password", password) // 123456
             putBoolean("is_logged_in", true)
             apply()
         }

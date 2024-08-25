@@ -27,19 +27,11 @@ class UserRegisterViewModel @Inject constructor(
     private val _userRegisterState = MutableStateFlow(UserRegisterState())
     val userRegisterState = _userRegisterState.asStateFlow()
 
-    private val _isRegisterLoading = MutableStateFlow(false)
-    val isRegisterLoading = _isRegisterLoading.asStateFlow()
-
     fun updateUserRegisterState(newState: UserRegisterState) {
         _userRegisterState.value = newState
     }
 
-    fun updateIsRegisterLoading(status: Boolean) {
-        _isRegisterLoading.value = status
-    }
-
     fun registerNewUser() {
-        updateIsRegisterLoading(true)
         val newState = _userRegisterState.value.copy(
             nameErrorMessage = null,
             emailErrorMessage = null,
@@ -58,11 +50,19 @@ class UserRegisterViewModel @Inject constructor(
                 Log.i(AUTH_TAG, "New user object created!")
                 registerUserFirebase(name, email, password)
             } else {
-                updateIsRegisterLoading(false)
+                updateUserRegisterState(
+                    userRegisterState.value.copy(
+                        isLoading = false
+                    )
+                )
             }
         } catch (e: Exception) {
             Log.e(ROOM_TAG, "Error creating a new user object.", e)
-            updateIsRegisterLoading(false)
+            updateUserRegisterState(
+                userRegisterState.value.copy(
+                    isLoading = false
+                )
+            )
         }
     }
 
@@ -191,8 +191,12 @@ class UserRegisterViewModel @Inject constructor(
                             isLoading = false
                         )
                     )
+                    updateUserRegisterState(
+                        userRegisterState.value.copy(
+                            isLoading = false
+                        )
+                    )
                 }
-            updateIsRegisterLoading(false)
         }
     }
 
@@ -201,6 +205,11 @@ class UserRegisterViewModel @Inject constructor(
             .addOnSuccessListener {
                 Log.i(FIRESTORE_TAG, "New user saved in firestore successfully!")
                 _userRegisterState.value = _userRegisterState.value.copy(isRegistered = true)
+                updateUserRegisterState(
+                    userRegisterState.value.copy(
+                        isLoading = false
+                    )
+                )
             }
             .addOnFailureListener {
                 Log.i(FIRESTORE_TAG, "Error saving new user in firestore.")
@@ -209,6 +218,11 @@ class UserRegisterViewModel @Inject constructor(
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
+                updateUserRegisterState(
+                    userRegisterState.value.copy(
+                        isLoading = false
+                    )
+                )
             }
     }
 }

@@ -59,8 +59,12 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.wcsm.confectionaryadmin.R
+import com.wcsm.confectionaryadmin.data.model.navigation.Screen
+import com.wcsm.confectionaryadmin.ui.components.ConfirmDeleteUserDialog
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
+import com.wcsm.confectionaryadmin.ui.components.DeleteButton
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.SyncDialog
 import com.wcsm.confectionaryadmin.ui.theme.AppBackground
@@ -76,6 +80,7 @@ import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 @Composable
 fun InfoScreen(
     paddingValues: PaddingValues,
+    externalNavController: NavController,
     customersViewModel: CustomersViewModel,
     ordersViewModel: OrdersViewModel,
     loginViewModel: LoginViewModel,
@@ -87,6 +92,7 @@ fun InfoScreen(
 
     val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
     val isConnected by loginViewModel.isConnected.collectAsState()
+    val isUserDeleted by infoViewModel.isUserDeleted.collectAsState()
 
     val fetchedUser by infoViewModel.fetchedUser.collectAsState()
 
@@ -103,6 +109,9 @@ fun InfoScreen(
     var showSyncDownConfirmDialog by remember { mutableStateOf(false) }
 
     var isUserDataLoading by rememberSaveable { mutableStateOf(true) }
+
+    var showDeleteUserDialog by remember { mutableStateOf(false) }
+    var showConfirmDeleteUserDialog by remember { mutableStateOf(false) }
 
     var userName by rememberSaveable { mutableStateOf("") }
     var userCustomers by rememberSaveable { mutableStateOf("") }
@@ -134,6 +143,12 @@ fun InfoScreen(
 
     LaunchedEffect(confirmSyncDownDialogPreference) {
         loginViewModel.checkShowSyncDownConfirmDialog()
+    }
+
+    LaunchedEffect(isUserDeleted) {
+        if(isUserDeleted) {
+            externalNavController.navigate(Screen.Login.route)
+        }
     }
 
     LaunchedEffect(ordersViewModel.ordersWithCustomer, customersViewModel.customers) {
@@ -223,6 +238,10 @@ fun InfoScreen(
                                 fontFamily = InterFontFamily,
                                 fontWeight = FontWeight.Bold
                             )
+
+                            DeleteButton(text = stringResource(id = R.string.btn_text_delete_user)) {
+                                showDeleteUserDialog = true
+                            }
                         }
                     }
                 }
@@ -371,6 +390,26 @@ fun InfoScreen(
             }
 
             Spacer(modifier = Modifier.height(8.dp))
+
+            if(showDeleteUserDialog) {
+                ConfirmDeleteUserDialog(
+                    title = "Deletar Usuário",
+                    message = "Deseja deletar sua conta de usuário?",
+                    onDissmiss = { showDeleteUserDialog = false }
+                ) {
+                    showConfirmDeleteUserDialog = true
+                }
+            }
+
+            if(showConfirmDeleteUserDialog) {
+                ConfirmDeleteUserDialog(
+                    title = "Confirmação Deletar Usuário",
+                    message = "Tem certeza que deseja deletar sua conta de usuário?",
+                    onDissmiss = { showDeleteUserDialog = false }
+                ) {
+                    infoViewModel.deleteUser()
+                }
+            }
         }
     }
 }
