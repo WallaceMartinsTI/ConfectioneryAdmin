@@ -31,6 +31,7 @@ import com.wcsm.confectionaryadmin.ui.theme.Primary
 fun ConfirmDeleteUserDialog(
     title: String,
     message: String,
+    onConfirmText: String,
     onDissmiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
@@ -64,11 +65,12 @@ fun ConfirmDeleteUserDialog(
             )
 
             CustomDialogButton(
-                text = stringResource(id = R.string.btn_text_delete_user),
+                text = onConfirmText.uppercase(),
                 width = 290.dp,
                 color = LightRed
             ) {
                 onConfirm()
+                onDissmiss()
             }
 
             CustomDialogButton(
@@ -89,6 +91,7 @@ private fun ConfirmDeleteUserDialogPreview() {
         ConfirmDeleteUserDialog(
             title = "Deletar Usuário",
             message = "Tem certeza que deseja deletar sua conta de usuário?",
+            onConfirmText = "Deletar Usuário",
             onDissmiss = {},
             onConfirm = {}
         )

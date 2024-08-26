@@ -198,7 +198,7 @@ fun LoginScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Continuar logado?",
+                text = "Salvar login?",
                 color = Primary,
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.SemiBold,

@@ -166,7 +166,7 @@ fun InfoScreen(
     }
 
     LaunchedEffect(isSyncLoading) {
-        syncText = if(isSyncLoading) "SINCRONIZANDO..." else "SINCRONIZAR"
+        syncText = if(isSyncLoading) "SINCRONIZANDO..." else "BAIXAR DA NUVEM"
     }
 
     Column(
@@ -239,6 +239,10 @@ fun InfoScreen(
                                 fontWeight = FontWeight.Bold
                             )
 
+                            HorizontalDivider(
+                                color = Color.White, modifier = Modifier.padding(vertical = 8.dp)
+                            )
+
                             DeleteButton(text = stringResource(id = R.string.btn_text_delete_user)) {
                                 showDeleteUserDialog = true
                             }
@@ -285,7 +289,7 @@ fun InfoScreen(
                         textAlign = TextAlign.Justify
                     )
 
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Spacer(modifier = Modifier.height(4.dp))
 
                     PrimaryButton(
                         text = if(isSincronized) "ATUALIZADO" else syncText,
@@ -395,6 +399,7 @@ fun InfoScreen(
                 ConfirmDeleteUserDialog(
                     title = "Deletar Usuário",
                     message = "Deseja deletar sua conta de usuário?",
+                    onConfirmText = "Deletar Usuário",
                     onDissmiss = { showDeleteUserDialog = false }
                 ) {
                     showConfirmDeleteUserDialog = true
@@ -405,8 +410,13 @@ fun InfoScreen(
                 ConfirmDeleteUserDialog(
                     title = "Confirmação Deletar Usuário",
                     message = "Tem certeza que deseja deletar sua conta de usuário?",
-                    onDissmiss = { showDeleteUserDialog = false }
+                    onConfirmText = "Confirmar e Deletar",
+                    onDissmiss = { showConfirmDeleteUserDialog = false }
                 ) {
+                    // LOADING DE DELEÇÃO
+                    // CHECAR SE TEM INTERNET ANTES
+                    // SE TIVER SALVO O LOGIN REMOVER DO SHARED PREFS
+                    // REMOVER ORDERS E CUSTOMERS do USER
                     infoViewModel.deleteUser()
                 }
             }
@@ -442,7 +452,7 @@ private fun CustomContainer(
 }
 
 @Composable
-fun ContactContainer(
+private fun ContactContainer(
     text: String,
     vectorIcon: ImageVector? = null,
     painterIcon: Painter? = null,

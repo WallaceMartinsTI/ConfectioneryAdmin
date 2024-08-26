@@ -362,7 +362,7 @@ fun MainScreen(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.Center
                         ) {
-                            val text = if(isSincronized) "ATUALIZADO" else "SINCRONIZAR"
+                            val text = if(isSincronized) "ATUALIZADO" else "ENVIAR PARA NUVEM"
                             Text(
                                 text = text,
                                 color = Color.White,
@@ -370,7 +370,7 @@ fun MainScreen(
                                 fontWeight = FontWeight.SemiBold,
                                 fontSize = 16.sp
                             )
-                            Spacer(modifier = Modifier.width(8.dp))
+                            Spacer(modifier = Modifier.width(4.dp))
                             if(!isSincronized) {
                                 Icon(
                                     imageVector = Icons.Default.CloudSync,
