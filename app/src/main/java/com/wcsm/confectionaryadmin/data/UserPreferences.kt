@@ -60,10 +60,11 @@ class UserPreferences @Inject constructor(
         getSyncDownConfirmDialogPreference(userId)
     }
 
-    fun saveUser(email: String, password: String) {
+    fun saveUser(email: String, password: String, userId: String) {
         preferences.edit().apply {
-            putString("email", email) // wallace 159santos...
-            putString("password", password) // 123456
+            putString("email", email)
+            putString("password", password)
+            putString("user_id", userId)
             putBoolean("is_logged_in", true)
             apply()
         }
@@ -78,13 +79,14 @@ class UserPreferences @Inject constructor(
         }
     }
 
-    fun getUser(): Pair<String?, String?> {
+    fun getUser(): Triple<String?, String?, String?> {
         val email = preferences.getString("email", null)
         val password = preferences.getString("password", null)
-        return Pair(email, password)
+        val userId = preferences.getString("user_id", null)
+        return Triple(email, password, userId)
     }
 
-    fun isLoggedIn(): Boolean {
+    fun getIsLoggedIn(): Boolean {
         return preferences.getBoolean("is_logged_in", false)
     }
 }

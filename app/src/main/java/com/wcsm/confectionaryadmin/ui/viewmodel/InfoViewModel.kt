@@ -3,7 +3,7 @@ package com.wcsm.confectionaryadmin.ui.viewmodel
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.firebase.Timestamp
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseUser
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.entities.Order
@@ -14,15 +14,13 @@ import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
 import com.wcsm.confectionaryadmin.ui.util.Constants.AUTH_TAG
 import com.wcsm.confectionaryadmin.ui.util.Constants.FIRESTORE_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
 import com.wcsm.confectionaryadmin.ui.util.Constants.SYNC_TAG
 import com.wcsm.confectionaryadmin.ui.util.toUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -45,6 +43,12 @@ class InfoViewModel @Inject constructor(
 
     private val _isUserDeleted = MutableStateFlow(false)
     val isUserDeleted = _isUserDeleted.asStateFlow()
+
+    private val _isDeletingUserLoading = MutableStateFlow(false)
+    val isDeletingUserLoading = _isDeletingUserLoading.asStateFlow()
+
+    private var _allUserDataDeleted = MutableStateFlow(false)
+    val allUserDataDeleted = _allUserDataDeleted.asStateFlow()
 
     private var _currentUser: FirebaseUser? = null
 
@@ -105,7 +109,6 @@ class InfoViewModel @Inject constructor(
     }
 
     fun deleteUser() {
-        _isUserDeleted.value = false
         if(_currentUser != null) {
             viewModelScope.launch {
                 userRepository.deleteUserAuth(_currentUser!!)
@@ -118,14 +121,49 @@ class InfoViewModel @Inject constructor(
                                     _isUserDeleted.value = true
                                 }
                                 .addOnFailureListener { e ->
-                                    Log.i(FIRESTORE_TAG, "Error deleting user firestore.")
+                                    Log.e(FIRESTORE_TAG, "Error deleting user firestore.", e)
                                 }
+                            _isDeletingUserLoading.value = false
                         }
                     }
                     .addOnFailureListener { e ->
                         Log.e(AUTH_TAG, "Error deleteding user", e)
+                        _isDeletingUserLoading.value = false
                     }
             }
+        } else {
+            _isDeletingUserLoading.value = false
+        }
+    }
+
+    fun deleteAllUserData() {
+        Log.i(FIRESTORE_TAG, "Deleting user data...")
+
+        _isDeletingUserLoading.value = true
+        _isUserDeleted.value = false
+
+        if(_currentUser != null) {
+            viewModelScope.launch {
+                val userOwnerId = _currentUser!!.uid
+
+                orderRepository.deleteAllUserOrdersRoom(userOwnerId)
+                customerRepository.deleteAllUserCustomersRoom(userOwnerId)
+                Log.i(ROOM_TAG, "Room data deleted.")
+
+                val deleteOrdersTask = orderRepository.deleteAllUserOrdersFirestore(userOwnerId)
+                val deleteCustomersTask = customerRepository.deleteAllUserCustomersFirestore(userOwnerId)
+
+                Tasks.whenAll(deleteOrdersTask, deleteCustomersTask)
+                    .addOnSuccessListener {
+                        Log.i(FIRESTORE_TAG, "Firestore orders and customers deleted successfully!")
+                        _allUserDataDeleted.value = true
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.e(FIRESTORE_TAG, "Error deleting data from firestore: ${exception.message}")
+                    }
+            }
+        } else {
+            _isDeletingUserLoading.value = false
         }
     }
 

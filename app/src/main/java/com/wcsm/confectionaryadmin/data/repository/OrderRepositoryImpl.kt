@@ -86,4 +86,15 @@ class OrderRepositoryImpl @Inject constructor(
         orderDao.insertOrders(orders)
     }
 
+    override suspend fun deleteAllUserOrdersRoom(userOwnerId: String) {
+        orderDao.deleteAllUserOrders(userOwnerId)
+    }
+
+    override suspend fun deleteAllUserOrdersFirestore(userOwnerId: String): Task<Void> {
+        return firestore
+            .collection("orders")
+            .document(userOwnerId)
+            .delete()
+    }
+
 }

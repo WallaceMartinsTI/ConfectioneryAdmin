@@ -29,4 +29,7 @@ interface CustomerDao {
     @Query("SELECT COUNT(*) FROM customers WHERE user_customer_owner_id = :userOwnerId")
     suspend fun getCustomersQuantity(userOwnerId: String): Int
 
+    @Query("DELETE FROM customers WHERE user_customer_owner_id = :userOwnerId")
+    suspend fun deleteAllUserCustomers(userOwnerId: String)
+
 }

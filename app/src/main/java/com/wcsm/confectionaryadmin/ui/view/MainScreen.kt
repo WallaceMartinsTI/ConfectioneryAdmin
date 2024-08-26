@@ -409,7 +409,10 @@ fun MainScreen(
             val activity = context as? Activity
             LogoutDialog(
                 onExitApp = { activity?.finish() },
-                onLogout = { loginViewModel.signOut() }
+                onLogout = {
+                    loginViewModel.signOut()
+                    loginViewModel.clearLoggedUser()
+                }
             ) {
                 showBackHandlerDialog = false
             }

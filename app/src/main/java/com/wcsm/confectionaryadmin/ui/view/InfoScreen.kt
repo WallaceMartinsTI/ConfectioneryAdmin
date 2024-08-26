@@ -93,6 +93,7 @@ fun InfoScreen(
     val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
     val isConnected by loginViewModel.isConnected.collectAsState()
     val isUserDeleted by infoViewModel.isUserDeleted.collectAsState()
+    val allUserDataDeleted by infoViewModel.allUserDataDeleted.collectAsState()
 
     val fetchedUser by infoViewModel.fetchedUser.collectAsState()
 
@@ -109,6 +110,7 @@ fun InfoScreen(
     var showSyncDownConfirmDialog by remember { mutableStateOf(false) }
 
     var isUserDataLoading by rememberSaveable { mutableStateOf(true) }
+    val isDeletingUserLoading by infoViewModel.isDeletingUserLoading.collectAsState()
 
     var showDeleteUserDialog by remember { mutableStateOf(false) }
     var showConfirmDeleteUserDialog by remember { mutableStateOf(false) }
@@ -145,8 +147,15 @@ fun InfoScreen(
         loginViewModel.checkShowSyncDownConfirmDialog()
     }
 
+    LaunchedEffect(allUserDataDeleted) {
+        if(allUserDataDeleted) {
+            infoViewModel.deleteUser()
+        }
+    }
+
     LaunchedEffect(isUserDeleted) {
         if(isUserDeleted) {
+            loginViewModel.clearLoggedUser()
             externalNavController.navigate(Screen.Login.route)
         }
     }
@@ -209,42 +218,46 @@ fun InfoScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 CustomContainer {
-                    if(isUserDataLoading) {
+                    if(isDeletingUserLoading) {
                         CustomLoading(size = 40.dp)
                     } else {
-                        Column {
-                            Text(
-                                text = userName,
-                                color = Primary,
-                                fontFamily = InterFontFamily,
-                                fontWeight = FontWeight.Bold
+                        if(isUserDataLoading) {
+                            CustomLoading(size = 40.dp)
+                        } else {
+                            Column {
+                                Text(
+                                    text = userName,
+                                    color = Primary,
+                                    fontFamily = InterFontFamily,
+                                    fontWeight = FontWeight.Bold
 
-                            )
-                            Text(
-                                text = userCustomers,
-                                color = Primary,
-                                fontFamily = InterFontFamily,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = userOrders,
-                                color = Primary,
-                                fontFamily = InterFontFamily,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(
-                                text = userSince,
-                                color = Primary,
-                                fontFamily = InterFontFamily,
-                                fontWeight = FontWeight.Bold
-                            )
+                                )
+                                Text(
+                                    text = userCustomers,
+                                    color = Primary,
+                                    fontFamily = InterFontFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = userOrders,
+                                    color = Primary,
+                                    fontFamily = InterFontFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(
+                                    text = userSince,
+                                    color = Primary,
+                                    fontFamily = InterFontFamily,
+                                    fontWeight = FontWeight.Bold
+                                )
 
-                            HorizontalDivider(
-                                color = Color.White, modifier = Modifier.padding(vertical = 8.dp)
-                            )
+                                HorizontalDivider(
+                                    color = Color.White, modifier = Modifier.padding(vertical = 8.dp)
+                                )
 
-                            DeleteButton(text = stringResource(id = R.string.btn_text_delete_user)) {
-                                showDeleteUserDialog = true
+                                DeleteButton(text = stringResource(id = R.string.btn_text_delete_user)) {
+                                    showDeleteUserDialog = true
+                                }
                             }
                         }
                     }
@@ -413,11 +426,11 @@ fun InfoScreen(
                     onConfirmText = "Confirmar e Deletar",
                     onDissmiss = { showConfirmDeleteUserDialog = false }
                 ) {
-                    // LOADING DE DELEÇÃO
-                    // CHECAR SE TEM INTERNET ANTES
-                    // SE TIVER SALVO O LOGIN REMOVER DO SHARED PREFS
-                    // REMOVER ORDERS E CUSTOMERS do USER
-                    infoViewModel.deleteUser()
+                    if(isConnected) {
+                        infoViewModel.deleteAllUserData()
+                    } else {
+                        showToastMessage(context, "Sem conexão no momento, tente mais tarde.")
+                    }
                 }
             }
         }

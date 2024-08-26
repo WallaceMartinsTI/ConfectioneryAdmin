@@ -24,4 +24,8 @@ interface OrderRepository {
 
     suspend fun saveOrdersToLocalDatabase(orders: List<Order>)
 
+    suspend fun deleteAllUserOrdersRoom(userOwnerId: String)
+
+    suspend fun deleteAllUserOrdersFirestore(userOwnerId: String): Task<Void>
+
 }

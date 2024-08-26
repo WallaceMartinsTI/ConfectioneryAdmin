@@ -2,7 +2,6 @@ package com.wcsm.confectionaryadmin.data.repository
 
 import com.google.android.gms.tasks.Task
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
-import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
 interface CustomerRepository {
 
@@ -21,4 +20,8 @@ interface CustomerRepository {
     suspend fun saveCustomersToLocalDatabase(customers: List<Customer>)
 
     suspend fun getUserCustomersQuantity(userOwnerId: String): Int
+
+    suspend fun deleteAllUserCustomersRoom(userOwnerId: String)
+
+    suspend fun deleteAllUserCustomersFirestore(userOwnerId: String): Task<Void>
 }

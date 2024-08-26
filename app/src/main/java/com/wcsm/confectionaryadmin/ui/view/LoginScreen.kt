@@ -70,6 +70,7 @@ fun LoginScreen(
     val loginState by loginViewModel.loginState.collectAsState()
     val isConnectedd by loginViewModel.isConnected.collectAsState()
     val saveLogin by loginViewModel.saveLogin.collectAsState()
+    val offlineLogin by loginViewModel.offlineLogin.collectAsState()
 
     var errorMessage by remember { mutableStateOf("") }
 
@@ -86,6 +87,12 @@ fun LoginScreen(
     LaunchedEffect(saveLogin) {
         if(!saveLogin) {
             loginViewModel.clearLoggedUser()
+        }
+    }
+
+    LaunchedEffect(offlineLogin) {
+        if(offlineLogin) {
+            navController.navigate(Screen.NavigationHolder.route)
         }
     }
 
@@ -238,7 +245,6 @@ fun LoginScreen(
                     if(isConnectedd) {
                         loginViewModel.signIn()
                     } else {
-                        // SE NAO TIVER USUARIO SALVO
                         errorMessage = "Sem conexão no momento, tente mais tarde"
                     }
                 }

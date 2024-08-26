@@ -35,4 +35,7 @@ interface OrderDao {
     @Delete
     suspend fun deleteOrder(order: Order)
 
+    @Query("DELETE FROM orders WHERE user_order_owner_id = :userOwnerId")
+    suspend fun deleteAllUserOrders(userOwnerId: String)
+
 }

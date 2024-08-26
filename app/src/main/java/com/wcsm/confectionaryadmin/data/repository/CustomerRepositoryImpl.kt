@@ -78,4 +78,15 @@ class CustomerRepositoryImpl @Inject constructor(
     override suspend fun getUserCustomersQuantity(userOwnerId: String): Int {
         return customerDao.getCustomersQuantity(userOwnerId)
     }
+
+    override suspend fun deleteAllUserCustomersRoom(userOwnerId: String) {
+        customerDao.deleteAllUserCustomers(userOwnerId)
+    }
+
+    override suspend fun deleteAllUserCustomersFirestore(userOwnerId: String): Task<Void> {
+        return firestore
+            .collection("customers")
+            .document(userOwnerId)
+            .delete()
+    }
 }

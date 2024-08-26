@@ -9,16 +9,11 @@ import com.wcsm.confectionaryadmin.data.UserPreferences
 import com.wcsm.confectionaryadmin.data.model.states.LoginState
 import com.wcsm.confectionaryadmin.data.repository.NetworkRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.AUTH_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import java.security.SecureRandom
-import javax.crypto.Cipher
-import javax.crypto.KeyGenerator
-import javax.crypto.SecretKey
-import javax.crypto.spec.IvParameterSpec
-import javax.crypto.spec.SecretKeySpec
 import javax.inject.Inject
 
 @HiltViewModel
@@ -27,8 +22,6 @@ class LoginViewModel @Inject constructor(
     private val networkRepository: NetworkRepository,
     private val userPreferences: UserPreferences
 ) : ViewModel() {
-    private val TAG = "#FIREBASE_AUTH#USER_LOGIN#"
-
     private val _loginState = MutableStateFlow(LoginState())
     val loginState = _loginState.asStateFlow()
 
@@ -47,16 +40,25 @@ class LoginViewModel @Inject constructor(
     private val _isSignout = MutableStateFlow(false)
     val isSignout = _isSignout.asStateFlow()
 
+    private val _offlineLogin = MutableStateFlow(false)
+    val offlineLogin = _offlineLogin.asStateFlow()
+
     init {
         checkConnection()
 
         val savedUser = userPreferences.getUser()
-        if (userPreferences.isLoggedIn() && savedUser.first != null && savedUser.second != null) {
+        if (userPreferences.getIsLoggedIn() && savedUser.first != null && savedUser.second != null) {
             _loginState.value = _loginState.value.copy(
                 email = savedUser.first!!,
                 password = savedUser.second!!
             )
             _saveLogin.value = true
+
+            if(isConnected.value) {
+                signIn()
+            } else {
+                _offlineLogin.value = true
+            }
         }
     }
 
@@ -112,8 +114,13 @@ class LoginViewModel @Inject constructor(
         }
     }
 
-    private fun saveLoggedUser(email: String, password: String) {
-        userPreferences.saveUser(email, password)
+    private fun saveLoggedUser(email: String, password: String, userId: String) {
+        viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+            if(currentUser != null) {
+                userPreferences.saveUser(email, password, userId)
+            }
+        }
     }
 
     fun clearLoggedUser() {
@@ -121,6 +128,7 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signIn() {
+        Log.i("#-# TESTE #-#", "Chamou signin")
         val newState = _loginState.value.copy(
             emailErrorMessage = null,
             passwordErrorMessage = null
@@ -136,20 +144,25 @@ class LoginViewModel @Inject constructor(
         _loginState.value = loginState.value.copy(isLoading = true)
 
         viewModelScope.launch {
+            val currentUser = userRepository.getCurrentUser()
+
             userRepository.signIn(email, password)
                 .addOnSuccessListener {
-                    Log.i(TAG, "Usuário LOGADO com SUCESSO!")
+                    Log.i(AUTH_TAG, "User login successfully!")
                     if(saveLogin.value) {
-                        saveLoggedUser(
-                            email = loginState.value.email,
-                            password = loginState.value.password
-                        )
+                        if(currentUser != null) {
+                            saveLoggedUser(
+                                email = loginState.value.email,
+                                password = loginState.value.password,
+                                userId = currentUser.uid
+                            )
+                        }
                     }
                     _loginState.value = loginState.value.copy(isLogged = true)
                     _loginState.value = loginState.value.copy(isLoading = false)
                 }
                 .addOnFailureListener {
-                    Log.i(TAG, "ERRO ao LOGAR USUÁRIO.")
+                    Log.i(AUTH_TAG, "Error signin user.")
                     val errorMessage = try {
                         throw it
                     } catch (invalidUser: FirebaseAuthInvalidUserException) {
