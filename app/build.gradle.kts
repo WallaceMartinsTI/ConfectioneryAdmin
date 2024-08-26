@@ -86,6 +86,9 @@ dependencies {
     // Extended Icons
     implementation("androidx.compose.material:material-icons-extended:1.5.4")
 
+    // Splash Screen
+    implementation("androidx.core:core-splashscreen:1.0.0")
+
     // Jetpack Security
     implementation("androidx.security:security-crypto:1.1.0-alpha03")
 

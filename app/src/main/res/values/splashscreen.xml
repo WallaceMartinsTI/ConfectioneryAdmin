@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.App.SplashScreen" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">#D88BD5</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/icon_splashscreen</item>
+        <item name="postSplashScreenTheme">@style/Theme.ConfectionaryAdmin</item>
+    </style>
+</resources>
