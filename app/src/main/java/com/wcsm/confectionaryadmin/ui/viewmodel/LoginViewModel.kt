@@ -115,8 +115,10 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun saveLoggedUser(email: String, password: String, userId: String) {
+        Log.i("#-# TESTE #-#", "LoginViewModel - saveLoggedUser")
         viewModelScope.launch {
             val currentUser = userRepository.getCurrentUser()
+            Log.i("#-# TESTE #-#", "LoginViewModel - currentUser: $currentUser")
             if(currentUser != null) {
                 userPreferences.saveUser(email, password, userId)
             }
@@ -143,22 +145,23 @@ class LoginViewModel @Inject constructor(
         _loginState.value = loginState.value.copy(isLoading = true)
 
         viewModelScope.launch {
-            val currentUser = userRepository.getCurrentUser()
-
             userRepository.signIn(email, password)
                 .addOnSuccessListener {
                     Log.i(AUTH_TAG, "User login successfully!")
-                    if(saveLogin.value) {
-                        if(currentUser != null) {
-                            saveLoggedUser(
-                                email = loginState.value.email,
-                                password = loginState.value.password,
-                                userId = currentUser.uid
-                            )
+                    viewModelScope.launch {
+                        val currentUser = userRepository.getCurrentUser()
+                        if(saveLogin.value) {
+                            if(currentUser != null) {
+                                saveLoggedUser(
+                                    email = loginState.value.email,
+                                    password = loginState.value.password,
+                                    userId = currentUser.uid
+                                )
+                            }
                         }
+                        _loginState.value = loginState.value.copy(isLogged = true)
+                        _loginState.value = loginState.value.copy(isLoading = false)
                     }
-                    _loginState.value = loginState.value.copy(isLogged = true)
-                    _loginState.value = loginState.value.copy(isLoading = false)
                 }
                 .addOnFailureListener {
                     Log.i(AUTH_TAG, "Error signin user.")

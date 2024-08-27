@@ -214,7 +214,7 @@ fun LoginScreen(
             Checkbox(
                 checked = saveLogin,
                 onCheckedChange = {
-                    loginViewModel.updateSaveLogin(!saveLogin)
+                    loginViewModel.updateSaveLogin(it)
                 },
                 colors = CheckboxDefaults.colors(
                     checkedColor = PrimaryColor,
