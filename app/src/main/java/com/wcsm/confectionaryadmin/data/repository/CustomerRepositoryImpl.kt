@@ -2,12 +2,9 @@ package com.wcsm.confectionaryadmin.data.repository
 
 import android.util.Log
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.wcsm.confectionaryadmin.data.database.CustomerDao
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
-import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -31,7 +28,7 @@ class CustomerRepositoryImpl @Inject constructor(
         customerDao.deleteCustomer(customer)
     }
 
-    override suspend fun sendCustomersToSincronize(userOwnerId: String, customers: List<Customer>): Task<Void> {
+    override suspend fun sendCustomersToSync(userOwnerId: String, customers: List<Customer>): Task<Void> {
         val newCustomer = hashMapOf(
             "customers" to customers
         )

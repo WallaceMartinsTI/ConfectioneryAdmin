@@ -5,8 +5,8 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.AddCircle
-import androidx.compose.material.icons.filled.NoteAdd
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
@@ -18,7 +18,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun CustomFloatActionButton(
@@ -27,7 +27,7 @@ fun CustomFloatActionButton(
 ) {
     FloatingActionButton(
         onClick = { onClick() },
-        containerColor = Primary,
+        containerColor = PrimaryColor,
         contentColor = Color.White
     ) {
         Icon(
@@ -50,7 +50,7 @@ private fun CustomFloatActionButtonPreview() {
                 icon = Icons.Default.AddCircle
             ) {}
             CustomFloatActionButton(
-                icon = Icons.Default.NoteAdd
+                icon = Icons.AutoMirrored.Filled.Notes
             ) {}
             CustomFloatActionButton(
                 icon = Icons.Default.PersonAdd

@@ -22,7 +22,6 @@ import androidx.compose.ui.unit.dp
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.GrayColor
-import com.wcsm.confectionaryadmin.ui.theme.Primary
 
 @Composable
 fun OrdersFilterContainer(

@@ -4,7 +4,6 @@ import com.google.android.gms.tasks.Task
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 
 interface CustomerRepository {
-
     suspend fun insertCustomer(customer: Customer)
 
     suspend fun updateCustomer(customer: Customer)
@@ -13,7 +12,7 @@ interface CustomerRepository {
 
     suspend fun deleteCustomer(customer: Customer)
 
-    suspend fun sendCustomersToSincronize(userOwnerId: String, customers: List<Customer>): Task<Void>
+    suspend fun sendCustomersToSync(userOwnerId: String, customers: List<Customer>): Task<Void>
 
     suspend fun getCustomersFromFirestore(userOwnerId: String): List<Customer>
 

@@ -56,20 +56,20 @@ import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomStatus
 import com.wcsm.confectionaryadmin.ui.components.DateTimeContainer
-import com.wcsm.confectionaryadmin.ui.components.LogoutDialog
-import com.wcsm.confectionaryadmin.ui.components.SyncDialog
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
-import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
+import com.wcsm.confectionaryadmin.ui.components.DialogLogout
+import com.wcsm.confectionaryadmin.ui.components.DialogSync
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
+import com.wcsm.confectionaryadmin.ui.theme.CancelledStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
-import com.wcsm.confectionaryadmin.ui.theme.DarkGreen
-import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
-import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
+import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.DarkGreenColor
+import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.FinishedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.InProductionStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.QuotationStatusColor
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.LoginViewModel
@@ -109,7 +109,6 @@ fun MainScreen(
     var showSyncMessage by remember { mutableStateOf(false) }
 
     var showSyncUpConfirmDialog by remember { mutableStateOf(false) }
-
     var showBackHandlerDialog by remember { mutableStateOf(false) }
 
     BackHandler {
@@ -159,7 +158,7 @@ fun MainScreen(
     }
 
     LaunchedEffect(orderSyncState, customerSyncState) {
-        if(orderSyncState.isSincronized && customerSyncState.isSincronized) {
+        if(orderSyncState.isSynchronized && customerSyncState.isSincronized) {
             if(showSyncMessage) {
                 showToastMessage(context, "Dados Sincronizados com Sucesso!")
                 showSyncMessage = false
@@ -179,7 +178,7 @@ fun MainScreen(
     if(isScreenLoading) {
         Column(
             modifier = Modifier
-                .background(AppBackground)
+                .background(AppBackgroundColor)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -192,7 +191,7 @@ fun MainScreen(
         ) {
             Column(
                 modifier = Modifier
-                    .background(AppBackground)
+                    .background(AppBackgroundColor)
                     .fillMaxSize()
                     .padding(paddingValues),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -203,7 +202,7 @@ fun MainScreen(
                     fontWeight = FontWeight.Bold,
                     fontSize = 40.sp,
                     style = TextStyle(
-                        brush = AppTitleGradient
+                        brush = AppTitleGradientColor
                     ),
                     modifier = Modifier.padding(top = 16.dp)
                 )
@@ -221,7 +220,7 @@ fun MainScreen(
                     fontSize = 32.sp,
                     textDecoration = TextDecoration.Underline,
                     style = TextStyle(
-                        brush = AppTitleGradient
+                        brush = AppTitleGradientColor
                     )
                 )
 
@@ -230,37 +229,37 @@ fun MainScreen(
                 Column(
                     Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
+                        .background(color = PrimaryColor)
                         .padding(24.dp)
                 ) {
                     CustomStatus(
                         text = stringResource(id = R.string.status_quotation),
-                        color = QuotationStatus,
+                        color = QuotationStatusColor,
                         quantity = quotationOrders
                     )
                     CustomStatus(
                         text = stringResource(id = R.string.status_confirmed),
-                        color = ConfirmedStatus,
+                        color = ConfirmedStatusColor,
                         quantity = confirmedOrders
                     )
                     CustomStatus(
                         text = stringResource(id = R.string.status_in_production),
-                        color = InProductionStatus,
+                        color = InProductionStatusColor,
                         quantity = inProductionOrders
                     )
                     CustomStatus(
                         text = stringResource(id = R.string.status_finished),
-                        color = FinishedStatus,
+                        color = FinishedStatusColor,
                         quantity = finishedOrders
                     )
                     CustomStatus(
                         text = stringResource(id = R.string.status_delivered),
-                        color = DeliveredStatus,
+                        color = DeliveredStatusColor,
                         quantity = deliveredOrders
                     )
                     CustomStatus(
                         text = stringResource(id = R.string.status_cancelled),
-                        color = CancelledStatus,
+                        color = CancelledStatusColor,
                         quantity = cancelledOrders
                     )
                 }
@@ -284,7 +283,7 @@ fun MainScreen(
                         ) {
                             Text(
                                 text = "Sincronizando",
-                                color = Primary,
+                                color = PrimaryColor,
                                 fontFamily = InterFontFamily,
                                 fontWeight = FontWeight.SemiBold
                             )
@@ -299,7 +298,7 @@ fun MainScreen(
                         ) {
                             Spacer(modifier = Modifier.width(0.dp))
                             val text = if(isSincronized) "ATUALIZADO" else "DESATUALIZADO"
-                            val color = if(isSincronized) DarkGreen else InProductionStatus
+                            val color = if(isSincronized) DarkGreenColor else InProductionStatusColor
                             Text(
                                 text = text,
                                 color = color,
@@ -324,7 +323,7 @@ fun MainScreen(
 
                         Text(
                             text = "Sempre mantenha o app atualizado, para que os dados fiquem salvos na nuvem.",
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold,
                             textAlign = TextAlign.Justify,
@@ -355,8 +354,8 @@ fun MainScreen(
                                         }
                                     }
                                 }
-                                .border(1.dp, Primary, RoundedCornerShape(15.dp))
-                                .background(brush = AppTitleGradient)
+                                .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
+                                .background(brush = AppTitleGradientColor)
                                 .width(290.dp)
                                 .padding(8.dp),
                             verticalAlignment = Alignment.CenterVertically,
@@ -384,12 +383,12 @@ fun MainScreen(
             }
 
             if(showSyncUpConfirmDialog) {
-                SyncDialog(
+                DialogSync(
                     isSendingFromRoomToFirestore = true,
                     onDontShowAgain = {
                         loginViewModel.changeSyncUpConfirmDialogPreference(it)
                     },
-                    onDissmiss = { showSyncUpConfirmDialog = false }
+                    onDismiss = { showSyncUpConfirmDialog = false }
                 ) {
                     loginViewModel.checkConnection()
                     if (isConnected) {
@@ -407,7 +406,7 @@ fun MainScreen(
 
         if(showBackHandlerDialog) {
             val activity = context as? Activity
-            LogoutDialog(
+            DialogLogout(
                 onExitApp = { activity?.finish() },
                 onLogout = {
                     loginViewModel.signOut()

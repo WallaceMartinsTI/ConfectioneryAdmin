@@ -4,10 +4,11 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.wcsm.confectionaryadmin.data.model.states.CreateOrderState
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.entities.Order
+import com.wcsm.confectionaryadmin.data.model.states.CreateOrderState
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
 import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -43,7 +44,7 @@ class CreateOrderViewModel @Inject constructor(
     ) {
         val currentUser = auth.currentUser
         if(currentUser == null) {
-            Log.e("ERROR", "User unidentified")
+            Log.e(ROOM_TAG, "User unidentified")
             return
         }
 

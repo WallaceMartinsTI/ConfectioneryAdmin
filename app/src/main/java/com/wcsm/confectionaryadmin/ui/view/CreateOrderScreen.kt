@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -52,7 +51,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -74,19 +72,18 @@ import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
-import com.wcsm.confectionaryadmin.ui.components.CustomActionButton
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTimePicker
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.ButtonBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurpleColor
 import com.wcsm.confectionaryadmin.ui.util.CurrencyVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.getStringStatusFromStatus
@@ -143,8 +140,6 @@ fun CreateOrderScreen(
     val focusRequester = rememberSaveable { List(3) { FocusRequester() } }
     val focusManager = LocalFocusManager.current
 
-    val customBlur = if (showCustomerChooser) 8.dp else 0.dp
-
     DisposableEffect(Unit) {
         onDispose {
             ordersViewModel.updateOrderToBeEditted(null)
@@ -156,7 +151,7 @@ fun CreateOrderScreen(
             ordersViewModel.getAllOrders()
             ordersViewModel.updateOrderSyncState(
                 orderSyncState.copy(
-                    isSincronized = false
+                    isSynchronized = false
                 )
             )
             navController.navigate(Screen.Orders.route)
@@ -169,7 +164,7 @@ fun CreateOrderScreen(
             ordersViewModel.getAllOrders()
             ordersViewModel.updateOrderSyncState(
                 orderSyncState.copy(
-                    isSincronized = false
+                    isSynchronized = false
                 )
             )
             showToastMessage(context, "Pedido atualizado.")
@@ -281,8 +276,7 @@ fun CreateOrderScreen(
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .blur(customBlur)
-                .background(AppBackground),
+                .background(AppBackgroundColor),
             contentAlignment = Alignment.Center
         ) {
             Column(
@@ -480,7 +474,7 @@ fun CreateOrderScreen(
                                         focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Primary
+                                        containerColor = PrimaryColor
                                     )
                                 ) {
                                     Text(text = stringResource(id = R.string.choose_date))
@@ -491,13 +485,13 @@ fun CreateOrderScreen(
                                 state = orderDateDatePickerState,
                                 showModeToggle = false,
                                 colors = DatePickerDefaults.colors(
-                                    headlineContentColor = Primary,
-                                    weekdayContentColor = Primary,
-                                    currentYearContentColor = Primary,
-                                    selectedYearContainerColor = Primary,
-                                    selectedDayContainerColor = Primary,
-                                    todayContentColor = Primary,
-                                    todayDateBorderColor = Primary
+                                    headlineContentColor = PrimaryColor,
+                                    weekdayContentColor = PrimaryColor,
+                                    currentYearContentColor = PrimaryColor,
+                                    selectedYearContainerColor = PrimaryColor,
+                                    selectedDayContainerColor = PrimaryColor,
+                                    todayContentColor = PrimaryColor,
+                                    todayDateBorderColor = PrimaryColor
                                 )
                             )
                         }
@@ -559,7 +553,7 @@ fun CreateOrderScreen(
                                         focusManager.clearFocus()
                                     },
                                     colors = ButtonDefaults.buttonColors(
-                                        containerColor = Primary
+                                        containerColor = PrimaryColor
                                     )
                                 ) {
                                     Text(text = stringResource(id = R.string.choose_date))
@@ -570,13 +564,13 @@ fun CreateOrderScreen(
                                 state = deliverDateDatePickerState,
                                 showModeToggle = false,
                                 colors = DatePickerDefaults.colors(
-                                    headlineContentColor = Primary,
-                                    weekdayContentColor = Primary,
-                                    currentYearContentColor = Primary,
-                                    selectedYearContainerColor = Primary,
-                                    selectedDayContainerColor = Primary,
-                                    todayContentColor = Primary,
-                                    todayDateBorderColor = Primary
+                                    headlineContentColor = PrimaryColor,
+                                    weekdayContentColor = PrimaryColor,
+                                    currentYearContentColor = PrimaryColor,
+                                    selectedYearContainerColor = PrimaryColor,
+                                    selectedDayContainerColor = PrimaryColor,
+                                    todayContentColor = PrimaryColor,
+                                    todayDateBorderColor = PrimaryColor
                                 )
                             )
                         }
@@ -645,7 +639,7 @@ fun CreateOrderScreen(
                                         if (statusDropdownExpanded) Icons.Filled.KeyboardArrowUp
                                         else Icons.Filled.KeyboardArrowDown,
                                         contentDescription = null,
-                                        tint = Primary
+                                        tint = PrimaryColor
                                     )
                                 },
                                 singleLine = true,
@@ -658,7 +652,7 @@ fun CreateOrderScreen(
                             ExposedDropdownMenu(
                                 expanded = statusDropdownExpanded,
                                 onDismissRequest = { statusDropdownExpanded = false },
-                                modifier = Modifier.background(color = StrongDarkPurple)
+                                modifier = Modifier.background(color = StrongDarkPurpleColor)
                             ) {
                                 val genderOptions = listOf(
                                     stringResource(id = R.string.status_quotation),
@@ -749,10 +743,10 @@ private fun ChooseCustomerForOrderButton(
         modifier = modifier
             .width(60.dp)
             .clip(RoundedCornerShape(15.dp))
-            .background(ButtonBackground)
+            .background(ButtonBackgroundColor)
             .border(
                 width = 1.dp,
-                color = Primary,
+                color = PrimaryColor,
                 shape = RoundedCornerShape(15.dp)
             )
             .height(60.dp)
@@ -779,7 +773,7 @@ fun ChooseCustomerForOrder(
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(15.dp))
-                    .background(brush = AppBackground)
+                    .background(brush = AppBackgroundColor)
                     .padding(12.dp),
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -802,7 +796,7 @@ fun ChooseCustomerForOrder(
             LazyColumn(
                 modifier = Modifier
                     .clip(RoundedCornerShape(15.dp))
-                    .background(brush = AppBackground)
+                    .background(brush = AppBackgroundColor)
                     .padding(12.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {

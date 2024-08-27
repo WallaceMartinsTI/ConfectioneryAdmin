@@ -45,22 +45,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
-import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurpleColor
+import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackgroundColor
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun OrdersFilterDialog(
+fun DialogOrdersFilter(
     ordersViewModel: OrdersViewModel,
-    onDissmissDialog: () -> Unit
+    onDismissDialog: () -> Unit
 ) {
     var dialogSelected by remember { mutableStateOf<FilterType?>(null) }
 
@@ -84,7 +83,7 @@ fun OrdersFilterDialog(
         modifier = Modifier
             .width(300.dp)
             .clip(RoundedCornerShape(15.dp))
-            .background(brush = InvertedAppBackground)
+            .background(brush = InvertedAppBackgroundColor)
             .padding(vertical = 8.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -97,7 +96,7 @@ fun OrdersFilterDialog(
         ) {
             Text(
                 text = stringResource(id = R.string.filter_by),
-                color = Primary,
+                color = PrimaryColor,
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
@@ -109,8 +108,8 @@ fun OrdersFilterDialog(
                 contentDescription = null,
                 modifier = Modifier
                     .size(32.dp)
-                    .clickable { onDissmissDialog() },
-                tint = Primary
+                    .clickable { onDismissDialog() },
+                tint = PrimaryColor
             )
         }
 
@@ -140,9 +139,9 @@ fun OrdersFilterDialog(
             }
 
             if(dialogSelected == FilterType.DATE && showDatePickerDialog) {
-                MonthYearPickerDialog(
+                DialogMonthYearPicker(
                     ordersViewModel = ordersViewModel,
-                    onDissmissDialog = { showDatePickerDialog = false }
+                    onDismissDialog = { showDatePickerDialog = false }
                 ) { month, year ->
                     selectedDate = "$month/$year"
                 }
@@ -150,14 +149,14 @@ fun OrdersFilterDialog(
 
             if(dialogSelected == FilterType.STATUS) {
                 val colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = TextFieldBackground,
-                    unfocusedContainerColor = TextFieldBackground,
-                    errorContainerColor = TextFieldBackground,
-                    cursorColor = Primary,
-                    focusedBorderColor = Primary,
-                    unfocusedBorderColor = Primary,
+                    focusedContainerColor = TextFieldBackgroundColor,
+                    unfocusedContainerColor = TextFieldBackgroundColor,
+                    errorContainerColor = TextFieldBackgroundColor,
+                    cursorColor = PrimaryColor,
+                    focusedBorderColor = PrimaryColor,
+                    unfocusedBorderColor = PrimaryColor,
                     selectionColors = TextSelectionColors(
-                        Primary, Color.Transparent
+                        PrimaryColor, Color.Transparent
                     )
                 )
 
@@ -180,7 +179,7 @@ fun OrdersFilterDialog(
                                 statusDropdownExpanded = !statusDropdownExpanded
                             },
                             textStyle = TextStyle(
-                                color = Primary,
+                                color = PrimaryColor,
                                 fontFamily = InterFontFamily,
                                 fontSize = 18.sp
                             ),
@@ -196,7 +195,7 @@ fun OrdersFilterDialog(
                                     if(statusDropdownExpanded) Icons.Filled.KeyboardArrowUp
                                     else Icons.Filled.KeyboardArrowDown,
                                     contentDescription = null,
-                                    tint = Primary
+                                    tint = PrimaryColor
                                 )
                             }
                         )
@@ -206,7 +205,7 @@ fun OrdersFilterDialog(
                             onDismissRequest = {
                                 statusDropdownExpanded = false
                             },
-                            modifier = Modifier.background(color = StrongDarkPurple)
+                            modifier = Modifier.background(color = StrongDarkPurpleColor)
                         ) {
                             val statusOptions = listOf(
                                 stringResource(id = R.string.status_quotation),
@@ -248,19 +247,19 @@ fun OrdersFilterDialog(
                     statusDropdownExpanded = !statusDropdownExpanded
                 },
                 textStyle = TextStyle(
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontSize = 18.sp
                 ),
                 colors = OutlinedTextFieldDefaults.colors(
-                    focusedContainerColor = TextFieldBackground,
-                    unfocusedContainerColor = TextFieldBackground,
-                    errorContainerColor = TextFieldBackground,
-                    cursorColor = Primary,
-                    focusedBorderColor = Primary,
-                    unfocusedBorderColor = Primary,
+                    focusedContainerColor = TextFieldBackgroundColor,
+                    unfocusedContainerColor = TextFieldBackgroundColor,
+                    errorContainerColor = TextFieldBackgroundColor,
+                    cursorColor = PrimaryColor,
+                    focusedBorderColor = PrimaryColor,
+                    unfocusedBorderColor = PrimaryColor,
                     selectionColors = TextSelectionColors(
-                        Primary, Color.Transparent
+                        PrimaryColor, Color.Transparent
                     )
                 ),
             )
@@ -274,7 +273,7 @@ fun OrdersFilterDialog(
                     ordersViewModel.updateFilterType(dialogSelected!!)
                 }
                 ordersViewModel.updateFilterResult(newResult = filterResult)
-                onDissmissDialog()
+                onDismissDialog()
             }
         }
     }
@@ -282,9 +281,11 @@ fun OrdersFilterDialog(
 
 @Preview
 @Composable
-private fun OrdersFilterDialogPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
+private fun OrdersFilterDialogPreview(
+    ordersViewModel: OrdersViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
-        OrdersFilterDialog(
+        DialogOrdersFilter(
             ordersViewModel = ordersViewModel) {}
     }
 }

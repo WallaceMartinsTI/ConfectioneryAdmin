@@ -5,9 +5,9 @@ import androidx.room.Room
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.wcsm.confectionaryadmin.data.UserPreferences
-import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.database.ConfectionaryAdminDatabase
 import com.wcsm.confectionaryadmin.data.database.CustomerDao
+import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepositoryImpl
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
@@ -24,7 +24,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
     // Room
     @Provides
     @Singleton
@@ -102,5 +101,4 @@ object AppModule {
     ): UserPreferences {
         return UserPreferences(context)
     }
-
 }

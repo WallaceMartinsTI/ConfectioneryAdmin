@@ -18,11 +18,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun CustomTopAppBar(
@@ -33,7 +33,7 @@ fun CustomTopAppBar(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .background(AppBackground)
+            .background(AppBackgroundColor)
             .padding(top = 12.dp).then(modifier)
     ) {
         IconButton(
@@ -44,7 +44,7 @@ fun CustomTopAppBar(
                 imageVector = Icons.Default.ArrowBackIosNew,
                 contentDescription = null,
                 modifier = Modifier.size(30.dp),
-                tint = Primary
+                tint = PrimaryColor
             )
         }
 
@@ -54,7 +54,7 @@ fun CustomTopAppBar(
             fontWeight = FontWeight.Bold,
             fontSize = 32.sp,
             style = TextStyle(
-                brush = AppTitleGradient
+                brush = AppTitleGradientColor
             ),
             modifier = Modifier.align(Alignment.Center)
         )

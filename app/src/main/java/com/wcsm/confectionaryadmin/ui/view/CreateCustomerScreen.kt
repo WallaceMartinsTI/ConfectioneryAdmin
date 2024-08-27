@@ -26,7 +26,6 @@ import androidx.compose.material.icons.filled.Male
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonOutline
 import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Transgender
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -67,11 +66,11 @@ import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurpleColor
 import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.toBrazillianDateFormat
 import com.wcsm.confectionaryadmin.ui.viewmodel.CreateCustomerViewModel
@@ -122,10 +121,8 @@ fun CreateCustomerScreen(
     }
 
     LaunchedEffect(customerState.gender) {
-        gender = if(customerState.gender.isEmpty()) {
+        gender = customerState.gender.ifEmpty {
             "Selecione o gênero"
-        } else {
-            customerState.gender
         }
     }
 
@@ -142,7 +139,7 @@ fun CreateCustomerScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBackground),
+            .background(AppBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         CustomTopAppBar(
@@ -308,7 +305,7 @@ fun CreateCustomerScreen(
                                 focusManager.clearFocus()
                             },
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Primary
+                                containerColor = PrimaryColor
                             )
                         ) {
                             Text(text = stringResource(id = R.string.choose_date))
@@ -319,13 +316,13 @@ fun CreateCustomerScreen(
                         state = datePickerState,
                         showModeToggle = false,
                         colors = DatePickerDefaults.colors(
-                            headlineContentColor = Primary,
-                            weekdayContentColor = Primary,
-                            currentYearContentColor = Primary,
-                            selectedYearContainerColor = Primary,
-                            selectedDayContainerColor = Primary,
-                            todayContentColor = Primary,
-                            todayDateBorderColor = Primary
+                            headlineContentColor = PrimaryColor,
+                            weekdayContentColor = PrimaryColor,
+                            currentYearContentColor = PrimaryColor,
+                            selectedYearContainerColor = PrimaryColor,
+                            selectedDayContainerColor = PrimaryColor,
+                            todayContentColor = PrimaryColor,
+                            todayDateBorderColor = PrimaryColor
                         )
                     )
                 }
@@ -379,7 +376,7 @@ fun CreateCustomerScreen(
                                 if (genderDropdownExpanded) Icons.Filled.KeyboardArrowUp
                                 else Icons.Filled.KeyboardArrowDown,
                                 contentDescription = null,
-                                tint = Primary
+                                tint = PrimaryColor
                             )
 
                         },
@@ -392,7 +389,7 @@ fun CreateCustomerScreen(
                     ExposedDropdownMenu(
                         expanded = genderDropdownExpanded,
                         onDismissRequest = { genderDropdownExpanded = false },
-                        modifier = Modifier.background(color = StrongDarkPurple)
+                        modifier = Modifier.background(color = StrongDarkPurpleColor)
                     ) {
                         val genderOptions = listOf(
                             stringResource(id = R.string.gender_male),

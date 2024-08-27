@@ -21,7 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import kotlinx.coroutines.Dispatchers
@@ -69,7 +69,7 @@ fun DateTimeContainer(modifier: Modifier = Modifier) {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .background(brush = AppTitleGradient)
+            .background(brush = AppTitleGradientColor)
             .padding(horizontal = 12.dp, vertical = 8.dp)
             .then(modifier),
         horizontalAlignment = Alignment.CenterHorizontally

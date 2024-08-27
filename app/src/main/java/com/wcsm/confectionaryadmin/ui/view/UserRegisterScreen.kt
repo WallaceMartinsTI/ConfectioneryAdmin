@@ -49,10 +49,10 @@ import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomTopAppBar
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.viewmodel.UserRegisterViewModel
 
 @Composable
@@ -86,7 +86,7 @@ fun UserRegisterScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(AppBackground)
+                .background(AppBackgroundColor)
                 .padding(paddingValues),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -99,7 +99,7 @@ fun UserRegisterScreen(
 
             Text(
                 text = stringResource(id = R.string.user_register_screen_message),
-                color = Primary,
+                color = PrimaryColor,
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,

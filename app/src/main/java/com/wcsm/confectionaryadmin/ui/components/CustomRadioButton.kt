@@ -25,7 +25,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun CustomRadioButton(
@@ -37,7 +37,7 @@ fun CustomRadioButton(
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .border(1.dp, Primary, RoundedCornerShape(15.dp))
+            .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
             .width(250.dp)
             .padding(horizontal = 12.dp)
             .clickable { onSelectedChange() }
@@ -47,7 +47,7 @@ fun CustomRadioButton(
     ) {
         Text(
             text = text,
-            color = Primary,
+            color = PrimaryColor,
             fontFamily = InterFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp
@@ -57,7 +57,7 @@ fun CustomRadioButton(
             imageVector = if(isSelected) Icons.Default.RadioButtonChecked
             else Icons.Default.RadioButtonUnchecked,
             contentDescription = null,
-            tint = Primary
+            tint = PrimaryColor
         )
     }
 }

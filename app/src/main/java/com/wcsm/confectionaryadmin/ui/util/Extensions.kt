@@ -4,12 +4,12 @@ import androidx.compose.ui.graphics.Color
 import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
 import com.wcsm.confectionaryadmin.data.model.entities.User
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
-import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
-import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
-import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
-import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
-import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
+import com.wcsm.confectionaryadmin.ui.theme.CancelledStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.FinishedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.InProductionStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.QuotationStatusColor
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -58,12 +58,12 @@ fun OrderStatus.toStatusString(): String {
 
 fun OrderStatus.getStatusColor(): Color {
     return when(this) {
-        OrderStatus.QUOTATION -> QuotationStatus
-        OrderStatus.CONFIRMED -> ConfirmedStatus
-        OrderStatus.IN_PRODUCTION -> InProductionStatus
-        OrderStatus.FINISHED -> FinishedStatus
-        OrderStatus.DELIVERED -> DeliveredStatus
-        OrderStatus.CANCELLED -> CancelledStatus
+        OrderStatus.QUOTATION -> QuotationStatusColor
+        OrderStatus.CONFIRMED -> ConfirmedStatusColor
+        OrderStatus.IN_PRODUCTION -> InProductionStatusColor
+        OrderStatus.FINISHED -> FinishedStatusColor
+        OrderStatus.DELIVERED -> DeliveredStatusColor
+        OrderStatus.CANCELLED -> CancelledStatusColor
     }
 }
 

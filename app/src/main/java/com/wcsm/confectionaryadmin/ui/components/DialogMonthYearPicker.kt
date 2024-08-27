@@ -1,7 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.components
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -43,17 +42,17 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.util.capitalizeFirstLetter
 import com.wcsm.confectionaryadmin.ui.util.getCurrentMonth
 import com.wcsm.confectionaryadmin.ui.util.getCurrentYear
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
 
 @Composable
-fun MonthYearPickerDialog(
+fun DialogMonthYearPicker(
     ordersViewModel: OrdersViewModel,
-    onDissmissDialog: () -> Unit,
+    onDismissDialog: () -> Unit,
     onMonthYearSelected: (month: String, year: Int) -> Unit
 ) {
     val orderOrDeliverDateSelected by ordersViewModel.orderDateType.collectAsState()
@@ -75,13 +74,13 @@ fun MonthYearPickerDialog(
     var year by remember { mutableIntStateOf(getCurrentYear()) }
 
     Dialog(
-        onDismissRequest = { onDissmissDialog() }
+        onDismissRequest = { onDismissDialog() }
     ) {
         Column(
             modifier = Modifier
                 .width(500.dp)
                 .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
+                .background(brush = InvertedAppBackgroundColor)
                 .padding(12.dp)
             ,
             horizontalAlignment = Alignment.CenterHorizontally
@@ -120,12 +119,12 @@ fun MonthYearPickerDialog(
                             else
                                 Icons.Default.RadioButtonUnchecked,
                             contentDescription = null,
-                            tint = Primary
+                            tint = PrimaryColor
                         )
 
                         Text(
                             text = "PEDIDO",
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -144,12 +143,12 @@ fun MonthYearPickerDialog(
                             else
                                 Icons.Default.RadioButtonUnchecked,
                             contentDescription = null,
-                            tint = Primary
+                            tint = PrimaryColor
                         )
 
                         Text(
                             text = "ENTREGA",
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold,
                         )
@@ -172,7 +171,7 @@ fun MonthYearPickerDialog(
                     tint = Color.White,
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
+                        .background(color = PrimaryColor)
                         .width(60.dp)
                         .height(40.dp)
                         .clickable {
@@ -186,7 +185,7 @@ fun MonthYearPickerDialog(
 
                 Text(
                     text = monthList[monthIndex],
-                    color = Primary,
+                    color = PrimaryColor,
                     textAlign = TextAlign.Center,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold,
@@ -199,7 +198,7 @@ fun MonthYearPickerDialog(
                     tint = Color.White,
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
+                        .background(color = PrimaryColor)
                         .width(60.dp)
                         .height(40.dp)
                         .clickable {
@@ -225,7 +224,7 @@ fun MonthYearPickerDialog(
                     tint = Color.White,
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
+                        .background(color = PrimaryColor)
                         .width(60.dp)
                         .height(40.dp)
                         .clickable { year-- }
@@ -233,7 +232,7 @@ fun MonthYearPickerDialog(
 
                 Text(
                     text = year.toString(),
-                    color = Primary,
+                    color = PrimaryColor,
                     textAlign = TextAlign.Center,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold,
@@ -246,7 +245,7 @@ fun MonthYearPickerDialog(
                     tint = Color.White,
                     modifier = Modifier
                         .clip(RoundedCornerShape(15.dp))
-                        .background(color = Primary)
+                        .background(color = PrimaryColor)
                         .width(60.dp)
                         .height(40.dp)
                         .clickable { year++ }
@@ -264,7 +263,7 @@ fun MonthYearPickerDialog(
                     text = "Cancelar",
                     width = 100.dp
                 ) {
-                    onDissmissDialog()
+                    onDismissDialog()
                 }
 
                 PrimaryButton(
@@ -272,7 +271,7 @@ fun MonthYearPickerDialog(
                     width = 150.dp
                 ) {
                     onMonthYearSelected(monthList[monthIndex], year)
-                    onDissmissDialog()
+                    onDismissDialog()
                 }
             }
         }
@@ -281,11 +280,13 @@ fun MonthYearPickerDialog(
 
 @Preview
 @Composable
-fun MonthYearPickerDialogPreview(ordersViewModel: OrdersViewModel = hiltViewModel()) {
+private fun MonthYearPickerDialogPreview(
+    ordersViewModel: OrdersViewModel = hiltViewModel()
+) {
     ConfectionaryAdminTheme {
-        MonthYearPickerDialog(
+        DialogMonthYearPicker(
             ordersViewModel = ordersViewModel,
-            onDissmissDialog = {},
+            onDismissDialog = {},
             onMonthYearSelected = { _, _ -> }
         )
     }

@@ -6,8 +6,8 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseUser
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
-import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
+import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.User
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
@@ -158,8 +158,8 @@ class InfoViewModel @Inject constructor(
                         Log.i(FIRESTORE_TAG, "Firestore orders and customers deleted successfully!")
                         _allUserDataDeleted.value = true
                     }
-                    .addOnFailureListener { exception ->
-                        Log.e(FIRESTORE_TAG, "Error deleting data from firestore: ${exception.message}")
+                    .addOnFailureListener { e ->
+                        Log.e(FIRESTORE_TAG, "Error deleting data from firestore.", e)
                     }
             }
         } else {
@@ -171,40 +171,35 @@ class InfoViewModel @Inject constructor(
         try {
             val customers = _customersFromCloud.value
             val orders = _ordersFromCloud.value
-            Log.i("#-# TESTE #-#", "orders: $orders")
             customerRepository.saveCustomersToLocalDatabase(customers)
             orderRepository.saveOrdersToLocalDatabase(orders)
-            Log.i("#-# SYNC #-#", "firestore data saved in room with success!")
+            Log.i(SYNC_TAG, "firestore data saved in room with success!")
             _isSyncSuccess.value = true
         } catch (e: Exception) {
-            Log.e("#-# SYNC #-#", "Error saving firestore data in room.", e)
+            Log.e(SYNC_TAG, "Error saving firestore data in room.", e)
         }
         _isSyncLoading.value = false
-        Log.i("#-# TESTE #-#", "=========================================")
     }
 
     private suspend fun fetchOrdersFromFirestore() {
-        Log.i("#-# TESTE #-#", "InfoViewModel - fetchOrdersFromFirestore")
         if(_currentUser != null) {
             try {
                 val orders = orderRepository.getOrdersFromFirestore(_currentUser!!.uid)
-                Log.i("#-# TESTE #-#", "orders: $orders")
                 _ordersFromCloud.value = orders
-                Log.i("#-# SYNC #-#", "fetchOrdersFromFirestore success!")
+                Log.i(SYNC_TAG, "fetchOrdersFromFirestore success!")
             } catch (e: Exception) {
-                Log.e("#-# SYNC #-#", "Error in fetchOrdersFromFirestore function.", e)
+                Log.e(SYNC_TAG, "Error in fetchOrdersFromFirestore function.", e)
             }
         }
-        Log.i("#-# TESTE #-#", "=========================================")
     }
 
     private suspend fun fetchCustomersFromFirestore() {
         try {
             val customers = customerRepository.getCustomersFromFirestore(_currentUser!!.uid)
             _customersFromCloud.value = customers
-            Log.i("#-# SYNC #-#", "fetchCustomersFromFirestore success!")
+            Log.i(SYNC_TAG, "fetchCustomersFromFirestore success!")
         } catch (e: Exception) {
-            Log.e("#-# SYNC #-#", "Erro in fetchCustomersFromFirestore function.", e)
+            Log.e(SYNC_TAG, "Erro in fetchCustomersFromFirestore function.", e)
         }
     }
 }

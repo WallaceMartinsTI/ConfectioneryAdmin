@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -62,15 +61,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
-import com.wcsm.confectionaryadmin.ui.components.ConfirmDeleteUserDialog
+import com.wcsm.confectionaryadmin.ui.components.DialogConfirmDeleteUser
 import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.DeleteButton
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
-import com.wcsm.confectionaryadmin.ui.components.SyncDialog
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.components.DialogSync
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
 import com.wcsm.confectionaryadmin.ui.viewmodel.InfoViewModel
@@ -87,26 +86,20 @@ fun InfoScreen(
     infoViewModel: InfoViewModel = hiltViewModel()
 ) {
     val context = LocalContext.current
-    val isSyncSuccess by infoViewModel.isSyncSuccess.collectAsState()
-    val isSyncLoading by infoViewModel.isSyncLoading.collectAsState()
-
-    val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
-    val isConnected by loginViewModel.isConnected.collectAsState()
-    val isUserDeleted by infoViewModel.isUserDeleted.collectAsState()
-    val allUserDataDeleted by infoViewModel.allUserDataDeleted.collectAsState()
-
-    val fetchedUser by infoViewModel.fetchedUser.collectAsState()
-
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
 
-    val devEmail = "wallace159santos@hotmail.com"
-    val devLinkedin = "https://www.linkedin.com/in/wallace-martins-ti/"
+    val fetchedUser by infoViewModel.fetchedUser.collectAsState()
+    val isSyncSuccess by infoViewModel.isSyncSuccess.collectAsState()
+    val isSyncLoading by infoViewModel.isSyncLoading.collectAsState()
+    val isUserDeleted by infoViewModel.isUserDeleted.collectAsState()
+    val allUserDataDeleted by infoViewModel.allUserDataDeleted.collectAsState()
+
+    val confirmSyncDownDialogPreference by loginViewModel.showConfirmSyncDownDialog.collectAsState()
+    val isConnected by loginViewModel.isConnected.collectAsState()
 
     var syncText by rememberSaveable { mutableStateOf("") }
-
     var isSincronized by rememberSaveable { mutableStateOf(false) }
-
     var showSyncDownConfirmDialog by remember { mutableStateOf(false) }
 
     var isUserDataLoading by rememberSaveable { mutableStateOf(true) }
@@ -119,6 +112,9 @@ fun InfoScreen(
     var userCustomers by rememberSaveable { mutableStateOf("") }
     var userOrders by rememberSaveable { mutableStateOf("") }
     var userSince by rememberSaveable { mutableStateOf("") }
+
+    val devEmail = "wallace159santos@hotmail.com"
+    val devLinkedin = "https://www.linkedin.com/in/wallace-martins-ti/"
 
     LaunchedEffect(Unit) {
         loginViewModel.checkConnection()
@@ -180,7 +176,7 @@ fun InfoScreen(
 
     Column(
         modifier = Modifier
-            .background(AppBackground)
+            .background(AppBackgroundColor)
             .fillMaxSize()
             .padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -191,7 +187,7 @@ fun InfoScreen(
             fontWeight = FontWeight.Bold,
             fontSize = 40.sp,
             style = TextStyle(
-                brush = AppTitleGradient
+                brush = AppTitleGradientColor
             ),
             modifier = Modifier.padding(top = 16.dp)
         )
@@ -227,26 +223,26 @@ fun InfoScreen(
                             Column {
                                 Text(
                                     text = userName,
-                                    color = Primary,
+                                    color = PrimaryColor,
                                     fontFamily = InterFontFamily,
                                     fontWeight = FontWeight.Bold
 
                                 )
                                 Text(
                                     text = userCustomers,
-                                    color = Primary,
+                                    color = PrimaryColor,
                                     fontFamily = InterFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = userOrders,
-                                    color = Primary,
+                                    color = PrimaryColor,
                                     fontFamily = InterFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
                                 Text(
                                     text = userSince,
-                                    color = Primary,
+                                    color = PrimaryColor,
                                     fontFamily = InterFontFamily,
                                     fontWeight = FontWeight.Bold
                                 )
@@ -330,12 +326,12 @@ fun InfoScreen(
                 }
 
                 if(showSyncDownConfirmDialog) {
-                    SyncDialog(
+                    DialogSync(
                         isSendingFromRoomToFirestore = false,
                         onDontShowAgain = {
                             loginViewModel.changeSyncDownConfirmDialogPreference(it)
                         },
-                        onDissmiss = { showSyncDownConfirmDialog = false }
+                        onDismiss = { showSyncDownConfirmDialog = false }
                     ) {
                         loginViewModel.checkConnection()
                         if (isConnected) {
@@ -409,22 +405,22 @@ fun InfoScreen(
             Spacer(modifier = Modifier.height(8.dp))
 
             if(showDeleteUserDialog) {
-                ConfirmDeleteUserDialog(
+                DialogConfirmDeleteUser(
                     title = "Deletar Usuário",
                     message = "Deseja deletar sua conta de usuário?",
                     onConfirmText = "Deletar Usuário",
-                    onDissmiss = { showDeleteUserDialog = false }
+                    onDismiss = { showDeleteUserDialog = false }
                 ) {
                     showConfirmDeleteUserDialog = true
                 }
             }
 
             if(showConfirmDeleteUserDialog) {
-                ConfirmDeleteUserDialog(
+                DialogConfirmDeleteUser(
                     title = "Confirmação Deletar Usuário",
                     message = "Tem certeza que deseja deletar sua conta de usuário?",
                     onConfirmText = "Confirmar e Deletar",
-                    onDissmiss = { showConfirmDeleteUserDialog = false }
+                    onDismiss = { showConfirmDeleteUserDialog = false }
                 ) {
                     if(isConnected) {
                         infoViewModel.deleteAllUserData()
@@ -441,7 +437,7 @@ fun InfoScreen(
 private fun CustomTitle(text: String) {
     Text(
         text = text,
-        color = Primary,
+        color = PrimaryColor,
         fontFamily = InterFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 24.sp
@@ -477,7 +473,7 @@ private fun ContactContainer(
             .clip(RoundedCornerShape(15.dp))
             .clickable { onClick() }
             .fillMaxWidth()
-            .border(1.dp, Primary, RoundedCornerShape(15.dp))
+            .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
             .padding(4.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceEvenly
@@ -486,19 +482,19 @@ private fun ContactContainer(
             Icon(
                 imageVector = vectorIcon,
                 contentDescription = null,
-                tint = Primary
+                tint = PrimaryColor
             )
         } else if(painterIcon != null) {
             Icon(
                 painter = painterIcon,
                 contentDescription = null,
-                tint = Primary,
+                tint = PrimaryColor,
                 modifier = Modifier.size(20.dp)
             )
         }
         Text(
             text = text,
-            color = Primary,
+            color = PrimaryColor,
             fontFamily = InterFontFamily,
             fontWeight = FontWeight.SemiBold,
             fontSize = 14.sp,
@@ -506,7 +502,7 @@ private fun ContactContainer(
         Icon(
             imageVector = trailingIcon,
             contentDescription = null,
-            tint = Primary
+            tint = PrimaryColor
         )
     }
 }

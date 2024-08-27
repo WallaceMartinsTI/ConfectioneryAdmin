@@ -2,9 +2,9 @@ package com.wcsm.confectionaryadmin.ui.components
 
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Info
-import androidx.compose.material.icons.filled.Notes
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -24,9 +24,9 @@ import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.navigation.BottomNavItem
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
-import com.wcsm.confectionaryadmin.ui.theme.ButtonBackground
+import com.wcsm.confectionaryadmin.ui.theme.ButtonBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun CustomBottomAppBar(
@@ -41,7 +41,7 @@ fun CustomBottomAppBar(
         BottomNavItem(
             title = stringResource(id = R.string.bottom_nav_orders),
             route = Screen.Orders.route,
-            icon = Icons.Default.Notes
+            icon = Icons.AutoMirrored.Filled.Notes
         ),
         BottomNavItem(
             title = stringResource(id = R.string.bottom_nav_customers),
@@ -59,7 +59,7 @@ fun CustomBottomAppBar(
     val currentDestination = navBackStackEntry?.destination
 
     NavigationBar(
-        containerColor = Primary,
+        containerColor = PrimaryColor,
     ) {
         bottomNavItems.forEach { bottomNavItem ->
             AddItem(
@@ -88,9 +88,9 @@ fun RowScope.AddItem(
             )
         },
         colors = NavigationBarItemDefaults.colors(
-            selectedTextColor = ButtonBackground,
+            selectedTextColor = ButtonBackgroundColor,
             selectedIconColor = Color.White,
-            indicatorColor = ButtonBackground,
+            indicatorColor = ButtonBackgroundColor,
             unselectedIconColor = Color.White,
             unselectedTextColor = Color.White
         ),

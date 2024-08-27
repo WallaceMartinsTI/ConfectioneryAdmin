@@ -23,35 +23,35 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
-fun LogoutDialog(
+fun DialogLogout(
     onExitApp: () -> Unit,
     onLogout: () -> Unit,
-    onDissmiss: () -> Unit
+    onDismiss: () -> Unit
 ) {
     Dialog(
-        onDismissRequest = { onDissmiss() }
+        onDismissRequest = { onDismiss() }
     ) {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
+                .background(brush = InvertedAppBackgroundColor)
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.Logout,
                 contentDescription = null,
-                tint = Primary,
+                tint = PrimaryColor,
                 modifier = Modifier.size(40.dp)
             )
 
             Text(
                 text = "Encerrar Sessão",
-                color = Primary,
+                color = PrimaryColor,
                 fontFamily = InterFontFamily,
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp,
@@ -68,14 +68,14 @@ fun LogoutDialog(
             Spacer(modifier = Modifier.height(24.dp))
 
             PrimaryButton(text = "Encerrar Sessão") {
-                onDissmiss()
+                onDismiss()
                 onLogout()
             }
 
             Spacer(modifier = Modifier.height(12.dp))
 
             PrimaryButton(text = "Sair do App") {
-                onDissmiss()
+                onDismiss()
                 onExitApp()
             }
         }
@@ -84,12 +84,12 @@ fun LogoutDialog(
 
 @Preview
 @Composable
-fun LogoutDialogPreview() {
+private fun LogoutDialogPreview() {
     ConfectionaryAdminTheme {
-        LogoutDialog(
+        DialogLogout(
             onExitApp = {},
             onLogout = {},
-            onDissmiss = {}
+            onDismiss = {}
         )
     }
 }

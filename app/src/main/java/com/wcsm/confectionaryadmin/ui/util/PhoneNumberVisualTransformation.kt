@@ -7,7 +7,7 @@ import androidx.compose.ui.text.input.OffsetMapping
 
 class PhoneNumberVisualTransformation : VisualTransformation {
     override fun filter(text: AnnotatedString): TransformedText {
-        val rawText = text.text.replace("[^\\d]".toRegex(), "") // Remove caracteres não numéricos
+        val rawText = text.text.replace("[^\\d]".toRegex(), "") // Remove non-numeric characteres
 
         val formattedText = when {
             rawText.isEmpty() -> ""

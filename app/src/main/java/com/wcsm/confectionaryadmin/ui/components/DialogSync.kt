@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.components
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -33,24 +32,24 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.DarkGreen
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
+import com.wcsm.confectionaryadmin.ui.theme.DarkGreenColor
+import com.wcsm.confectionaryadmin.ui.theme.InProductionStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.LightRedColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
-fun SyncDialog(
+fun DialogSync(
     isSendingFromRoomToFirestore: Boolean,
     onDontShowAgain: (Boolean) -> Unit,
-    onDissmiss: () -> Unit,
+    onDismiss: () -> Unit,
     onConfirm: () -> Unit
 ) {
     val sendDataFromRoomToFirestoreText = buildAnnotatedString {
         append("Você está prestes a substituir os dados na nuvem pelos dados locais. Essa ação apagará permanentemente as informações já armazenadas na nuvem. Caso deseje recuperar os dados anteriores, acesse ")
-        withStyle(style = SpanStyle(color = InProductionStatus, fontWeight = FontWeight.SemiBold, textDecoration = TextDecoration.Underline)) {
+        withStyle(style = SpanStyle(color = InProductionStatusColor, fontWeight = FontWeight.SemiBold, textDecoration = TextDecoration.Underline)) {
             append("Info > Sincronizar")
         }
         append(" antes de prosseguir. Se a nuvem não contiver dados, você pode sincronizar sem problemas.")
@@ -65,14 +64,14 @@ fun SyncDialog(
 
     Dialog(
         onDismissRequest = {
-            onDissmiss()
+            onDismiss()
         }
     ) {
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
-                .background(brush = AppBackground)
-                .border(1.dp, Primary, RoundedCornerShape(15.dp))
+                .background(brush = AppBackgroundColor)
+                .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
                 .padding(16.dp)
         ) {
             Text(
@@ -91,14 +90,14 @@ fun SyncDialog(
                     checked = agreementAccept,
                     onCheckedChange = { agreementAccept = !agreementAccept },
                     colors = CheckboxDefaults.colors(
-                        checkedColor = Primary,
+                        checkedColor = PrimaryColor,
                         checkmarkColor = Color.White,
-                        uncheckedColor = Primary,
+                        uncheckedColor = PrimaryColor,
                     )
                 )
                 Text(
                     text = "Li e estou de acordo.",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -114,14 +113,14 @@ fun SyncDialog(
                         checked = dontShowAlertAgain,
                         onCheckedChange = { dontShowAlertAgain = !dontShowAlertAgain },
                         colors = CheckboxDefaults.colors(
-                            checkedColor = Primary,
+                            checkedColor = PrimaryColor,
                             checkmarkColor = Color.White,
-                            uncheckedColor = Primary,
+                            uncheckedColor = PrimaryColor,
                         )
                     )
                     Text(
                         text = "Não mostrar novamente.",
-                        color = Primary,
+                        color = PrimaryColor,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.SemiBold,
                     )
@@ -134,7 +133,7 @@ fun SyncDialog(
                     CustomDialogButton(
                         text = "CONFIRMAR",
                         width = 250.dp,
-                        color = DarkGreen
+                        color = DarkGreenColor
                     ) {
                         if(dontShowAlertAgain) {
                             onDontShowAgain(true)
@@ -142,15 +141,15 @@ fun SyncDialog(
                             onDontShowAgain(false)
                         }
                         onConfirm()
-                        onDissmiss()
+                        onDismiss()
                     }
                     Spacer(modifier = Modifier.height(8.dp))
                     CustomDialogButton(
                         text = "CANCELAR",
                         width = 250.dp,
-                        color = LightRed
+                        color = LightRedColor
                     ) {
-                        onDissmiss()
+                        onDismiss()
                     }
                 }
             }
@@ -162,10 +161,10 @@ fun SyncDialog(
 @Composable
 private fun SyncDialogPreviewSyncUp() {
     ConfectionaryAdminTheme {
-        SyncDialog(
+        DialogSync(
             isSendingFromRoomToFirestore = true,
             onDontShowAgain = {},
-            onDissmiss = {},
+            onDismiss = {},
             onConfirm = {}
         )
     }
@@ -175,10 +174,10 @@ private fun SyncDialogPreviewSyncUp() {
 @Composable
 private fun SyncDialogPreviewSyncDown() {
     ConfectionaryAdminTheme {
-        SyncDialog(
+        DialogSync(
             isSendingFromRoomToFirestore = false,
             onDontShowAgain = {},
-            onDissmiss = {},
+            onDismiss = {},
             onConfirm = {}
         )
     }

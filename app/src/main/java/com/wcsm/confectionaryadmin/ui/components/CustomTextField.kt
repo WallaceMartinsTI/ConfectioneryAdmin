@@ -1,10 +1,8 @@
 package com.wcsm.confectionaryadmin.ui.components
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -26,19 +24,15 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackground
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.TextFieldBackgroundColor
 
 @Composable
 fun CustomTextField(
@@ -55,22 +49,22 @@ fun CustomTextField(
     charactereCounter: Boolean? = false,
     charactereLimit: Int? = null,
     errorMessage: String?,
-    leadingIcon: @Composable() (() -> Unit)? = null,
-    trailingIcon: @Composable() (() -> Unit)? = null,
+    leadingIcon: @Composable (() -> Unit)? = null,
+    trailingIcon: @Composable (() -> Unit)? = null,
     value: String,
     onValueChange: (newValue: String) -> Unit
 ) {
     val isError = errorMessage != null
 
     val colors = OutlinedTextFieldDefaults.colors(
-        focusedContainerColor = TextFieldBackground,
-        unfocusedContainerColor = TextFieldBackground,
-        errorContainerColor = TextFieldBackground,
-        cursorColor = Primary,
-        focusedBorderColor = Primary,
-        unfocusedBorderColor = Primary,
+        focusedContainerColor = TextFieldBackgroundColor,
+        unfocusedContainerColor = TextFieldBackgroundColor,
+        errorContainerColor = TextFieldBackgroundColor,
+        cursorColor = PrimaryColor,
+        focusedBorderColor = PrimaryColor,
+        unfocusedBorderColor = PrimaryColor,
         selectionColors = TextSelectionColors(
-            Primary, Color.Transparent
+            PrimaryColor, Color.Transparent
         )
     )
 
@@ -103,7 +97,7 @@ fun CustomTextField(
             )
         },
         textStyle = TextStyle(
-            color = Primary,
+            color = PrimaryColor,
             fontFamily = InterFontFamily,
             fontSize = 18.sp
         ),

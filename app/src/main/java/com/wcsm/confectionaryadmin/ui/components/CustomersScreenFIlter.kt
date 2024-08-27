@@ -25,7 +25,7 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.GrayColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun CustomersScreenFilter(
@@ -44,11 +44,11 @@ fun CustomersScreenFilter(
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = Color.White,
             unfocusedContainerColor = Color.White,
-            cursorColor = Primary,
+            cursorColor = PrimaryColor,
             focusedBorderColor = Color.Transparent,
             unfocusedBorderColor = Color.Transparent,
             selectionColors = TextSelectionColors(
-                Primary, Color.Transparent
+                PrimaryColor, Color.Transparent
             )
         ),
         placeholder = {

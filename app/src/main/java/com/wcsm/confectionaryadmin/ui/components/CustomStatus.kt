@@ -9,14 +9,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
-import com.wcsm.confectionaryadmin.ui.theme.CancelledStatus
+import com.wcsm.confectionaryadmin.ui.theme.CancelledStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatus
-import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatus
-import com.wcsm.confectionaryadmin.ui.theme.FinishedStatus
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
+import com.wcsm.confectionaryadmin.ui.theme.ConfirmedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.DeliveredStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.FinishedStatusColor
+import com.wcsm.confectionaryadmin.ui.theme.InProductionStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.QuotationStatus
+import com.wcsm.confectionaryadmin.ui.theme.QuotationStatusColor
 
 @Composable
 fun CustomStatus(
@@ -31,7 +31,7 @@ fun CustomStatus(
 }
 
 @Composable
-fun CustomStatusText(
+private fun CustomStatusText(
     text: String,
     color: Color
 ) {
@@ -51,12 +51,12 @@ private fun CustomStatusPreview() {
         Column(
             verticalArrangement = Arrangement.Center
         ) {
-            CustomStatus(text = "Orçamentos", color = QuotationStatus, quantity = 2)
-            CustomStatus(text = "Confirmados", color = ConfirmedStatus, quantity = 3)
-            CustomStatus(text = "Em Produção", color = InProductionStatus, quantity = 2)
-            CustomStatus(text = "Finalizados", color = FinishedStatus, quantity = 1)
-            CustomStatus(text = "Entregues", color = DeliveredStatus, quantity = 15)
-            CustomStatus(text = "Cancelados", color = CancelledStatus, quantity = 3)
+            CustomStatus(text = "Orçamentos", color = QuotationStatusColor, quantity = 2)
+            CustomStatus(text = "Confirmados", color = ConfirmedStatusColor, quantity = 3)
+            CustomStatus(text = "Em Produção", color = InProductionStatusColor, quantity = 2)
+            CustomStatus(text = "Finalizados", color = FinishedStatusColor, quantity = 1)
+            CustomStatus(text = "Entregues", color = DeliveredStatusColor, quantity = 15)
+            CustomStatus(text = "Cancelados", color = CancelledStatusColor, quantity = 3)
         }
     }
 }
