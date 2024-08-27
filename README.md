@@ -54,17 +54,17 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 ## 🛠️ Development Requirements
 
-- Android Studio (IDE);
-- Kotlin (Programming Language);
-- Jetpack Compose (User Interface);
-- Jetpack Security (Encryption);
-- Compose Navigation (Screen Navigation);
-- Hilt (Dependency Injection);
-- MVVM (Architecture);
-- Room (Local Database);
-- Firebase (Authentication and Firestore as Cloud Database);
+- `Android Studio (IDE);`
+- `Kotlin (Programming Language);`
+- `Jetpack Compose (User Interface);`
+- `Jetpack Security (Encryption);`
+- `Compose Navigation (Screen Navigation);`
+- `Hilt (Dependency Injection);`
+- `MVVM (Architecture);`
+- `Room (Local Database);`
+- `Firebase (Authentication and Firestore as Cloud Database);`
 
-## 🔖 Layout
+## 📝 Layout
 
 You can view an initial draft of the project layout through [this link](https://www.figma.com/design/1ePpKDDBsV50dEKt3cPUth/Confectionary-Admin?node-id=0-1&t=xPLcqNjJS2hsGzMx-0). This draft serves as a basic reference for the screen design. To access it, you need to have an account on [Figma](http://figma.com/).
 
