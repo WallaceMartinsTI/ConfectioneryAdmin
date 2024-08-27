@@ -346,8 +346,8 @@ fun MainScreen(
                                                 showSyncMessage = true
                                                 isSyncLoading = true
                                                 loginViewModel.checkConnection()
-                                                ordersViewModel.sendOrdersToSincronize()
-                                                customersViewModel.sendCustomersToSincronize()
+                                                ordersViewModel.sendOrdersToSync()
+                                                customersViewModel.sendCustomersToSync()
                                             } else {
                                                 showToastMessage(context, "Sem conexão no momento")
                                             }
@@ -395,8 +395,8 @@ fun MainScreen(
                         showSyncMessage = true
                         isSyncLoading = true
                         loginViewModel.checkConnection()
-                        ordersViewModel.sendOrdersToSincronize()
-                        customersViewModel.sendCustomersToSincronize()
+                        ordersViewModel.sendOrdersToSync()
+                        customersViewModel.sendCustomersToSync()
                     } else {
                         showToastMessage(context, "Sem conexão no momento")
                     }

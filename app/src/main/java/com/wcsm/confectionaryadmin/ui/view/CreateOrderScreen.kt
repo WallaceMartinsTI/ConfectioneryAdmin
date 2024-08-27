@@ -697,7 +697,7 @@ fun CreateOrderScreen(
                                     price = value
                                 )
                             )
-                            createOrderViewModel.createNewOrder(isUpdateOrder = true)
+                            createOrderViewModel.saveOrder(isUpdateOrder = true)
                         }
                     } else {
                         PrimaryButton(text = stringResource(id = R.string.btn_text_create_order)) {
@@ -707,7 +707,7 @@ fun CreateOrderScreen(
                                     price = value
                                 )
                             )
-                            createOrderViewModel.createNewOrder()
+                            createOrderViewModel.saveOrder()
                         }
                     }
 

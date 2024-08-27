@@ -39,39 +39,44 @@ class CreateOrderViewModel @Inject constructor(
         _orderUpdated.value = newStatus
     }
 
-    fun createNewOrder(
+    fun saveOrder(
         isUpdateOrder: Boolean = false
     ) {
-        val currentUser = auth.currentUser
-        if(currentUser == null) {
-            Log.e(ROOM_TAG, "User unidentified")
-            return
-        }
-
-        if(isAllFieldValid()) {
-            val newOrderId = "${currentUser.uid}-${UUID.randomUUID()}"
-            val order = Order(
-                userOrderOwnerId = currentUser.uid,
-                orderId = orderState.value.orderId ?: newOrderId,
-                customerOwnerId = orderState.value.customer!!.customerId,
-                title = orderState.value.orderName,
-                description = orderState.value.orderDescription,
-                price = orderState.value.price.toDouble(),
-                status = orderState.value.status,
-                orderDate = convertStringToDateMillis(
-                    dateString = orderState.value.orderDate
-                ),
-                deliverDate = convertStringToDateMillis(
-                    dateString = orderState.value.deliverDate
-                )
-            )
-
-            if(isUpdateOrder) {
-                _orderUpdated.value = false
-                updateOrderToDatabase(order = order)
-            } else {
-                saveOrderToDatabase(order = order)
+        try {
+            val currentUser = auth.currentUser
+            if(currentUser == null) {
+                Log.e(ROOM_TAG, "User unidentified")
+                return
             }
+
+            if(isAllFieldValid()) {
+                val newOrderId = "${currentUser.uid}-${UUID.randomUUID()}"
+                val order = Order(
+                    userOrderOwnerId = currentUser.uid,
+                    orderId = orderState.value.orderId ?: newOrderId,
+                    customerOwnerId = orderState.value.customer!!.customerId,
+                    title = orderState.value.orderName,
+                    description = orderState.value.orderDescription,
+                    price = orderState.value.price.toDouble(),
+                    status = orderState.value.status,
+                    orderDate = convertStringToDateMillis(
+                        dateString = orderState.value.orderDate
+                    ),
+                    deliverDate = convertStringToDateMillis(
+                        dateString = orderState.value.deliverDate
+                    )
+                )
+
+                Log.i(ROOM_TAG, "New order is valid!")
+                if(isUpdateOrder) {
+                    _orderUpdated.value = false
+                    updateOrderToDatabase(order = order)
+                } else {
+                    saveOrderToDatabase(order = order)
+                }
+            }
+        } catch (e: Exception) {
+            Log.e(ROOM_TAG, "Error creating a new order.", e)
         }
     }
 
@@ -79,9 +84,10 @@ class CreateOrderViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 orderRepository.updateOrder(order)
+                Log.i(ROOM_TAG, "Order updated successfully!")
                 _orderUpdated.value = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error updating order.", e)
             }
         }
     }
@@ -90,9 +96,10 @@ class CreateOrderViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 orderRepository.insertOrder(order)
+                Log.i(ROOM_TAG, "Order saved in database successfully!")
                 _newOrderCreated.value = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error saving order to database.", e)
             }
         }
     }

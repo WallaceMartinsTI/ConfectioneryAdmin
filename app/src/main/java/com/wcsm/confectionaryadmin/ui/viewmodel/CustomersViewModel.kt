@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -7,6 +8,8 @@ import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.states.CustomerSyncState
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.SYNC_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -56,9 +59,10 @@ class CustomersViewModel @Inject constructor(
             try {
                 customerRepository.deleteCustomer(customer)
                 getAllCustomers()
+                Log.i(ROOM_TAG, "Customer deleted successfully!")
                 _isCustomerDeleted.value = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error deleting customer.", e)
                 _isCustomerDeleted.value = false
             }
         }
@@ -69,15 +73,16 @@ class CustomersViewModel @Inject constructor(
             viewModelScope.launch {
                 try {
                     val customers = customerRepository.getAllCustomers(_currentUser!!.uid)
+                    Log.i(ROOM_TAG, "Get all customers successfully!")
                     _customers.value = customers
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e(ROOM_TAG, "Error getting all customers.", e)
                 }
             }
         }
     }
 
-    fun sendCustomersToSincronize() {
+    fun sendCustomersToSync() {
         val newState = CustomerSyncState(
             isSincronized = false,
             syncError = false
@@ -96,13 +101,15 @@ class CustomersViewModel @Inject constructor(
                                 isSincronized = true
                             )
                         )
+                        Log.i(SYNC_TAG, "Customers sent to sync successfully!")
                     }
-                    .addOnFailureListener {
+                    .addOnFailureListener { e ->
                         updateCustomerSyncState(
                             newState.copy(
                                 syncError = true
                             )
                         )
+                        Log.e(SYNC_TAG, "Error sending customers to sync.", e)
                     }
             }
         }

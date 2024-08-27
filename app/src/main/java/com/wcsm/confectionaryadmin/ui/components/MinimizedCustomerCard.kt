@@ -68,7 +68,7 @@ fun MinimizedCustomerCard(
             fontSize = 20.sp,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.weight(1f)
+            modifier = Modifier.weight(1f).padding(horizontal = 8.dp)
         )
 
         if(expandIcon) {
@@ -85,6 +85,6 @@ fun MinimizedCustomerCard(
 @Composable
 private fun MinimizedCustomerCardPreview() {
     ConfectionaryAdminTheme {
-        MinimizedCustomerCard(customersMock[0]) {}
+        MinimizedCustomerCard(customersMock[0], true) {}
     }
 }

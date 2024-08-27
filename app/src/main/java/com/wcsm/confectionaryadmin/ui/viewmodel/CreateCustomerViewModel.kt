@@ -53,7 +53,7 @@ class CreateCustomerViewModel @Inject constructor(
                 return
             }
             val customerName = customerState.value.name
-            if(validateCustomername(customerName)) {
+            if(validateCustomerName(customerName)) {
                 val newCustomerId = "${currentUser.uid}-${UUID.randomUUID()}"
                 val formattedName = formatNameCapitalizeFirstChar(customerName.trim())
                 val customer = Customer(
@@ -75,7 +75,7 @@ class CreateCustomerViewModel @Inject constructor(
                     _customerUpdated.value = false
                     updateUserToDatabase(customer = customer)
                 } else {
-                    saveUserToDatabase(customer = customer)
+                    saveCustomerToDatabase(customer = customer)
                 }
             }
         } catch (e: Exception) {
@@ -88,25 +88,27 @@ class CreateCustomerViewModel @Inject constructor(
         viewModelScope.launch {
             try {
                 customerRepository.updateCustomer(customer)
+                Log.i(ROOM_TAG, "Customer updated successfully!")
                 _customerUpdated.value = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error updating customer.", e)
             }
         }
     }
 
-    private fun saveUserToDatabase(customer: Customer) {
+    private fun saveCustomerToDatabase(customer: Customer) {
         viewModelScope.launch {
             try {
                 customerRepository.insertCustomer(customer)
+                Log.i(ROOM_TAG, "Customer saved in database successfully!")
                 _newCustomerCreated.value = true
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error saving customer to database", e)
             }
         }
     }
 
-    private fun validateCustomername(name: String): Boolean {
+    private fun validateCustomerName(name: String): Boolean {
         val newState = _customerState.value.copy(
             nameErrorMessage = null
         )

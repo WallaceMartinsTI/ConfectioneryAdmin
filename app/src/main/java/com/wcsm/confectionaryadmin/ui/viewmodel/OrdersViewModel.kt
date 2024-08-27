@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -10,6 +11,8 @@ import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
 import com.wcsm.confectionaryadmin.data.repository.OrderRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
+import com.wcsm.confectionaryadmin.ui.util.Constants.SYNC_TAG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -87,9 +90,10 @@ class OrdersViewModel @Inject constructor(
                         isSynchronized = false
                     )
                 )
+                Log.i(ROOM_TAG, "Order status changed successfully!")
                 getAllOrders()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error changing order status.", e)
             }
         }
     }
@@ -103,9 +107,10 @@ class OrdersViewModel @Inject constructor(
                         isSynchronized = false
                     )
                 )
+                Log.i(ROOM_TAG, "Order deleted successfully!")
                 getAllOrders()
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.e(ROOM_TAG, "Error deleting order", e)
             }
         }
     }
@@ -118,9 +123,10 @@ class OrdersViewModel @Inject constructor(
                         userOwnerId = _currentUser!!.uid,
                         customerOwnerId = customerOwnerId
                     )
+                    Log.i(ROOM_TAG, "Get orders by customer successfully!")
                     _customerOrders.value = orders.reversed()
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e(ROOM_TAG, "Error getting orders by customer.", e)
                 }
             }
         }
@@ -133,15 +139,16 @@ class OrdersViewModel @Inject constructor(
                     val ordersWithCustomer = orderRepository.getOrdersWithCustomers(
                         userOwnerId = _currentUser!!.uid
                     )
+                    Log.i(ROOM_TAG, "Get all orders successfully!")
                     _ordersWithCustomer.value = ordersWithCustomer.reversed()
                 } catch (e: Exception) {
-                    e.printStackTrace()
+                    Log.e(ROOM_TAG, "Error getting all orders.", e)
                 }
             }
         }
     }
 
-    fun sendOrdersToSincronize() {
+    fun sendOrdersToSync() {
         val newState = OrderSyncState(
             isSynchronized = false,
             syncError = false
@@ -163,13 +170,15 @@ class OrdersViewModel @Inject constructor(
                                 isSynchronized = true
                             )
                         )
+                        Log.i(SYNC_TAG, "Orders sent to sync successfully!")
                     }
-                    .addOnFailureListener {
+                    .addOnFailureListener { e ->
                         updateOrderSyncState(
                             newState.copy(
                                 syncError = true
                             )
                         )
+                        Log.e(SYNC_TAG, "Error sending orders to sync.", e)
                     }
             }
         }
