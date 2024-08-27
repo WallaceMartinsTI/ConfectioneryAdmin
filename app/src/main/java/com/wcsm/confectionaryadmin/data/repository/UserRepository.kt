@@ -7,10 +7,9 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.wcsm.confectionaryadmin.data.model.entities.FirestoreUser
 
 interface UserRepository {
+    fun signOut()
 
     suspend fun getCurrentUser(): FirebaseUser?
-
-    fun signOut()
 
     suspend fun getUserData(userId: String): Task<DocumentSnapshot>
 
@@ -23,5 +22,4 @@ interface UserRepository {
     suspend fun deleteUserAuth(user: FirebaseUser): Task<Unit>
 
     suspend fun deleteUserFirestore(user: FirebaseUser): Task<Void>
-
 }

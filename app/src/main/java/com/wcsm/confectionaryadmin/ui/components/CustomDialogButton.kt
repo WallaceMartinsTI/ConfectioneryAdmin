@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -22,9 +21,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.DarkGreen
+import com.wcsm.confectionaryadmin.ui.theme.DarkGreenColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
+import com.wcsm.confectionaryadmin.ui.theme.LightRedColor
 
 @Composable
 fun CustomDialogButton(
@@ -58,9 +57,9 @@ fun CustomDialogButton(
 private fun ChangeStatusDialogButtonPreview() {
     ConfectionaryAdminTheme {
         Column {
-            CustomDialogButton(text = "SIM", color = DarkGreen, width = 100.dp) {}
+            CustomDialogButton(text = "SIM", color = DarkGreenColor, width = 100.dp) {}
             Spacer(modifier = Modifier.height(8.dp))
-            CustomDialogButton(text = "NÃO", color = LightRed, width = 100.dp) {}
+            CustomDialogButton(text = "NÃO", color = LightRedColor, width = 100.dp) {}
         }
     }
 }

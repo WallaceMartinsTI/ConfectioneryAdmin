@@ -21,8 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.LightRedColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun DeleteButton(
@@ -35,10 +35,10 @@ fun DeleteButton(
         modifier = modifier
             .width(width)
             .clip(RoundedCornerShape(15.dp))
-            .background(LightRed)
+            .background(LightRedColor)
             .border(
                 width = 1.dp,
-                color = Primary,
+                color = PrimaryColor,
                 shape = RoundedCornerShape(15.dp)
             )
             .height(50.dp)

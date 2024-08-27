@@ -26,9 +26,9 @@ import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.LightRedColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
@@ -38,20 +38,20 @@ import com.wcsm.confectionaryadmin.ui.util.toBRL
 import com.wcsm.confectionaryadmin.ui.util.toStatusString
 
 @Composable
-fun DeletionConfirmDialog(
+fun DialogDeletionConfirm(
     order: Order?,
     customerOwnerName: String? = null,
     customer: Customer?,
     onConfirm: () -> Unit,
-    onDissmiss: () -> Unit,
+    onDismiss: () -> Unit,
 ) {
     if(order != null) {
-        Dialog(onDismissRequest = { onDissmiss() }) {
+        Dialog(onDismissRequest = { onDismiss() }) {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(15.dp))
-                    .background(InvertedAppBackground)
-                    .border(1.dp, Primary, RoundedCornerShape(15.dp))
+                    .background(InvertedAppBackgroundColor)
+                    .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
                     .padding(16.dp),
                 horizontalAlignment = Alignment.Start
             ) {
@@ -124,7 +124,7 @@ fun DeletionConfirmDialog(
 
                 Text(
                     text = "Entrega: ${convertMillisToString(order.deliverDate)}",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center
@@ -144,7 +144,7 @@ fun DeletionConfirmDialog(
                     ) {
                         Text(
                             text = "Cliente: ",
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -172,7 +172,7 @@ fun DeletionConfirmDialog(
                 ) {
                     CustomDialogButton(
                         text = "CONFIRMAR",
-                        color = LightRed,
+                        color = LightRedColor,
                         width = 200.dp,
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
@@ -181,21 +181,21 @@ fun DeletionConfirmDialog(
 
                     CustomDialogButton(
                         text = "CANCELAR",
-                        color = Primary,
+                        color = PrimaryColor,
                         width = 200.dp
                     ) {
-                        onDissmiss()
+                        onDismiss()
                     }
                 }
             }
         }
     } else if(customer != null) {
-        Dialog(onDismissRequest = { onDissmiss() }) {
+        Dialog(onDismissRequest = { onDismiss() }) {
             Column(
                 modifier = Modifier
                     .clip(RoundedCornerShape(15.dp))
-                    .background(InvertedAppBackground)
-                    .border(1.dp, Primary, RoundedCornerShape(15.dp))
+                    .background(InvertedAppBackgroundColor)
+                    .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
                     .padding(16.dp),
                 horizontalAlignment = Alignment.Start
             ) {
@@ -213,28 +213,28 @@ fun DeletionConfirmDialog(
 
                 Text(
                     text = "Nome: ${customer.name}",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
                     text = "Email: ${ customer.email ?: "" }",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
                     text = "Telefone: ${ customer.phone ?: "" }",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
                     text = "Gênero: ${ customer.gender ?: "" }",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -246,14 +246,14 @@ fun DeletionConfirmDialog(
 
                 Text(
                     text = "PEDIDOS: 08",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
 
                 Text(
                     text = "CLIENTE DESDE: 12/03/2024",
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -271,7 +271,7 @@ fun DeletionConfirmDialog(
                 ) {
                     CustomDialogButton(
                         text = "CONFIRMAR",
-                        color = LightRed,
+                        color = LightRedColor,
                         width = 200.dp,
                         modifier = Modifier.padding(bottom = 8.dp)
                     ) {
@@ -280,10 +280,10 @@ fun DeletionConfirmDialog(
 
                     CustomDialogButton(
                         text = "CANCELAR",
-                        color = Primary,
+                        color = PrimaryColor,
                         width = 200.dp
                     ) {
-                        onDissmiss()
+                        onDismiss()
                     }
                 }
             }
@@ -295,12 +295,12 @@ fun DeletionConfirmDialog(
 @Composable
 private fun DeletionConfirmDialogOrderPreview() {
     ConfectionaryAdminTheme {
-        DeletionConfirmDialog(
+        DialogDeletionConfirm(
             order = ordersMock[0],
             customerOwnerName = "João",
             customer = null,
             onConfirm = {},
-            onDissmiss = {}
+            onDismiss = {}
         )
     }
 }
@@ -309,11 +309,11 @@ private fun DeletionConfirmDialogOrderPreview() {
 @Composable
 private fun DeletionConfirmDialogCustomerPreview() {
     ConfectionaryAdminTheme {
-        DeletionConfirmDialog(
+        DialogDeletionConfirm(
             order = null,
             customer = customersMock[0],
             onConfirm = {},
-            onDissmiss = {}
+            onDismiss = {}
         )
     }
 }

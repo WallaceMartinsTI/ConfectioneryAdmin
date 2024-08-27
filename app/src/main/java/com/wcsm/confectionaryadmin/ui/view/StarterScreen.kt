@@ -23,17 +23,17 @@ import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.components.AppTitle
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
 import com.wcsm.confectionaryadmin.ui.components.ScreenDescription
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 
 @Composable
 fun StarterScreen(navController: NavController) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(AppBackground),
+            .background(AppBackgroundColor),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AppTitle(modifier = Modifier.padding(top = 24.dp))
@@ -55,7 +55,7 @@ fun StarterScreen(navController: NavController) {
 
         Text(
             text = stringResource(id = R.string.starter_screen_message),
-            color = Primary,
+            color = PrimaryColor,
             fontFamily = InterFontFamily,
             fontSize = 18.sp,
             textAlign = TextAlign.Justify,

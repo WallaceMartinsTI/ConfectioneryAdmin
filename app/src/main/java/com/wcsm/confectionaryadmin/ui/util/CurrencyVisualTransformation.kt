@@ -36,5 +36,4 @@ class CurrencyVisualTransformation : VisualTransformation {
 
         return TransformedText(out, offsetMapping)
     }
-
 }

@@ -18,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -25,8 +26,8 @@ import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.util.customersMock
 
 @Composable
@@ -46,8 +47,8 @@ fun MinimizedCustomerCard(
             .width(300.dp)
             .height(60.dp)
             .clip(RoundedCornerShape(15.dp))
-            .background(brush = InvertedAppBackground)
-            .border(1.dp, Primary, RoundedCornerShape(15.dp))
+            .background(brush = InvertedAppBackgroundColor)
+            .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
             .padding(horizontal = 16.dp)
             .clickable { onCardClick() },
         verticalAlignment = Alignment.CenterVertically,
@@ -61,10 +62,13 @@ fun MinimizedCustomerCard(
 
         Text(
             text = customer.name,
-            color = Primary,
+            color = PrimaryColor,
             fontFamily = InterFontFamily,
             fontWeight = FontWeight.Bold,
-            fontSize = 20.sp
+            fontSize = 20.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.weight(1f)
         )
 
         if(expandIcon) {

@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ChangeCircle
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material3.Button
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -34,7 +33,6 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
@@ -47,30 +45,25 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.data.model.types.FilterType
 import com.wcsm.confectionaryadmin.data.model.types.OrderDateType
-import com.wcsm.confectionaryadmin.ui.components.ChangeStatusDialog
-import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
+import com.wcsm.confectionaryadmin.ui.components.DialogChangeStatus
+import com.wcsm.confectionaryadmin.ui.components.DialogDeletionConfirm
 import com.wcsm.confectionaryadmin.ui.components.OrderCard
 import com.wcsm.confectionaryadmin.ui.components.OrdersFilterContainer
-import com.wcsm.confectionaryadmin.ui.components.OrdersFilterDialog
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.components.DialogOrdersFilter
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.util.convertDateMonthYearStringToLong
-import com.wcsm.confectionaryadmin.ui.util.convertStringToDateMillis
 import com.wcsm.confectionaryadmin.ui.util.getNextStatus
 import com.wcsm.confectionaryadmin.ui.util.getYearAndMonthFromTimeInMillis
 import com.wcsm.confectionaryadmin.ui.util.toStatusString
 import com.wcsm.confectionaryadmin.ui.viewmodel.OrdersViewModel
-
-
 
 @Composable
 fun OrdersScreen(
@@ -78,10 +71,11 @@ fun OrdersScreen(
     paddingValues: PaddingValues,
     ordersViewModel: OrdersViewModel
 ) {
+    val filterType by ordersViewModel.filterType.collectAsState()
+    val filterResult by ordersViewModel.filterResult.collectAsState()
+    val orderDateType by ordersViewModel.orderDateType.collectAsState()
     val ordersWithCustomer by ordersViewModel.ordersWithCustomer.collectAsState()
     val orderToChangeStatus by ordersViewModel.orderToChangeStatus.collectAsState()
-    val filterType by ordersViewModel.filterType.collectAsState()
-    val orderDateType by ordersViewModel.orderDateType.collectAsState()
 
     val expandedStates = remember { mutableStateMapOf<String, Boolean>() }
 
@@ -90,11 +84,9 @@ fun OrdersScreen(
     var showFilterDialog by remember { mutableStateOf(false) }
     var showChangeOrderStatusDialog by remember { mutableStateOf(false) }
     var showDeleteOrderDialog by remember { mutableStateOf(false) }
+
     var orderWithCustomerToBeDeleted by remember { mutableStateOf<OrderWithCustomer?>(null) }
 
-    val customBlur = if(showFilterDialog) 8.dp else 0.dp
-
-    val filterResult by ordersViewModel.filterResult.collectAsState()
     var filterTextToShow by remember { mutableStateOf("") }
 
     var ordersList by remember { mutableStateOf(ordersWithCustomer) }
@@ -151,9 +143,8 @@ fun OrdersScreen(
     ) {
         Column(
             modifier = Modifier
-                .background(AppBackground)
-                .fillMaxSize()
-                .blur(customBlur),
+                .background(AppBackgroundColor)
+                .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -162,7 +153,7 @@ fun OrdersScreen(
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
                 style = TextStyle(
-                    brush = AppTitleGradient
+                    brush = AppTitleGradientColor
                 ),
                 modifier = Modifier.padding(top = 24.dp)
             )
@@ -176,7 +167,7 @@ fun OrdersScreen(
                 Icon(
                     imageVector = Icons.Default.ChangeCircle,
                     contentDescription = null,
-                    tint = Primary,
+                    tint = PrimaryColor,
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
@@ -193,7 +184,7 @@ fun OrdersScreen(
                 Icon(
                     imageVector = Icons.Default.Clear,
                     contentDescription = null,
-                    tint = Primary,
+                    tint = PrimaryColor,
                     modifier = Modifier
                         .size(32.dp)
                         .clickable {
@@ -246,7 +237,7 @@ fun OrdersScreen(
         if(showDeleteOrderDialog && orderWithCustomerToBeDeleted != null) {
             val order = orderWithCustomerToBeDeleted!!.order
             val customer = orderWithCustomerToBeDeleted!!.customer
-            DeletionConfirmDialog(
+            DialogDeletionConfirm(
                 order = order,
                 customerOwnerName = customer.name,
                 customer = null,
@@ -261,7 +252,7 @@ fun OrdersScreen(
 
         if(showFilterDialog) {
             Dialog(onDismissRequest = { showFilterDialog = false }) {
-                OrdersFilterDialog(
+                DialogOrdersFilter(
                     ordersViewModel = ordersViewModel,
                 ) {
                     showFilterDialog = false
@@ -270,24 +261,19 @@ fun OrdersScreen(
         }
 
         if(showChangeOrderStatusDialog && orderToChangeStatus != null) {
-            Dialog(onDismissRequest = {
-                showChangeOrderStatusDialog = false
-                ordersViewModel.updateOrderToChangeStatus(null)
-            }) {
-                ChangeStatusDialog(
-                    order = orderToChangeStatus!!,
-                    onDissmiss = {
-                        showChangeOrderStatusDialog = false
-                        ordersViewModel.updateOrderToChangeStatus(null)
-                    }
-                ) {
-                    val statusChangedOrder = orderToChangeStatus!!.copy(
-                        status = getNextStatus(orderToChangeStatus!!.status)
-                    )
-                    ordersViewModel.updateOrderStatus(statusChangedOrder)
-                    ordersViewModel.updateOrderToChangeStatus(null)
+            DialogChangeStatus(
+                order = orderToChangeStatus!!,
+                onDismiss = {
                     showChangeOrderStatusDialog = false
+                    ordersViewModel.updateOrderToChangeStatus(null)
                 }
+            ) {
+                val statusChangedOrder = orderToChangeStatus!!.copy(
+                    status = getNextStatus(orderToChangeStatus!!.status)
+                )
+                ordersViewModel.updateOrderStatus(statusChangedOrder)
+                ordersViewModel.updateOrderToChangeStatus(null)
+                showChangeOrderStatusDialog = false
             }
         }
     }

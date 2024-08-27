@@ -10,7 +10,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 
@@ -25,7 +25,7 @@ fun AppTitle(
         fontSize = 36.sp,
         textAlign = TextAlign.Center,
         style = TextStyle(
-            brush = AppTitleGradient
+            brush = AppTitleGradientColor
         ),
         modifier = modifier
     )

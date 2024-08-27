@@ -2,10 +2,8 @@ package com.wcsm.confectionaryadmin.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.AnimatedContentTransitionScope
@@ -21,7 +19,7 @@ import com.google.accompanist.systemuicontroller.rememberSystemUiController
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.navigation.NavigationHolder
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.view.LoginScreen
 import com.wcsm.confectionaryadmin.ui.view.StarterScreen
 import com.wcsm.confectionaryadmin.ui.view.UserRegisterScreen
@@ -39,7 +37,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             ConfectionaryAdminTheme {
-                SetBarColor(color = Primary)
+                SetBarColor(color = PrimaryColor)
 
                 val navController = rememberNavController()
 

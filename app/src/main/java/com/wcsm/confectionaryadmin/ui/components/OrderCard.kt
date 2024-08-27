@@ -40,14 +40,13 @@ import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.types.OrderStatus
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
 import com.wcsm.confectionaryadmin.ui.theme.BrownColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
-import com.wcsm.confectionaryadmin.ui.theme.InProductionStatus
+import com.wcsm.confectionaryadmin.ui.theme.InProductionStatusColor
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.LightRedColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.theme.ValueColor
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.customersMock
@@ -73,8 +72,8 @@ fun OrderCard(
         Column(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
-                .border(1.dp, Primary, RoundedCornerShape(15.dp))
+                .background(brush = InvertedAppBackgroundColor)
+                .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
                 .width(328.dp)
                 .padding(12.dp)
         ) {
@@ -85,7 +84,7 @@ fun OrderCard(
             ) {
                 Text(
                     text = order.title,
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
@@ -161,7 +160,7 @@ fun OrderCard(
 
                     Text(
                         text = "Entrega: ${convertMillisToString(order.deliverDate)}",
-                        color = Primary,
+                        color = PrimaryColor,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.Bold,
                         textAlign = TextAlign.Center
@@ -178,7 +177,7 @@ fun OrderCard(
                 ) {
                     Text(
                         text = "Cliente: ",
-                        color = Primary,
+                        color = PrimaryColor,
                         fontFamily = InterFontFamily,
                         fontWeight = FontWeight.SemiBold
                     )
@@ -205,7 +204,7 @@ fun OrderCard(
                 ) {
                     CustomActionButton(
                         text = stringResource(id = R.string.btn_text_edit),
-                        color = InProductionStatus,
+                        color = InProductionStatusColor,
                         icon = Icons.Default.Edit
                     ) {
                         onEdit(order)
@@ -215,7 +214,7 @@ fun OrderCard(
 
                     CustomActionButton(
                         text = stringResource(id = R.string.btn_text_delete),
-                        color = LightRed,
+                        color = LightRedColor,
                         icon = Icons.Default.Delete
                     ) {
                         onDelete(order)
@@ -234,7 +233,7 @@ fun OrderCard(
                         Row(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(15.dp))
-                                .background(brush = AppTitleGradient)
+                                .background(PrimaryColor)
                                 .border(1.dp, Color.White, RoundedCornerShape(15.dp))
                                 .padding(vertical = 4.dp, horizontal = 12.dp)
                                 .clickable {
@@ -243,11 +242,11 @@ fun OrderCard(
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             Text(
-                                text = stringResource(id = R.string.next_status_text),
+                                text = stringResource(id = R.string.next_status_text).uppercase(),
                                 color = Color.White,
                                 fontFamily = InterFontFamily,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 24.sp,
+                                fontSize = 20.sp,
                                 modifier = Modifier.padding(end = 8.dp)
                             )
 
@@ -255,7 +254,7 @@ fun OrderCard(
                                 painter = painterResource(id = R.drawable.next_custom_icon),
                                 contentDescription = null,
                                 tint = Color.White,
-                                modifier = Modifier.size(40.dp)
+                                modifier = Modifier.size(32.dp)
                             )
                         }
                     }
@@ -266,8 +265,8 @@ fun OrderCard(
         Row(
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
-                .background(brush = InvertedAppBackground)
-                .border(1.dp, Primary, RoundedCornerShape(15.dp))
+                .background(brush = InvertedAppBackgroundColor)
+                .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
                 .width(328.dp)
                 .padding(12.dp)
                 .clickable { onExpandChange(true) },
@@ -278,7 +277,7 @@ fun OrderCard(
             ) {
                 Text(
                     text = order.title,
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
@@ -321,7 +320,7 @@ fun OrderCard(
                 )
 
                 if(customerOwnerName?.isNotEmpty() == true) {
-                    HorizontalDivider(color = Primary, modifier = Modifier.padding(vertical = 4.dp))
+                    HorizontalDivider(color = PrimaryColor, modifier = Modifier.padding(vertical = 4.dp))
 
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -329,7 +328,7 @@ fun OrderCard(
                     ) {
                         Text(
                             text = "Cliente: ",
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.SemiBold
                         )
@@ -356,7 +355,7 @@ fun OrderCard(
 }
 
 @Composable
-fun CustomActionButton(
+private fun CustomActionButton(
     text: String,
     color: Color,
     icon: ImageVector,
@@ -365,8 +364,8 @@ fun CustomActionButton(
     Row(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .background(Primary)
-            .border(1.dp, Primary, RoundedCornerShape(15.dp))
+            .background(PrimaryColor)
+            .border(1.dp, PrimaryColor, RoundedCornerShape(15.dp))
             .padding(vertical = 4.dp, horizontal = 12.dp)
             .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
@@ -448,7 +447,7 @@ private fun CustomActionButtonPreview() {
     ConfectionaryAdminTheme {
         CustomActionButton(
             text = "EDITAR",
-            color = InProductionStatus,
+            color = InProductionStatusColor,
             icon = Icons.Default.Edit,
         ) {}
     }

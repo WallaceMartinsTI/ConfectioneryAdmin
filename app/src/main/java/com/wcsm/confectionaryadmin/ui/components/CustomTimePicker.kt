@@ -28,10 +28,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,8 +58,8 @@ fun CustomTimePicker(
             TimePicker(
                 state = timePickerState,
                 colors = TimePickerDefaults.colors(
-                    selectorColor = Primary,
-                    timeSelectorSelectedContainerColor = Primary.copy(alpha = 0.75f),
+                    selectorColor = PrimaryColor,
+                    timeSelectorSelectedContainerColor = PrimaryColor.copy(alpha = 0.75f),
                     timeSelectorSelectedContentColor = Color.White
                 )
             )
@@ -67,7 +67,7 @@ fun CustomTimePicker(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(15.dp))
-                    .background(Primary)
+                    .background(PrimaryColor)
                     .padding(12.dp)
                     .clickable {
                         val selectedHour = timePickerState.hour
@@ -98,7 +98,7 @@ private fun CustomTimePickerPreview() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(AppBackground),
+                .background(AppBackgroundColor),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
         ) {

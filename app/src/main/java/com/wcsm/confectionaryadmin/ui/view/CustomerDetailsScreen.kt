@@ -2,7 +2,6 @@ package com.wcsm.confectionaryadmin.ui.view
 
 import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,9 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Note
@@ -50,14 +47,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusEvent
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -67,7 +63,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
@@ -82,15 +77,14 @@ import com.wcsm.confectionaryadmin.ui.components.CustomLoading
 import com.wcsm.confectionaryadmin.ui.components.CustomTextField
 import com.wcsm.confectionaryadmin.ui.components.CustomerOrdersContainer
 import com.wcsm.confectionaryadmin.ui.components.DeleteButton
-import com.wcsm.confectionaryadmin.ui.components.DeletionConfirmDialog
+import com.wcsm.confectionaryadmin.ui.components.DialogDeletionConfirm
 import com.wcsm.confectionaryadmin.ui.components.PrimaryButton
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackground
-import com.wcsm.confectionaryadmin.ui.theme.LightRed
-import com.wcsm.confectionaryadmin.ui.theme.Primary
-import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurple
+import com.wcsm.confectionaryadmin.ui.theme.InvertedAppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
+import com.wcsm.confectionaryadmin.ui.theme.StrongDarkPurpleColor
 import com.wcsm.confectionaryadmin.ui.util.PhoneNumberVisualTransformation
 import com.wcsm.confectionaryadmin.ui.util.convertMillisToString
 import com.wcsm.confectionaryadmin.ui.util.showToastMessage
@@ -112,6 +106,7 @@ fun CustomerDetailsScreen(
 
     val selectedCustomer by customersViewModel.selectedCustomer.collectAsState()
     val isCustomerDeleted by customersViewModel.isCustomerDeleted.collectAsState()
+
     val customerOrders by ordersViewModel.customerOrders.collectAsState()
 
     val customerState by createCustomerViewModel.customerState.collectAsState()
@@ -134,7 +129,7 @@ fun CustomerDetailsScreen(
     var address by rememberSaveable { mutableStateOf("") }
     var notes by rememberSaveable { mutableStateOf("") }
 
-    var ordersQuantity by rememberSaveable { mutableStateOf(0) }
+    var ordersQuantity by rememberSaveable { mutableIntStateOf(0) }
     var customerSince by rememberSaveable { mutableStateOf("") }
 
     var showDatePickerDialog by remember { mutableStateOf(false) }
@@ -217,7 +212,7 @@ fun CustomerDetailsScreen(
     if(isCustomerDetailsScreenLoading) {
         Column(
             modifier = Modifier
-                .background(AppBackground)
+                .background(AppBackgroundColor)
                 .fillMaxSize(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center
@@ -235,7 +230,7 @@ fun CustomerDetailsScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
-                        .background(brush = InvertedAppBackground),
+                        .background(brush = InvertedAppBackgroundColor),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     Row(
@@ -254,7 +249,7 @@ fun CustomerDetailsScreen(
 
                         Text(
                             text = name,
-                            color = Primary,
+                            color = PrimaryColor,
                             fontFamily = InterFontFamily,
                             fontWeight = FontWeight.Bold,
                             fontSize = 24.sp,
@@ -380,7 +375,7 @@ fun CustomerDetailsScreen(
                                             if(genderDropdownExpanded) Icons.Filled.KeyboardArrowUp
                                             else Icons.Filled.KeyboardArrowDown,
                                             contentDescription = null,
-                                            tint = Primary
+                                            tint = PrimaryColor
                                         )
                                     },
                                     singleLine = true,
@@ -393,7 +388,7 @@ fun CustomerDetailsScreen(
                                 ExposedDropdownMenu(
                                     expanded = genderDropdownExpanded,
                                     onDismissRequest = { genderDropdownExpanded = false },
-                                    modifier = Modifier.background(color = StrongDarkPurple)
+                                    modifier = Modifier.background(color = StrongDarkPurpleColor)
                                 ) {
                                     val genderOptions = listOf(
                                         stringResource(id = R.string.gender_male),
@@ -447,7 +442,7 @@ fun CustomerDetailsScreen(
                                             showDatePickerDialog = false
                                         },
                                         colors = ButtonDefaults.buttonColors(
-                                            containerColor = Primary
+                                            containerColor = PrimaryColor
                                         )
                                     ) {
                                         Text(text = stringResource(id = R.string.choose_date))
@@ -458,13 +453,13 @@ fun CustomerDetailsScreen(
                                     state = datePickerState,
                                     showModeToggle = false,
                                     colors = DatePickerDefaults.colors(
-                                        headlineContentColor = Primary,
-                                        weekdayContentColor = Primary,
-                                        currentYearContentColor = Primary,
-                                        selectedYearContainerColor = Primary,
-                                        selectedDayContainerColor = Primary,
-                                        todayContentColor = Primary,
-                                        todayDateBorderColor = Primary
+                                        headlineContentColor = PrimaryColor,
+                                        weekdayContentColor = PrimaryColor,
+                                        currentYearContentColor = PrimaryColor,
+                                        selectedYearContainerColor = PrimaryColor,
+                                        selectedDayContainerColor = PrimaryColor,
+                                        todayContentColor = PrimaryColor,
+                                        todayDateBorderColor = PrimaryColor
                                     )
                                 )
                             }
@@ -631,7 +626,7 @@ fun CustomerDetailsScreen(
                 }
 
                 if(showDeleteCustomerDialog && customer != null) {
-                    DeletionConfirmDialog(
+                    DialogDeletionConfirm(
                         order = null,
                         customer = customer,
                         onConfirm = {

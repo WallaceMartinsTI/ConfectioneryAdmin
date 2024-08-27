@@ -10,7 +10,6 @@ import com.wcsm.confectionaryadmin.data.model.entities.Customer
 
 @Dao
 interface CustomerDao {
-
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertCustomer(customer: Customer)
 
@@ -31,5 +30,4 @@ interface CustomerDao {
 
     @Query("DELETE FROM customers WHERE user_customer_owner_id = :userOwnerId")
     suspend fun deleteAllUserCustomers(userOwnerId: String)
-
 }

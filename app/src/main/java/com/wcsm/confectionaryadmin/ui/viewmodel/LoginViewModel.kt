@@ -128,7 +128,6 @@ class LoginViewModel @Inject constructor(
     }
 
     fun signIn() {
-        Log.i("#-# TESTE #-#", "Chamou signin")
         val newState = _loginState.value.copy(
             emailErrorMessage = null,
             passwordErrorMessage = null

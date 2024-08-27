@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -8,7 +7,6 @@ import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.states.CustomerSyncState
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
 import com.wcsm.confectionaryadmin.data.repository.UserRepository
-import com.wcsm.confectionaryadmin.ui.util.showToastMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -88,7 +86,7 @@ class CustomersViewModel @Inject constructor(
 
         if(_currentUser != null) {
             viewModelScope.launch {
-                customerRepository.sendCustomersToSincronize(
+                customerRepository.sendCustomersToSync(
                     userOwnerId = _currentUser!!.uid,
                     customers = customers.value
                 )

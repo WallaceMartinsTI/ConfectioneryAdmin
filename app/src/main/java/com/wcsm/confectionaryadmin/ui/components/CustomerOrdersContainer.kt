@@ -14,7 +14,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,10 +32,10 @@ import androidx.compose.ui.unit.sp
 import com.wcsm.confectionaryadmin.R
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.entities.Order
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
-import com.wcsm.confectionaryadmin.ui.theme.Primary
+import com.wcsm.confectionaryadmin.ui.theme.PrimaryColor
 import com.wcsm.confectionaryadmin.ui.util.customersMock
 import com.wcsm.confectionaryadmin.ui.util.ordersMock
 
@@ -50,7 +50,7 @@ fun CustomerOrdersContainer(
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(15.dp))
-            .background(AppBackground)
+            .background(AppBackgroundColor)
             .height(500.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -63,7 +63,7 @@ fun CustomerOrdersContainer(
             Column {
                 Text(
                     text = stringResource(id = R.string.orders_from),
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontWeight = FontWeight.Bold,
                     fontSize = 24.sp
@@ -71,7 +71,7 @@ fun CustomerOrdersContainer(
 
                 Text(
                     text = customer.name,
-                    color = Primary,
+                    color = PrimaryColor,
                     fontFamily = InterFontFamily,
                     fontSize = 24.sp
                 )
@@ -80,7 +80,7 @@ fun CustomerOrdersContainer(
             Icon(
                 imageVector = Icons.Default.Close,
                 contentDescription = null,
-                tint = Primary,
+                tint = PrimaryColor,
                 modifier = Modifier
                     .padding(top = 8.dp, end = 8.dp)
                     .size(40.dp)
@@ -89,9 +89,9 @@ fun CustomerOrdersContainer(
             )
         }
 
-        Divider(
-            color = Color.White,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)
+        HorizontalDivider(
+            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+            color = Color.White
         )
 
         LazyColumn(

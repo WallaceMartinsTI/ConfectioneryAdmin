@@ -5,7 +5,6 @@ import com.wcsm.confectionaryadmin.data.model.entities.Order
 import com.wcsm.confectionaryadmin.data.model.entities.OrderWithCustomer
 
 interface OrderRepository {
-
     suspend fun getOrdersWithCustomers(userOwnerId: String): List<OrderWithCustomer>
 
     suspend fun getOrderByCustomerOwner(userOwnerId: String, customerOwnerId: String): List<Order>
@@ -18,7 +17,7 @@ interface OrderRepository {
 
     suspend fun getUserOrdersQuantity(userOwnerId: String): Int
 
-    suspend fun sendOrdersToSincronize(userOwnerId: String, orders: List<Order>): Task<Void>
+    suspend fun sendOrdersToSync(userOwnerId: String, orders: List<Order>): Task<Void>
 
     suspend fun getOrdersFromFirestore(userOwnerId: String): List<Order>
 
@@ -27,5 +26,4 @@ interface OrderRepository {
     suspend fun deleteAllUserOrdersRoom(userOwnerId: String)
 
     suspend fun deleteAllUserOrdersFirestore(userOwnerId: String): Task<Void>
-
 }

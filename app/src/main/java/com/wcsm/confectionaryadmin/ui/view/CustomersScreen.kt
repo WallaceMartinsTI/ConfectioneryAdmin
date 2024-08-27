@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.view
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.HorizontalDivider
@@ -46,8 +45,8 @@ import com.wcsm.confectionaryadmin.data.model.entities.Customer
 import com.wcsm.confectionaryadmin.data.model.navigation.Screen
 import com.wcsm.confectionaryadmin.ui.components.CustomersScreenFilter
 import com.wcsm.confectionaryadmin.ui.components.MinimizedCustomerCard
-import com.wcsm.confectionaryadmin.ui.theme.AppBackground
-import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradient
+import com.wcsm.confectionaryadmin.ui.theme.AppBackgroundColor
+import com.wcsm.confectionaryadmin.ui.theme.AppTitleGradientColor
 import com.wcsm.confectionaryadmin.ui.theme.ConfectionaryAdminTheme
 import com.wcsm.confectionaryadmin.ui.theme.InterFontFamily
 import com.wcsm.confectionaryadmin.ui.viewmodel.CustomersViewModel
@@ -82,7 +81,7 @@ fun CustomersScreen(
     ) {
         Column(
             modifier = Modifier
-                .background(AppBackground)
+                .background(AppBackgroundColor)
                 .fillMaxSize()
                 .blur(0.dp),
             horizontalAlignment = Alignment.CenterHorizontally
@@ -93,7 +92,7 @@ fun CustomersScreen(
                 fontWeight = FontWeight.Bold,
                 fontSize = 40.sp,
                 style = TextStyle(
-                    brush = AppTitleGradient
+                    brush = AppTitleGradientColor
                 ),
                 modifier = Modifier.padding(top = 24.dp)
             )
@@ -101,7 +100,8 @@ fun CustomersScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             CustomersScreenFilter(
-                leadingIcon = if(searchInput.isEmpty()) Icons.Default.Search else Icons.Default.ArrowBack,
+                leadingIcon = if(searchInput.isEmpty()) Icons.Default.Search
+                else Icons.AutoMirrored.Filled.ArrowBack,
                 trailingIcon = if(searchInput.isNotEmpty()) Icons.Default.Clear else null,
                 value = searchInput,
                 onLeadingIconClick = {

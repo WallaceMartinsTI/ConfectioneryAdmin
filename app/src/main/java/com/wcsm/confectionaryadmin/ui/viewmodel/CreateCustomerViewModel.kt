@@ -4,9 +4,10 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
-import com.wcsm.confectionaryadmin.data.model.states.CreateCustomerState
 import com.wcsm.confectionaryadmin.data.model.entities.Customer
+import com.wcsm.confectionaryadmin.data.model.states.CreateCustomerState
 import com.wcsm.confectionaryadmin.data.repository.CustomerRepository
+import com.wcsm.confectionaryadmin.ui.util.Constants.ROOM_TAG
 import com.wcsm.confectionaryadmin.ui.util.formatNameCapitalizeFirstChar
 import com.wcsm.confectionaryadmin.ui.util.getCurrentDateTimeMillis
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -21,9 +22,7 @@ class CreateCustomerViewModel @Inject constructor(
     private val customerRepository: CustomerRepository,
     private val auth: FirebaseAuth
 ) : ViewModel() {
-    private val _customerState = MutableStateFlow(
-        CreateCustomerState(customerSince = "")
-    )
+    private val _customerState = MutableStateFlow(CreateCustomerState(customerSince = ""))
     val customerState = _customerState.asStateFlow()
 
     private val _newCustomerCreated = MutableStateFlow(false)
@@ -50,7 +49,7 @@ class CreateCustomerViewModel @Inject constructor(
         try {
             val currentUser = auth.currentUser
             if(currentUser == null) {
-                Log.e("ERROR", "User unidentified")
+                Log.e(ROOM_TAG, "User unidentified")
                 return
             }
             val customerName = customerState.value.name
@@ -71,7 +70,7 @@ class CreateCustomerViewModel @Inject constructor(
                     customerSince = getCurrentDateTimeMillis()
                 )
 
-                Log.i("#-# ROOM #-#", "New customer is valid!")
+                Log.i(ROOM_TAG, "New customer is valid!")
                 if(isUpdateCustomer) {
                     _customerUpdated.value = false
                     updateUserToDatabase(customer = customer)
@@ -80,7 +79,7 @@ class CreateCustomerViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
-            Log.e("#-# ROOM #-#", "Error when create a new customer.", e)
+            Log.e(ROOM_TAG, "Error creating a new customer.", e)
         }
 
     }

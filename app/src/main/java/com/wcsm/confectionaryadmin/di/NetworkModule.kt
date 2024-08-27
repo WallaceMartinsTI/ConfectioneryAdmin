@@ -13,7 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
-
     @Provides
     fun provideConnectivityManager(@ApplicationContext context: Context): ConnectivityManager {
         return context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -23,5 +22,4 @@ object NetworkModule {
     fun provideNetworkRepository(connectivityManager: ConnectivityManager): NetworkRepository {
         return NetworkRepositoryImpl(connectivityManager)
     }
-
 }

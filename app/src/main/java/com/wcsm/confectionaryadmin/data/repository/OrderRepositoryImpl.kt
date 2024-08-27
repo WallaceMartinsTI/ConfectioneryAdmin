@@ -2,8 +2,6 @@ package com.wcsm.confectionaryadmin.data.repository
 
 import android.util.Log
 import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
 import com.wcsm.confectionaryadmin.data.database.OrderDao
 import com.wcsm.confectionaryadmin.data.model.entities.Order
@@ -40,7 +38,7 @@ class OrderRepositoryImpl @Inject constructor(
         return orderDao.getOrdersQuantity(userOwnerId)
     }
 
-    override suspend fun sendOrdersToSincronize(userOwnerId: String, orders: List<Order>): Task<Void> {
+    override suspend fun sendOrdersToSync(userOwnerId: String, orders: List<Order>): Task<Void> {
         val newOrder = hashMapOf(
             "orders" to orders
         )

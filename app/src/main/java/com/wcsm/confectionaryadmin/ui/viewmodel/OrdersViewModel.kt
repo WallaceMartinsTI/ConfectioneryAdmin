@@ -1,6 +1,5 @@
 package com.wcsm.confectionaryadmin.ui.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseUser
@@ -85,7 +84,7 @@ class OrdersViewModel @Inject constructor(
                 orderRepository.updateOrder(order)
                 updateOrderSyncState(
                     orderSyncState.value.copy(
-                        isSincronized = false
+                        isSynchronized = false
                     )
                 )
                 getAllOrders()
@@ -101,7 +100,7 @@ class OrdersViewModel @Inject constructor(
                 orderRepository.deleteOrder(order)
                 updateOrderSyncState(
                     orderSyncState.value.copy(
-                        isSincronized = false
+                        isSynchronized = false
                     )
                 )
                 getAllOrders()
@@ -128,27 +127,23 @@ class OrdersViewModel @Inject constructor(
     }
 
     fun getAllOrders() {
-        Log.i("#-# TESTE #-#", "OrdersViewModel - getAllOrders")
         if(_currentUser != null) {
             viewModelScope.launch {
                 try {
                     val ordersWithCustomer = orderRepository.getOrdersWithCustomers(
                         userOwnerId = _currentUser!!.uid
                     )
-                    Log.i("#-# TESTE #-#", "ordersWithCustomer: $ordersWithCustomer")
                     _ordersWithCustomer.value = ordersWithCustomer.reversed()
                 } catch (e: Exception) {
                     e.printStackTrace()
                 }
             }
         }
-        Log.i("#-# TESTE #-#", "=========================================")
     }
 
     fun sendOrdersToSincronize() {
-        Log.i("#-# TESTE #-#", "OrdersViewModel - getAllOrders")
         val newState = OrderSyncState(
-            isSincronized = false,
+            isSynchronized = false,
             syncError = false
         )
         updateOrderSyncState(newState)
@@ -158,15 +153,14 @@ class OrdersViewModel @Inject constructor(
                 val orders = ordersWithCustomer.value.map {
                     it.order
                 }
-                Log.i("#-# TESTE #-#", "orders: $orders")
-                orderRepository.sendOrdersToSincronize(
+                orderRepository.sendOrdersToSync(
                     userOwnerId = _currentUser!!.uid,
                     orders = orders
                 )
                     .addOnSuccessListener {
                         updateOrderSyncState(
                             newState.copy(
-                                isSincronized = true
+                                isSynchronized = true
                             )
                         )
                     }
@@ -179,6 +173,5 @@ class OrdersViewModel @Inject constructor(
                     }
             }
         }
-        Log.i("#-# TESTE #-#", "=========================================")
     }
 }
