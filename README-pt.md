@@ -14,7 +14,7 @@ alt="Confectionary Admin screenshot"
 
 Na versão 1.0, o aplicativo será uma ferramenta essencial para o administrador no ramo da confeitaria, permitindo acompanhar pedidos e gerenciar clientes de forma eficiente e organizada.
 
-## Funcionalidades
+## ✨ Funcionalidades
 
 - Monitoramento e acompanhamento de pedidos;
 
@@ -30,7 +30,7 @@ Na versão 1.0, o aplicativo será uma ferramenta essencial para o administrador
 
 - Sincronização de dados na nuvem;
 
-## Ideias a partir de entrevistas com profissionais da área
+## 💡 Ideias a partir de entrevistas com profissionais da área
 
 - Uma lista abrangente de pedidos com a capacidade de filtrar por status específico;
 
@@ -40,7 +40,7 @@ Na versão 1.0, o aplicativo será uma ferramenta essencial para o administrador
 
 - Backup de dados locais na nuvem, garantindo que o usuário possa recuperar suas informações caso reinstale o aplicativo, utilizando um sistema de login.
 
-## Detalhes das Telas
+## 🧾 Detalhes das Telas
 
 - O aplicativo tem uma "Bottom App Bar" com as seguintes opções: Menu, Pedidos, Clientes, Info;
 
@@ -52,7 +52,7 @@ Na versão 1.0, o aplicativo será uma ferramenta essencial para o administrador
 
 - Na seção "Info" a tela será dividida em quatro partes: informações do usuário logado, informações sobre o aplicativo, opção para sincronizar dados da nuvem para o armazenamento local, e informações sobre o desenvolvedor, incluindo foto, nome, idade, área de atuação e links para contato por email e LinkedIn.
 
-## Requisitos de Desenvolvimento
+## 🛠️ Requisitos de Desenvolvimento
 
 - Android Studio (IDE);
 - Kotlin (Linguagem de Programação);

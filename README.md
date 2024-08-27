@@ -14,7 +14,7 @@ alt="Confectionary Admin screenshot"
 
 In version 1.0, the app will be an essential tool for administrators in the confectionery industry, enabling them to efficiently track orders and manage clients in an organized manner.
 
-## Features
+## ✨ Features
 
 - Order monitoring and tracking;
 
@@ -30,7 +30,7 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 - Cloud data synchronization;
 
-## Ideas Based on Interviews with Industry Professionals
+## 💡 Ideas Based on Interviews with Industry Professionals
 
 - A comprehensive list of orders with the ability to filter by specific status;
 
@@ -40,7 +40,7 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 - Local data backup to the cloud, ensuring the user can recover their information if the app is reinstalled, using a login system.
 
-## Screens Details
+## 🧾 Screens Details
 
 - The app features a "Bottom App Bar" with the following options: Menu, Orders, Clients, Info;
 
@@ -52,7 +52,7 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 - In the "Info" section, the screen will be divided into four parts: logged-in user information, app information, an option to sync data from the cloud to local storage, and developer information, including photo, name, age, area of expertise, and links for email contact and LinkedIn.
 
-## Development Requirements
+## 🛠️ Development Requirements
 
 - Android Studio (IDE);
 - Kotlin (Programming Language);
