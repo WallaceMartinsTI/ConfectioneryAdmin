@@ -77,6 +77,6 @@ Você pode visualizar um esboço inicial do layout do projeto através [desse li
 
 ## 📄 Licença
 
-Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE.md) para mais detalhes.
+Esse projeto está sob a licença MIT. Veja o arquivo [LICENSE](./license) para mais detalhes.
 
 <br />

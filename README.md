@@ -77,6 +77,6 @@ You can view an initial draft of the project layout through [this link](https://
 
 ## 📄 License
 
-This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for more details.
+This project is licensed under the MIT License. See the [LICENSE](./license) file for more details.
 
 <br />
