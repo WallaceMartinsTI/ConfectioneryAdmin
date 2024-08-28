@@ -30,6 +30,12 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 - Cloud data synchronization;
 
+<div align="center">
+
+[▶️ Click here](https://youtu.be/CRPHqMxh7Qk) to watch the full demonstrating video on YouTube.
+
+</div>
+
 ## 💡 Ideas Based on Interviews with Industry Professionals
 
 - A comprehensive list of orders with the ability to filter by specific status;
@@ -69,7 +75,7 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 You can view an initial draft of the project layout through [this link](https://www.figma.com/design/1ePpKDDBsV50dEKt3cPUth/Confectionary-Admin?node-id=0-1&t=xPLcqNjJS2hsGzMx-0). This draft serves as a basic reference for the screen design. To access it, you need to have an account on [Figma](http://figma.com/).
 
 
-## 📄 Licença
+## 📄 License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for more details.
 

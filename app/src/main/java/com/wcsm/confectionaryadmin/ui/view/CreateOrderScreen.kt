@@ -1,5 +1,6 @@
 package com.wcsm.confectionaryadmin.ui.view
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -184,8 +185,21 @@ fun CreateOrderScreen(
                     status = orderToBeEditted!!.order.status
                 )
             )
-            val orderPrice = orderToBeEditted!!.order.price == 0.0
-            value = if(orderPrice) "0" else orderToBeEditted!!.order.price.toString()
+            val orderPriceToBeEddited = orderToBeEditted!!.order.price
+            val orderPrice = orderPriceToBeEddited == 0.0
+            val formattedPrice = orderPriceToBeEddited.toString()
+                .replace(".", ",")
+                .replace(",", "")
+
+            value = if(!orderPrice) {
+                if(formattedPrice.length <= 2) {
+                    "${orderToBeEditted!!.order.price}0"
+                } else {
+                    orderToBeEditted!!.order.price.toString()
+                }
+            } else {
+                "0"
+            }
         }
     }
 

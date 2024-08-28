@@ -30,6 +30,12 @@ Na versão 1.0, o aplicativo será uma ferramenta essencial para o administrador
 
 - Sincronização de dados na nuvem;
 
+<div align="center">
+
+[▶️ Clique aqui](https://youtu.be/CRPHqMxh7Qk) para assistir ao vídeo de demonstração completo no YouTube.
+
+</div>
+
 ## 💡 Ideias a partir de entrevistas com profissionais da área
 
 - Uma lista abrangente de pedidos com a capacidade de filtrar por status específico;

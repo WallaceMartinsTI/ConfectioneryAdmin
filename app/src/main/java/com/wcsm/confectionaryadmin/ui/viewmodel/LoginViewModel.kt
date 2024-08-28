@@ -115,10 +115,8 @@ class LoginViewModel @Inject constructor(
     }
 
     private fun saveLoggedUser(email: String, password: String, userId: String) {
-        Log.i("#-# TESTE #-#", "LoginViewModel - saveLoggedUser")
         viewModelScope.launch {
             val currentUser = userRepository.getCurrentUser()
-            Log.i("#-# TESTE #-#", "LoginViewModel - currentUser: $currentUser")
             if(currentUser != null) {
                 userPreferences.saveUser(email, password, userId)
             }
