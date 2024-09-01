@@ -1,11 +1,11 @@
 <resources>
-    <string name="app_name">Confectionary Admin</string>
-    <string name="app_name_formatted">CONFECTIONARY\nADMIN</string>
+    <string name="app_name">Confectionery Admin</string>
+    <string name="app_name_formatted">CONFECTIONERY\nADMIN</string>
 
     <!-- Starter Screen -->
     <string name="starter_screen_description">Painel de Administrador</string>
-    <string name="starter_screen_welcome_message">Bem-vindo ao\nConfectionary\nAdmin!</string>
-    <string name="starter_screen_message">Gerencie seus pedidos com facilidade e eficiência. O Confectionary Admin está aqui para simplificar o seu dia a dia na confeitaria, permitindo que você se concentre no que faz de melhor: criar doces e bolos incríveis.</string>
+    <string name="starter_screen_welcome_message">Bem-vindo ao\nConfectionery\nAdmin!</string>
+    <string name="starter_screen_message">Gerencie seus pedidos com facilidade e eficiência. O Confectionery Admin está aqui para simplificar o seu dia a dia na confeitaria, permitindo que você se concentre no que faz de melhor: criar doces e bolos incríveis.</string>
     <string name="starter_screen_start_helper">Pressione "INICIAR" para começar sua jornada com a gente!</string>
 
     <!-- Login Screen -->
@@ -114,7 +114,7 @@
     <string name="screen_title_info_screen">INFORMAÇÕES</string>
     <string name="info_screen_user_info">Suas Informações</string>
     <string name="info_screen_about_app">Sobre o Aplicativo</string>
-    <string name="info_screen_about_app_description">No Confectionary Admin, você pode gerenciar pedidos de forma eficiente e aproveitar um sistema de fidelidade para seus clientes. O aplicativo oferece uma lista completa dos seus clientes, incluindo detalhes dos pedidos, quantidade total de pedidos, e muito mais, facilitando o acompanhamento e a organização do seu negócio.</string>
+    <string name="info_screen_about_app_description">No Confectionery Admin, você pode gerenciar pedidos de forma eficiente e aproveitar um sistema de fidelidade para seus clientes. O aplicativo oferece uma lista completa dos seus clientes, incluindo detalhes dos pedidos, quantidade total de pedidos, e muito mais, facilitando o acompanhamento e a organização do seu negócio.</string>
     <string name="info_screen_already_used_our_app">Já utilizou o App?</string>
     <string name="info_screen_already_used_description">Se já utilizou o aplicativo e tem dados salvos na nuvem, clique no botão abaixo para trazer seus dados novamente.</string>
     <string name="info_screen_about_me">Desenvolvedor</string>
