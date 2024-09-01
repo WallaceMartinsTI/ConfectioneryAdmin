@@ -32,7 +32,7 @@ In version 1.0, the app will be an essential tool for administrators in the conf
 
 <div align="center">
 
-[▶️ Click here](https://youtu.be/CRPHqMxh7Qk) to watch the full demonstrating video on YouTube.
+[▶️ Click here](https://youtu.be/lrpati_3bJ0) to watch the full demonstrating video on YouTube.
 
 </div>
 
